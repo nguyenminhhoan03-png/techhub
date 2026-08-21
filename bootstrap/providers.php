@@ -7,4 +7,5 @@ return [
     Application\Providers\ApplicationServiceProvider::class,
     Domain\Providers\DomainServiceProvider::class,
     Infrastructure\Providers\InfrastructureServiceProvider::class,
+    Infrastructure\Tool\Providers\ToolServiceProvider::class,
 ];

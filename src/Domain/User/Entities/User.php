@@ -12,6 +12,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * @property int $id
+ * @property string|null $ulid
+ * @property string $name
+ * @property string $email
+ * @property UserStatus|string $status
+ * @property string $role
+ * @property string|null $avatar_url
+ * @property \Carbon\CarbonImmutable|null $email_verified_at
+ * @property string $password
+ */
 #[ObservedBy([UserObserver::class])]
 class User extends Authenticatable
 {
@@ -24,10 +35,15 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'ulid',
         'name',
         'email',
         'password',
         'status',
+        'role',
+        'avatar_url',
+        'email_verified_at',
+        'remember_token',
     ];
 
     /**

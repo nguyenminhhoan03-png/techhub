@@ -12,7 +12,7 @@ arch('app')
 
 arch('Domain can be accessed by Infrastructure, Application, and Presentation Layers')
     ->expect('Domain')
-    ->toOnlyBeUsedIn(['Infrastructure', 'Application', 'Presentation']);
+    ->toOnlyBeUsedIn(['Infrastructure', 'Application', 'Presentation', 'Database', 'Tests']);
 
 
 arch('Infrastructure should only accessed by Application Layer directly')

@@ -1,2 +1,7 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin/
+Disallow: /admin
+Disallow: /api/
+
+Sitemap: http://127.0.0.1:9022/sitemap.xml

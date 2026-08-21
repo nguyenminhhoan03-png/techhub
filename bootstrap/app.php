@@ -16,8 +16,15 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: [__DIR__ . '/../src/Presentation/UserManagement/routes/web.php'],
-        api: [__DIR__ . '/../src/Presentation/UserManagement/routes/api.php'],
+        web: [
+            __DIR__ . '/../src/Presentation/Admin/routes/web.php',
+            __DIR__ . '/../src/Presentation/Tool/routes/web.php',
+            __DIR__ . '/../src/Presentation/UserManagement/routes/web.php',
+        ],
+        api: [
+            __DIR__ . '/../src/Presentation/UserManagement/routes/api.php',
+            __DIR__ . '/../src/Presentation/Tool/routes/api.php',
+        ],
         commands: __DIR__ . '/../routes/console.php',
         health: '/up',
     )
@@ -25,6 +32,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append([
             AssignRequestIdMiddleware::class,
             SecurityHeadersMiddleware::class,
+        ]);
+
+        $middleware->web(append: [
+            Shared\Infrastructure\Http\Middleware\SetLocaleMiddleware::class,
         ]);
 
         $middleware->api(prepend: [
