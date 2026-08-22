@@ -118,8 +118,11 @@
 
                     <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
                         <button type="button" onclick="reloadGameFrame()" class="btn btn-secondary btn-sm" title="Tải lại game nếu bị lỗi" style="display: flex; align-items: center; gap: 0.35rem;">
-                            <span>🔄</span> <span>Tải Lại Game</span>
+                            <span>🔄</span> <span>Tải Lại</span>
                         </button>
+                        <a href="{{ $game->engine_path }}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm" title="Mở chơi trực tiếp nếu bị chặn quảng cáo/iframe" style="display: flex; align-items: center; gap: 0.35rem;">
+                            <span>🚀</span> <span>Mở Tab Riêng</span>
+                        </a>
                         <button type="button" onclick="toggleFullscreen()" class="btn btn-secondary btn-sm" title="Chơi toàn màn hình" style="display: flex; align-items: center; gap: 0.35rem;">
                             <span>⛶</span> <span>Toàn Màn Hình</span>
                         </button>
@@ -132,7 +135,7 @@
                 {{-- Iframe Game Container with Cinema Ambient Lighting & Responsive Aspect Ratio --}}
                 <div style="position: relative; margin-bottom: 1.25rem;">
                     <div class="cinema-ambient-glow" style="--ambient-color: {{ $game->category->color }}66;"></div>
-                    <div id="game-container" style="position: relative; z-index: 1; width: 100%; aspect-ratio: 16 / 10; min-height: 500px; max-height: calc(100vh - 120px); background: #0d1117; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 20px 60px rgba(0,0,0,0.6);">
+                    <div id="game-container" onclick="focusGameFrame()" style="position: relative; z-index: 1; width: 100%; aspect-ratio: 16 / 10; min-height: 500px; max-height: calc(100vh - 120px); background: #0d1117; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 20px 60px rgba(0,0,0,0.6); cursor: pointer;">
                         
                         {{-- Loading Skeleton & Smooth Placeholder --}}
                         <div id="game-loader" style="position: absolute; inset: 0; z-index: 2; background: #0d1117; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; transition: opacity 0.4s ease; pointer-events: none;">
@@ -146,7 +149,7 @@
                             loading="eager"
                             frameborder="0"
                             scrolling="auto"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen; monetization; camera; gamepad; keyboard-map *; focus-without-user-activation *; storage-access *"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen; monetization; camera; gamepad; keyboard-map; pointer-lock"
                             allowfullscreen="true"
                             webkitallowfullscreen="true"
                             mozallowfullscreen="true"
@@ -324,6 +327,16 @@
             setTimeout(() => {
                 frame.src = currentSrc;
             }, 100);
+        }
+    }
+
+    function focusGameFrame() {
+        const frame = document.getElementById('game-frame');
+        if (frame) {
+            frame.focus();
+            try {
+                frame.contentWindow?.focus();
+            } catch (e) {}
         }
     }
 
