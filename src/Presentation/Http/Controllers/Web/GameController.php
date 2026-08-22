@@ -22,10 +22,12 @@ final class GameController
     {
         $categorySlug = $request->query('category');
         $search       = trim((string) $request->query('q', ''));
+        $sort         = $request->query('sort', 'popular');
+        $difficulty   = $request->query('difficulty');
 
         $categories    = $this->games->getCategories();
         $featuredGames = $this->games->getFeaturedGames(4);
-        $games         = $this->games->getAllActive($categorySlug ?: null, $search ?: null);
+        $games         = $this->games->getAllActive($categorySlug ?: null, $search ?: null, $sort, $difficulty ?: null);
 
         $activeCategory = $categorySlug
             ? $categories->firstWhere('slug', $categorySlug)
@@ -40,6 +42,8 @@ final class GameController
             'activeCategory',
             'categorySlug',
             'search',
+            'sort',
+            'difficulty',
             'totalGamesCount'
         ));
     }

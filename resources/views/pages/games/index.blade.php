@@ -94,15 +94,26 @@
                             name="q"
                             id="game-search-input"
                             value="{{ request('q') }}"
-                            placeholder="Gõ tên game..."
-                            style="width: 100%; padding: 0.6rem 0.85rem; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: var(--text-main); font-size: 0.88rem; outline: none; transition: border-color 0.2s;"
+                            placeholder="Gõ tên game (VD: 2 người, đua xe)..."
+                            style="width: 100%; padding: 0.6rem 2.2rem 0.6rem 0.85rem; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: var(--text-main); font-size: 0.85rem; outline: none; transition: border-color 0.2s;"
                             onfocus="this.style.borderColor='var(--accent-indigo)'"
                             onblur="this.style.borderColor='var(--border-subtle)'"
                         >
+                        @if(request('q'))
+                            <a href="{{ route('games.index') }}" style="position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); text-decoration: none; font-size: 0.85rem;" title="Xóa tìm kiếm">✕</a>
+                        @endif
                         @if($categorySlug)
                             <input type="hidden" name="category" value="{{ $categorySlug }}">
                         @endif
                     </form>
+
+                    {{-- Popular Keyword Tags --}}
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.65rem;">
+                        <a href="{{ route('games.index', ['q' => '2 người']) }}" style="font-size: 0.72rem; padding: 0.15rem 0.45rem; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: 4px; color: var(--text-muted); text-decoration: none;">2 người</a>
+                        <a href="{{ route('games.index', ['q' => 'đua xe']) }}" style="font-size: 0.72rem; padding: 0.15rem 0.45rem; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: 4px; color: var(--text-muted); text-decoration: none;">đua xe</a>
+                        <a href="{{ route('games.index', ['q' => 'bắn súng']) }}" style="font-size: 0.72rem; padding: 0.15rem 0.45rem; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: 4px; color: var(--text-muted); text-decoration: none;">bắn súng</a>
+                        <a href="{{ route('games.index', ['q' => 'zombie']) }}" style="font-size: 0.72rem; padding: 0.15rem 0.45rem; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: 4px; color: var(--text-muted); text-decoration: none;">zombie</a>
+                    </div>
                 </div>
 
                 <div style="height: 1px; background: var(--border-subtle);"></div>
@@ -151,34 +162,97 @@
             {{-- ── RIGHT MAIN CONTENT ── --}}
             <main class="games-main-content" style="min-width: 0;">
 
+                {{-- Quick Topic Filter Chips Carousel Bar --}}
+                <div class="game-quick-chips" style="display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.75rem; margin-bottom: 1.5rem; scrollbar-width: thin;">
+                    <a href="{{ route('games.index') }}"
+                       style="white-space: nowrap; padding: 0.45rem 0.9rem; border-radius: 999px; font-size: 0.82rem; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 0.35rem; transition: all 0.2s; {{ !$categorySlug && !$search ? 'background: linear-gradient(135deg, var(--accent-indigo), var(--accent-purple)); color: #fff; box-shadow: 0 4px 12px rgba(99,102,241,0.35);' : 'background: var(--bg-card); color: var(--text-sub); border: 1px solid var(--border-subtle);' }}">
+                        <span>🎮</span> <span>Tất Cả</span>
+                    </a>
+                    @php
+                        $quickTags = [
+                            ['icon' => '👥', 'label' => 'Game 2 Người', 'q' => '2 người'],
+                            ['icon' => '🏎️', 'label' => 'Đua Xe', 'q' => 'đua xe'],
+                            ['icon' => '🔫', 'label' => 'Bắn Súng', 'q' => 'bắn súng'],
+                            ['icon' => '🧩', 'label' => 'Trí Tuệ & Puzzle', 'q' => 'trí tuệ'],
+                            ['icon' => '🧟', 'label' => 'Zombie & Sinh Tồn', 'q' => 'zombie'],
+                            ['icon' => '⚽', 'label' => 'Bóng Đá & Thể Thao', 'q' => 'bóng đá'],
+                            ['icon' => '🍳', 'label' => 'Nấu Ăn', 'q' => 'nấu ăn'],
+                            ['icon' => '👑', 'label' => 'Thời Trang', 'q' => 'thời trang'],
+                            ['icon' => '🏰', 'label' => 'Chiến Thuật', 'q' => 'chiến thuật'],
+                            ['icon' => '🥋', 'label' => 'Hành Động', 'q' => 'hành động'],
+                        ];
+                    @endphp
+                    @foreach($quickTags as $tag)
+                        @php $isActive = mb_strtolower((string)$search) === mb_strtolower($tag['q']); @endphp
+                        <a href="{{ route('games.index', ['q' => $tag['q']]) }}"
+                           style="white-space: nowrap; padding: 0.45rem 0.9rem; border-radius: 999px; font-size: 0.82rem; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 0.35rem; transition: all 0.2s; {{ $isActive ? 'background: linear-gradient(135deg, var(--accent-indigo), var(--accent-purple)); color: #fff; box-shadow: 0 4px 12px rgba(99,102,241,0.35);' : 'background: var(--bg-card); color: var(--text-sub); border: 1px solid var(--border-subtle);' }}">
+                            <span>{{ $tag['icon'] }}</span> <span>{{ $tag['label'] }}</span>
+                        </a>
+                    @endforeach
+                </div>
+
                 {{-- SEARCH OR CATEGORY FILTER ACTIVE VIEW --}}
                 @if($activeCategory || $search)
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.75rem; flex-wrap: wrap; gap: 1rem;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem;">
                         <div>
-                            <h1 style="font-size: 1.85rem; margin-bottom: 0.35rem;">
+                            <h1 style="font-size: 1.65rem; margin-bottom: 0.25rem;">
                                 @if($activeCategory)
                                     {{ $activeCategory->icon }} {{ $activeCategory->name }}
                                 @else
                                     🔍 Kết quả tìm kiếm: <span class="gradient-text">"{{ e($search) }}"</span>
                                 @endif
                             </h1>
-                            <p style="font-size: 0.95rem; color: var(--text-muted);">
+                            <p style="font-size: 0.9rem; color: var(--text-muted); margin: 0;">
                                 @if($activeCategory)
                                     {{ $activeCategory->description }} ({{ $games->count() }} games)
                                 @else
-                                    Tìm thấy {{ $games->count() }} trò chơi phù hợp.
+                                    Tìm thấy <strong>{{ $games->count() }}</strong> trò chơi phù hợp.
                                 @endif
                             </p>
                         </div>
-                        <a href="{{ route('games.index') }}" class="btn btn-secondary btn-sm">← Xem Tất Cả Games</a>
+
+                        {{-- Sort & Filter Controls --}}
+                        <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                            <form action="{{ route('games.index') }}" method="GET" style="display: flex; align-items: center; gap: 0.5rem;">
+                                @if($search)
+                                    <input type="hidden" name="q" value="{{ $search }}">
+                                @endif
+                                @if($categorySlug)
+                                    <input type="hidden" name="category" value="{{ $categorySlug }}">
+                                @endif
+
+                                <select name="sort" onchange="this.form.submit()" style="padding: 0.45rem 0.85rem; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: var(--text-main); font-size: 0.82rem; font-weight: 600; outline: none; cursor: pointer;">
+                                    <option value="popular" {{ request('sort') === 'popular' ? 'selected' : '' }}>🔥 Phổ biến nhất</option>
+                                    <option value="latest" {{ request('sort') === 'latest' ? 'selected' : '' }}>⚡ Mới nhất</option>
+                                    <option value="plays" {{ request('sort') === 'plays' ? 'selected' : '' }}>🕹️ Chơi nhiều nhất</option>
+                                    <option value="title_asc" {{ request('sort') === 'title_asc' ? 'selected' : '' }}>🔤 Tên A - Z</option>
+                                </select>
+
+                                <select name="difficulty" onchange="this.form.submit()" style="padding: 0.45rem 0.85rem; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: var(--text-main); font-size: 0.82rem; font-weight: 600; outline: none; cursor: pointer;">
+                                    <option value="">🎯 Mọi độ khó</option>
+                                    <option value="easy" {{ request('difficulty') === 'easy' ? 'selected' : '' }}>🟢 Dễ</option>
+                                    <option value="medium" {{ request('difficulty') === 'medium' ? 'selected' : '' }}>🟡 Vừa</option>
+                                    <option value="hard" {{ request('difficulty') === 'hard' ? 'selected' : '' }}>🔴 Khó</option>
+                                </select>
+                            </form>
+
+                            <a href="{{ route('games.index') }}" class="btn btn-secondary btn-sm" style="font-size: 0.8rem; padding: 0.45rem 0.85rem;">
+                                ✕ Bỏ Lọc
+                            </a>
+                        </div>
                     </div>
 
                     @if($games->isEmpty())
-                        <div style="text-align: center; padding: 4rem 2rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg);">
+                        <div style="text-align: center; padding: 4rem 2rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); margin-bottom: 2rem;">
                             <div style="font-size: 3rem; margin-bottom: 1rem;">🎯</div>
-                            <h3 style="margin-bottom: 0.5rem;">Không tìm thấy game nào!</h3>
-                            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Hãy thử tìm kiếm với từ khóa khác hoặc duyệt qua các danh mục bên cạnh.</p>
-                            <a href="{{ route('games.index') }}" class="btn btn-primary btn-sm">Xem Toàn Bộ Games</a>
+                            <h3 style="margin-bottom: 0.5rem;">Không tìm thấy game nào phù hợp!</h3>
+                            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Hãy thử tìm kiếm với các từ khóa gợi ý như: <em>"2 người", "đua xe", "bắn súng", "2048", "zombie"</em></p>
+                            <div style="display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap;">
+                                <a href="{{ route('games.index', ['q' => '2 người']) }}" class="btn btn-secondary btn-sm">👥 Game 2 Người</a>
+                                <a href="{{ route('games.index', ['q' => 'đua xe']) }}" class="btn btn-secondary btn-sm">🏎️ Đua Xe</a>
+                                <a href="{{ route('games.index', ['q' => 'bắn súng']) }}" class="btn btn-secondary btn-sm">🔫 Bắn Súng</a>
+                                <a href="{{ route('games.index') }}" class="btn btn-primary btn-sm">Xem Toàn Bộ Games</a>
+                            </div>
                         </div>
                     @else
                         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.25rem;">

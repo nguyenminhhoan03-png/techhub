@@ -17,7 +17,7 @@ interface GameRepositoryInterface
     public function getFeaturedGames(int $limit = 4): Collection;
 
     /** @return Collection<Game> */
-    public function getAllActive(?string $categorySlug = null, ?string $search = null): Collection;
+    public function getAllActive(?string $categorySlug = null, ?string $search = null, ?string $sort = null, ?string $difficulty = null): Collection;
 
     public function findBySlug(string $slug): ?Game;
 
