@@ -90,7 +90,7 @@ class AdminAndSettingsSeeder extends Seeder
             // SEO & Tracking Settings
             [
                 'key' => 'google_analytics_id',
-                'value' => env('GOOGLE_ANALYTICS_ID', ''),
+                'value' => env('GOOGLE_ANALYTICS_ID', 'G-7TJK356QR4'),
                 'group' => 'seo',
                 'type' => 'text',
                 'label' => 'Google Analytics 4 (GA4) Measurement ID',

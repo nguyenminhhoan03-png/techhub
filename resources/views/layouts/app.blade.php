@@ -3,7 +3,7 @@
     use Application\Ad\Services\AdService;
 
     $footerAd = AdService::getAdForSlot('footer_banner');
-    $gaMeasurementId = SettingService::get('google_analytics_id', config('services.google.analytics_id', env('GOOGLE_ANALYTICS_ID')));
+    $gaMeasurementId = SettingService::get('google_analytics_id', config('services.google.analytics_id', env('GOOGLE_ANALYTICS_ID', 'G-7TJK356QR4')));
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
