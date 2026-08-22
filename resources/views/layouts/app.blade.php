@@ -64,6 +64,7 @@
         "target": "{{ url('/tools') }}?search={search_term_string}",
         "query-input": "required name=search_term_string"
       }
+    }
     </script>
     @stack('head')
     @stack('schema')
