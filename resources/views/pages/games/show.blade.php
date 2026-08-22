@@ -132,23 +132,37 @@
                 {{-- Iframe Game Container with Cinema Ambient Lighting & Responsive Aspect Ratio --}}
                 <div style="position: relative; margin-bottom: 1.25rem;">
                     <div class="cinema-ambient-glow" style="--ambient-color: {{ $game->category->color }}66;"></div>
-                    <div id="game-container" style="position: relative; z-index: 1; background: #0d1117; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 20px 60px rgba(0,0,0,0.6); aspect-ratio: 16 / 10; min-height: 460px; max-height: calc(100vh - 180px);">
+                    <div id="game-container" style="position: relative; z-index: 1; width: 100%; aspect-ratio: 16 / 10; min-height: 420px; max-height: calc(100vh - 180px); background: #0d1117; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 20px 60px rgba(0,0,0,0.6);">
+                        
+                        {{-- Loading Skeleton & Smooth Placeholder --}}
+                        <div id="game-loader" style="position: absolute; inset: 0; z-index: 2; background: #0d1117; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; transition: opacity 0.4s ease; pointer-events: none;">
+                            <div style="width: 48px; height: 48px; border: 4px solid rgba(255,255,255,0.1); border-top-color: var(--accent-cyan); border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+                            <div style="color: #94a3b8; font-size: 0.92rem; font-weight: 600;">Đang khởi chạy {{ $game->name }}...</div>
+                        </div>
+
                         <iframe
                             id="game-frame"
                             src="{{ $game->engine_path }}"
-                            width="100%"
-                            height="100%"
+                            loading="eager"
                             frameborder="0"
                             scrolling="no"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen; monetization; camera; gamepad; keyboard-map *; focus-without-user-activation *"
                             allowfullscreen="true"
                             webkitallowfullscreen="true"
                             mozallowfullscreen="true"
-                            style="display: block; width: 100%; height: 100%; border: none;"
+                            style="position: absolute; inset: 0; width: 100%; height: 100%; border: none; display: block;"
                             title="{{ $game->name }}"
+                            onload="handleGameLoaded()"
                         ></iframe>
                     </div>
                 </div>
+
+                <style>
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                </style>
 
                 {{-- Controls Hint Bar --}}
                 @if($game->controls_hint)
@@ -282,8 +296,25 @@
 </div>
 
 <script>
+    function handleGameLoaded() {
+        const loader = document.getElementById('game-loader');
+        if (loader) {
+            loader.style.opacity = '0';
+            setTimeout(() => {
+                loader.style.display = 'none';
+            }, 300);
+        }
+        // Dispatch instant canvas resize pulse
+        window.dispatchEvent(new Event('resize'));
+    }
+
     function reloadGameFrame() {
         const frame = document.getElementById('game-frame');
+        const loader = document.getElementById('game-loader');
+        if (loader) {
+            loader.style.display = 'flex';
+            loader.style.opacity = '1';
+        }
         if (frame) {
             const currentSrc = frame.src;
             frame.src = 'about:blank';
@@ -293,15 +324,24 @@
         }
     }
 
-function toggleFullscreen() {
-    const frame = document.getElementById('game-frame');
-    if (frame.requestFullscreen) {
-        frame.requestFullscreen();
-    } else if (frame.webkitRequestFullscreen) {
-        frame.webkitRequestFullscreen();
-    } else if (frame.mozRequestFullScreen) {
-        frame.mozRequestFullScreen();
+    function toggleFullscreen() {
+        const container = document.getElementById('game-container') || document.getElementById('game-frame');
+        if (container.requestFullscreen) {
+            container.requestFullscreen();
+        } else if (container.webkitRequestFullscreen) {
+            container.webkitRequestFullscreen();
+        } else if (container.mozRequestFullScreen) {
+            container.mozRequestFullScreen();
+        }
     }
-}
+
+    // Auto Layout Hydration Watchdog for HTML5 Canvas engines
+    document.addEventListener('DOMContentLoaded', () => {
+        [150, 500, 1200, 2500].forEach(delay => {
+            setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
+            }, delay);
+        });
+    });
 </script>
 @endsection
