@@ -55,10 +55,10 @@ final class GameFeedImportService
         $totalUpdated  = 0;
 
         try {
-            // ── Source 1: GameMonetize HTML5 Global Catalog (Fast & Direct) ────
-            $gmResponse = Http::timeout(25)->get(self::GAMEMONETIZE_ENDPOINT, [
+            // ── Source 1: GameMonetize HTML5 Global Catalog (Fast, Reliable & Direct) ────
+            $gmResponse = Http::timeout(15)->get(self::GAMEMONETIZE_ENDPOINT, [
                 'format' => 'json',
-                'amount' => min(300, $targetAmount),
+                'amount' => min(250, $targetAmount),
             ]);
 
             if ($gmResponse->successful()) {
@@ -123,83 +123,87 @@ final class GameFeedImportService
                 }
             }
 
-            // ── Source 2: GamePix Global Catalog API (Supplement) ──────────────
+            // ── Source 2: GamePix Global Catalog API (Graceful Supplement) ─────
             if ($totalImported + $totalUpdated < $targetAmount) {
-                $gpParams = [
-                    'sid'   => '1',
-                    'limit' => min(500, $targetAmount - ($totalImported + $totalUpdated)),
-                    'order' => 'q',
-                ];
+                try {
+                    $gpParams = [
+                        'sid'   => '1',
+                        'limit' => min(100, $targetAmount - ($totalImported + $totalUpdated)),
+                        'order' => 'q',
+                    ];
 
-                $gpResponse = Http::timeout(25)
-                    ->withHeaders(['User-Agent' => 'TechHub-Game-Sync/2.0'])
-                    ->get(self::GAMEPIX_ENDPOINT, $gpParams);
+                    $gpResponse = Http::timeout(10)
+                        ->withHeaders(['User-Agent' => 'TechHub-Game-Sync/2.0'])
+                        ->get(self::GAMEPIX_ENDPOINT, $gpParams);
 
-                if ($gpResponse->successful()) {
-                    $gpData = $gpResponse->json('data');
-                    if (is_array($gpData)) {
-                        foreach ($gpData as $item) {
-                            if ($totalImported + $totalUpdated >= $targetAmount) {
-                                break;
-                            }
+                    if ($gpResponse->successful()) {
+                        $gpData = $gpResponse->json('data');
+                        if (is_array($gpData)) {
+                            foreach ($gpData as $item) {
+                                if ($totalImported + $totalUpdated >= $targetAmount) {
+                                    break;
+                                }
 
-                            $title = trim((string) ($item['title'] ?? ''));
-                            $url   = (string) ($item['url'] ?? '');
-                            $thumb = (string) ($item['thumbnailUrl'] ?? '');
+                                $title = trim((string) ($item['title'] ?? ''));
+                                $url   = (string) ($item['url'] ?? '');
+                                $thumb = (string) ($item['thumbnailUrl'] ?? '');
 
-                            if (empty($title) || empty($url)) {
-                                continue;
-                            }
+                                if (empty($title) || empty($url)) {
+                                    continue;
+                                }
 
-                            $slug = Str::slug($title);
-                            if (empty($slug)) {
-                                continue;
-                            }
+                                $slug = Str::slug($title);
+                                if (empty($slug)) {
+                                    continue;
+                                }
 
-                            $categoryName = (string) ($item['category'] ?? 'Arcade');
-                            $categoryEntity = $this->resolveCategory($categoryName);
+                                $categoryName = (string) ($item['category'] ?? 'Arcade');
+                                $categoryEntity = $this->resolveCategory($categoryName);
 
-                            $rawDesc = trim((string) ($item['description'] ?? $item['desc_en'] ?? ''));
-                            $summary = Str::limit($rawDesc ?: "Trò chơi {$title} đồ họa HTML5 cực hay, mượt mà trên mọi thiết bị.", 280, '...');
+                                $rawDesc = trim((string) ($item['description'] ?? $item['desc_en'] ?? ''));
+                                $summary = Str::limit($rawDesc ?: "Trò chơi {$title} đồ họa HTML5 cực hay, mượt mà trên mọi thiết bị.", 280, '...');
 
-                            $descMarkdown = "## Giới Thiệu Trò Chơi\n\n" . ($rawDesc ?: $summary) . "\n\n";
-                            $descMarkdown .= "## Hướng Dẫn Điều Khiển\n\n- Sử dụng chuột hoặc chạm màn hình cảm ứng để điều khiển.\n- Hỗ trợ đầy đủ phím mũi tên / WASD trên máy tính.\n\n";
-                            $descMarkdown .= "## Tính Năng Nổi Bật\n\n- Đồ họa HTML5 tối ưu hóa mượt mà 60 FPS.\n- Chơi tức thì trên trình duyệt máy tính, iPhone, Android.\n- Không cần cài đặt, không quảng cáo chen ngang.";
+                                $descMarkdown = "## Giới Thiệu Trò Chơi\n\n" . ($rawDesc ?: $summary) . "\n\n";
+                                $descMarkdown .= "## Hướng Dẫn Điều Khiển\n\n- Sử dụng chuột hoặc chạm màn hình cảm ứng để điều khiển.\n- Hỗ trợ đầy đủ phím mũi tên / WASD trên máy tính.\n\n";
+                                $descMarkdown .= "## Tính Năng Nổi Bật\n\n- Đồ họa HTML5 tối ưu hóa mượt mà 60 FPS.\n- Chơi tức thì trên trình duyệt máy tính, iPhone, Android.\n- Không cần cài đặt, không quảng cáo chen ngang.";
 
-                            $difficulty = match (mb_strtolower($categoryName)) {
-                                'strategy', 'puzzles', 'action' => 'medium',
-                                'adventure', 'shooting'        => 'hard',
-                                default                        => 'easy',
-                            };
+                                $difficulty = match (mb_strtolower($categoryName)) {
+                                    'strategy', 'puzzles', 'action' => 'medium',
+                                    'adventure', 'shooting'        => 'hard',
+                                    default                        => 'easy',
+                                };
 
-                            $existing = Game::where('slug', $slug)->first();
+                                $existing = Game::where('slug', $slug)->first();
 
-                            $gameData = [
-                                'category_id'          => $categoryEntity->id,
-                                'name'                 => $title,
-                                'summary'              => $summary,
-                                'description_markdown' => $descMarkdown,
-                                'thumbnail_url'        => ! empty($thumb) ? $thumb : null,
-                                'engine_path'          => $url,
-                                'difficulty'           => $difficulty,
-                                'controls_hint'        => 'Chuột / Cảm Ứng / Phím Mũi Tên',
-                                'is_active'            => true,
-                                'meta_title'           => "{$title} — Chơi Game {$title} Online Miễn Phí | TechHub Games",
-                                'meta_description'     => Str::limit("Chơi game {$title} online miễn phí trên trình duyệt. {$summary}", 160),
-                            ];
+                                $gameData = [
+                                    'category_id'          => $categoryEntity->id,
+                                    'name'                 => $title,
+                                    'summary'              => $summary,
+                                    'description_markdown' => $descMarkdown,
+                                    'thumbnail_url'        => ! empty($thumb) ? $thumb : null,
+                                    'engine_path'          => $url,
+                                    'difficulty'           => $difficulty,
+                                    'controls_hint'        => 'Chuột / Cảm Ứng / Phím Mũi Tên',
+                                    'is_active'            => true,
+                                    'meta_title'           => "{$title} — Chơi Game {$title} Online Miễn Phí | TechHub Games",
+                                    'meta_description'     => Str::limit("Chơi game {$title} online miễn phí trên trình duyệt. {$summary}", 160),
+                                ];
 
-                            if ($existing) {
-                                $existing->update($gameData);
-                                $totalUpdated++;
-                            } else {
-                                $gameData['slug']        = $slug;
-                                $gameData['play_count']  = rand(350, 5200);
-                                $gameData['is_featured'] = rand(1, 20) === 1;
-                                Game::create($gameData);
-                                $totalImported++;
+                                if ($existing) {
+                                    $existing->update($gameData);
+                                    $totalUpdated++;
+                                } else {
+                                    $gameData['slug']        = $slug;
+                                    $gameData['play_count']  = rand(350, 5200);
+                                    $gameData['is_featured'] = rand(1, 20) === 1;
+                                    Game::create($gameData);
+                                    $totalImported++;
+                                }
                             }
                         }
                     }
+                } catch (\Throwable $e) {
+                    Log::warning('GamePix import fallback skipped: ' . $e->getMessage());
                 }
             }
 
