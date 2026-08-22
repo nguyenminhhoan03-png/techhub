@@ -1,74 +1,107 @@
 services:
-    laravel.test:
+    # ── 1. PHP 8.3 Application Service ──────────────────────────────────────────
+    app:
         build:
-            context: './vendor/laravel/sail/runtimes/8.4'
+            context: .
             dockerfile: Dockerfile
-            args:
-                WWWGROUP: '${WWWGROUP}'
-        image: 'sail-8.4/app'
-        extra_hosts:
-            - 'host.docker.internal:host-gateway'
-        ports:
-            - '${APP_PORT:-80}:80'
-            - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
-        environment:
-            WWWUSER: '${WWWUSER}'
-            LARAVEL_SAIL: 1
-            XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
-            XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
-            IGNITION_LOCAL_SITES_PATH: '${PWD}'
+        image: techhub-app:latest
+        container_name: techhub_app
+        restart: unless-stopped
+        working_dir: /var/www/html
         volumes:
-            - '.:/var/www/html'
+            - ./:/var/www/html
+        environment:
+            - DB_HOST=mysql
+            - DB_PORT=3306
+            - DB_DATABASE=${DB_DATABASE:-techhub}
+            - DB_USERNAME=${DB_USERNAME:-techhub_user}
+            - DB_PASSWORD=${DB_PASSWORD:-techhub_secret}
+            - REDIS_HOST=redis
+            - REDIS_PORT=6379
         networks:
-            - sail
+            - techhub_network
         depends_on:
-            - pgsql
-            - redis
-    pgsql:
-        image: 'postgres:17'
+            mysql:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
+
+    # ── 2. Nginx High-Performance Web Server ───────────────────────────────────
+    web:
+        image: nginx:1.25-alpine
+        container_name: techhub_web
+        restart: unless-stopped
         ports:
-            - '${FORWARD_DB_PORT:-5432}:5432'
+            - "${APP_PORT:-8088}:80"
+        volumes:
+            - ./:/var/www/html:ro
+            - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+        networks:
+            - techhub_network
+        depends_on:
+            - app
+
+    # ── 3. MySQL 8.0 Database ──────────────────────────────────────────────────
+    mysql:
+        image: mysql:8.0
+        container_name: techhub_mysql
+        restart: unless-stopped
+        ports:
+            - "${DB_PORT:-33066}:3306"
         environment:
-            PGPASSWORD: '${DB_PASSWORD:-secret}'
-            POSTGRES_DB: '${DB_DATABASE}'
-            POSTGRES_USER: '${DB_USERNAME}'
-            POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
+            MYSQL_DATABASE: ${DB_DATABASE:-techhub}
+            MYSQL_USER: ${DB_USERNAME:-techhub_user}
+            MYSQL_PASSWORD: ${DB_PASSWORD:-techhub_secret}
+            MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root_secret}
         volumes:
-            - 'sail-pgsql:/var/lib/postgresql/data'
-            - './vendor/laravel/sail/database/pgsql/create-testing-database.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql'
+            - techhub_mysql_data:/var/lib/mysql
         networks:
-            - sail
+            - techhub_network
         healthcheck:
-            test:
-                - CMD
-                - pg_isready
-                - '-q'
-                - '-d'
-                - '${DB_DATABASE}'
-                - '-U'
-                - '${DB_USERNAME}'
-            retries: 3
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-root_secret}"]
+            interval: 5s
             timeout: 5s
+            retries: 10
+
+    # ── 4. Redis Cache & Queue ─────────────────────────────────────────────────
     redis:
-        image: 'redis:alpine'
+        image: redis:7-alpine
+        container_name: techhub_redis
+        restart: unless-stopped
         ports:
-            - '${FORWARD_REDIS_PORT:-6379}:6379'
+            - "${REDIS_PORT:-63799}:6379"
         volumes:
-            - 'sail-redis:/data'
+            - techhub_redis_data:/data
         networks:
-            - sail
+            - techhub_network
         healthcheck:
-            test:
-                - CMD
-                - redis-cli
-                - ping
-            retries: 3
+            test: ["CMD", "redis-cli", "ping"]
+            interval: 5s
             timeout: 5s
+            retries: 5
+
+    # ── 5. phpMyAdmin (Optional Database UI) ────────────────────────────────────
+    phpmyadmin:
+        image: phpmyadmin:5.2-apache
+        container_name: techhub_phpmyadmin
+        restart: unless-stopped
+        ports:
+            - "${PMA_PORT:-8081}:80"
+        environment:
+            PMA_HOST: mysql
+            PMA_PORT: 3306
+            MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root_secret}
+        networks:
+            - techhub_network
+        depends_on:
+            - mysql
+
 networks:
-    sail:
+    techhub_network:
         driver: bridge
+
 volumes:
-    sail-pgsql:
+    techhub_mysql_data:
         driver: local
-    sail-redis:
+    techhub_redis_data:
         driver: local
