@@ -669,62 +669,104 @@ Hỏi: TechHub có hỗ trợ tạo Schema miễn phí không?
 
                         <button type="submit" class="btn btn-primary" style="margin-bottom: 1.5rem;"><x-heroicon-s-bolt style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Tạo Tệp Robots.txt Ngay</button>
 
-                    {{-- 17. SITEMAP XML GENERATOR --}}
+                    {{-- 17. SITEMAP XML GENERATOR (XML-Sitemaps Standard) --}}
                     @elseif($tool->slug === 'sitemap-generator')
-                        <div class="form-group">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                <label for="sitemap-base-url" class="form-label" style="margin-bottom: 0;">Đường dẫn tên miền gốc (Base URL)</label>
-                                <button type="button" class="btn btn-secondary btn-sm" id="btn-load-sample-sitemap"><x-heroicon-o-clipboard-document style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Nạp Danh Sách URL Mẫu</button>
-                            </div>
-                            <input type="url" id="sitemap-base-url" name="base_url" class="form-control" value="https://techhub.vn" required>
+                        <div style="text-align: center; margin-bottom: 2rem; padding: 1rem 0;">
+                            <h2 style="font-size: 2.2rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.6rem; letter-spacing: -0.5px;">
+                                Better Indexing Starts Here
+                            </h2>
+                            <p style="color: var(--text-sub); font-size: 1.05rem; max-width: 620px; margin: 0 auto; line-height: 1.6;">
+                                Tự động quét (crawl) website và tạo tệp XML Sitemap chuẩn Google, Bing & Sitemaps.org. Nhanh chóng, miễn phí 100% và không cần đăng ký.
+                            </p>
                         </div>
 
-                        <div class="form-group">
-                            <label for="sitemap-urls" class="form-label">Danh sách đường dẫn các trang (Mỗi dòng một URL hoặc Path)</label>
-                            <textarea id="sitemap-urls" name="urls_list" class="form-control" style="min-height: 140px; font-family: var(--font-mono); font-size: 0.88rem;" required>/
-/tools
-/tools/json-formatter 0.9 daily
-/tools/serp-preview 0.9 daily
-/tools/schema-generator 0.9 daily
-/tools/meta-tag-generator 0.8 weekly
-/tools/open-graph-generator 0.8 weekly
-/tools/robots-txt-generator 0.8 weekly
-/tools/sitemap-generator 0.8 weekly
-/tools/slug-generator 0.8 weekly
-/gioi-thieu 0.5 monthly
-/lien-he 0.5 monthly</textarea>
-                            <small style="color: var(--text-muted); font-size: 0.8rem; display: block; margin-top: 0.35rem;">💡 Mẹo: Bạn có thể viết <code>/path [priority] [changefreq]</code> trên từng dòng để tùy biến riêng từng trang.</small>
+                        {{-- Main High-Impact Domain Crawler Input Bar --}}
+                        <div style="background: var(--bg-card); border: 2px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 0.6rem; box-shadow: 0 12px 36px rgba(0,0,0,0.06); display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; margin-bottom: 1.25rem; transition: border-color 0.2s ease;">
+                            <div style="display: flex; align-items: center; gap: 0.6rem; flex: 1; min-width: 260px; padding-left: 0.75rem;">
+                                <span style="font-size: 1.35rem;">🌐</span>
+                                <input 
+                                    type="text" 
+                                    id="sitemap-base-url" 
+                                    name="base_url" 
+                                    class="form-control" 
+                                    style="border: none; background: transparent; font-size: 1.05rem; padding: 0.6rem 0; box-shadow: none; width: 100%; color: var(--text-main);"
+                                    placeholder="Your Website Domain (e.g. https://muabanwebsite.io.vn)..." 
+                                    value="{{ request()->root() }}"
+                                    required
+                                >
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="padding: 0.85rem 1.85rem; font-size: 1rem; font-weight: 700; border-radius: var(--radius-md); display: flex; align-items: center; gap: 0.5rem; white-space: nowrap;">
+                                <span>🚀</span> <span>Generate Sitemap</span>
+                            </button>
                         </div>
 
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
-                            <div>
-                                <label for="sitemap-freq" class="form-label">Tần suất cập nhật mặc định (Changefreq)</label>
-                                <select id="sitemap-freq" name="default_changefreq" class="form-control">
-                                    <option value="daily">daily (Hàng ngày)</option>
-                                    <option value="weekly" selected>weekly (Hàng tuần)</option>
-                                    <option value="monthly">monthly (Hàng tháng)</option>
-                                    <option value="always">always (Liên tục)</option>
-                                    <option value="hourly">hourly (Mỗi giờ)</option>
-                                </select>
+                        {{-- Collapsible Settings Toggle --}}
+                        <div style="text-align: right; margin-bottom: 1.5rem;">
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('sitemap-advanced-settings').classList.toggle('hidden-settings');" style="font-size: 0.85rem; padding: 0.35rem 0.85rem; color: var(--text-muted);">
+                                ⚙️ Cài Đặt Nâng Cao (Settings ▾)
+                            </button>
+                        </div>
+
+                        {{-- Collapsible Advanced Settings Panel --}}
+                        <div id="sitemap-advanced-settings" class="hidden-settings" style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.5rem; margin-bottom: 1.75rem; transition: all 0.3s ease;">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; margin-bottom: 1.25rem;">
+                                <div>
+                                    <label for="sitemap-freq" class="form-label" style="font-size: 0.85rem;">Tần suất cập nhật (Changefreq)</label>
+                                    <select id="sitemap-freq" name="default_changefreq" class="form-control">
+                                        <option value="daily">daily (Hàng ngày)</option>
+                                        <option value="weekly" selected>weekly (Hàng tuần)</option>
+                                        <option value="monthly">monthly (Hàng tháng)</option>
+                                        <option value="always">always (Liên tục)</option>
+                                        <option value="hourly">hourly (Mỗi giờ)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="sitemap-priority" class="form-label" style="font-size: 0.85rem;">Độ ưu tiên mặc định (Priority)</label>
+                                    <select id="sitemap-priority" name="default_priority" class="form-control">
+                                        <option value="1.0">1.0 (Trang chủ / Cao nhất)</option>
+                                        <option value="0.8" selected>0.8 (Trang bài viết / Chi tiết)</option>
+                                        <option value="0.6">0.6 (Trang phụ / Tiện ích)</option>
+                                        <option value="0.5">0.5 (Trang liên hệ / Giới thiệu)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="sitemap-max" class="form-label" style="font-size: 0.85rem;">Số trang quét tối đa (Max URLs)</label>
+                                    <select id="sitemap-max" name="max_urls" class="form-control">
+                                        <option value="50">50 trang</option>
+                                        <option value="100" selected>100 trang</option>
+                                        <option value="250">250 trang</option>
+                                        <option value="500">500 trang</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div>
-                                <label for="sitemap-priority" class="form-label">Độ ưu tiên mặc định (Priority)</label>
-                                <select id="sitemap-priority" name="default_priority" class="form-control">
-                                    <option value="1.0">1.0 (Trang chủ / Quan trọng nhất)</option>
-                                    <option value="0.9">0.9 (Trang danh mục / Công cụ chính)</option>
-                                    <option value="0.8" selected>0.8 (Trang bài viết / Chi tiết)</option>
-                                    <option value="0.5">0.5 (Trang liên hệ / Giới thiệu)</option>
-                                </select>
-                            </div>
-                            <div style="display: flex; align-items: flex-end; padding-bottom: 0.75rem;">
-                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-subtle);">
+                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.88rem; color: var(--text-main);">
                                     <input type="checkbox" name="include_lastmod" value="1" checked>
-                                    <span>Gắn ngày cập nhật (Lastmod)</span>
+                                    <span>Tự động đính kèm ngày sửa đổi (Lastmod)</span>
                                 </label>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('sitemap-manual-wrap').style.display = document.getElementById('sitemap-manual-wrap').style.display === 'none' ? 'block' : 'none';" style="font-size: 0.8rem;">
+                                    ✍️ Chế độ nhập URL thủ công
+                                </button>
+                            </div>
+
+                            <div id="sitemap-manual-wrap" style="display: none; margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px dashed var(--border-subtle);">
+                                <label for="sitemap-urls" class="form-label" style="font-size: 0.85rem;">Danh sách URL tuỳ chỉnh (Nếu không muốn tự động quét)</label>
+                                <textarea id="sitemap-urls" name="urls_list" class="form-control" style="min-height: 110px; font-family: var(--font-mono); font-size: 0.85rem;" placeholder="/\n/tools\n/articles\n/games"></textarea>
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary" style="margin-bottom: 1.5rem;"><x-heroicon-s-bolt style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Tạo Tệp XML Sitemap Ngay</button>
+                        {{-- Trust Stats Bar (xml-sitemaps.com style) --}}
+                        <div style="display: flex; justify-content: center; align-items: center; gap: 2rem; flex-wrap: wrap; margin-bottom: 2rem; color: var(--text-muted); font-size: 0.88rem; font-weight: 500;">
+                            <span>⚡ 100% Miễn Phí</span>
+                            <span>🕷️ Live Web Crawler</span>
+                            <span>🔍 Chuẩn Google & Bing</span>
+                            <span>📄 Xuất Tệp sitemap.xml Ngay</span>
+                        </div>
+
+                        <style>
+                            .hidden-settings { display: none !important; }
+                        </style>
 
                     {{-- 18. SEO SLUG GENERATOR --}}
                     @elseif($tool->slug === 'slug-generator')

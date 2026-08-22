@@ -1031,25 +1031,77 @@ function renderRichOutput(slug, data, richBox, rawTextarea) {
     return;
   }
 
-  // 15. XML Sitemap Generator & Validator
+  // 15. XML Sitemap Generator & Validator (XML-Sitemaps Pro Output)
   if (slug === 'sitemap-generator' && data.xml_sitemap) {
     richBox.style.display = 'block';
+    const entries = data.entries_preview || [];
+    let rowsHtml = '';
+    entries.forEach((e, idx) => {
+      rowsHtml += `
+        <tr style="border-bottom: 1px solid var(--border-subtle); font-size: 0.85rem;">
+          <td style="padding: 0.6rem 0.75rem; color: var(--text-muted);">${idx + 1}</td>
+          <td style="padding: 0.6rem 0.75rem; word-break: break-all;">
+            <a href="${e.loc}" target="_blank" style="color: var(--accent-cyan); text-decoration: none; font-weight: 500;">
+              ${e.loc} ↗
+            </a>
+          </td>
+          <td style="padding: 0.6rem 0.75rem;">
+            <span style="background: rgba(37,99,235,0.15); color: #60a5fa; font-weight: 700; padding: 0.15rem 0.45rem; border-radius: 4px; font-size: 0.78rem;">
+              ${e.priority}
+            </span>
+          </td>
+          <td style="padding: 0.6rem 0.75rem; color: var(--text-sub);">${e.changefreq}</td>
+          <td style="padding: 0.6rem 0.75rem; color: var(--text-muted); font-size: 0.8rem;">${e.lastmod || 'Today'}</td>
+        </tr>
+      `;
+    });
+
     richBox.innerHTML = `
-      <div class="rich-output-card">
-        <div class="rich-output-title">
-          <span>🗺️ Sơ Đồ Trang Web XML Sitemap (${data.urls_count} URLs • ${data.size_formatted})</span>
-          <div style="display: flex; gap: 0.5rem;">
-            <button type="button" class="btn btn-secondary btn-sm" onclick="downloadFile('sitemap.xml', document.getElementById('sitemap-raw-box').value, 'application/xml');">💾 Tải Tệp sitemap.xml</button>
-            <button type="button" class="btn btn-primary btn-sm" onclick="navigator.clipboard.writeText(document.getElementById('sitemap-raw-box').value); showToast('Đã chép mã XML Sitemap!');">📋 Chép Mã XML</button>
+      <div class="rich-output-card" style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: 0 8px 24px rgba(0,0,0,0.05);">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-subtle);">
+          <div>
+            <div style="font-size: 1.2rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 0.5rem;">
+              <span>🎉</span> <span>Sơ Đồ XML Sitemap Đã Sẵn Sàng!</span>
+            </div>
+            <div style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.25rem;">
+              Đã thu thập <strong>${data.urls_count} trang</strong> • Dung lượng: <strong>${data.size_formatted}</strong> • Chuẩn Sitemaps.org Protocol 0.9
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+            <button type="button" class="btn btn-primary" onclick="downloadFile('sitemap.xml', document.getElementById('sitemap-raw-box').value, 'application/xml');" style="display: flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.15rem; font-weight: 700;">
+              <span>📥</span> <span>Tải sitemap.xml</span>
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText(document.getElementById('sitemap-raw-box').value); showToast('Đã sao chép toàn bộ mã XML Sitemap!');">
+              📋 Sao Chép XML
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="const b = document.getElementById('sitemap-raw-box'); b.style.display = b.style.display === 'none' ? 'block' : 'none';">
+              👁️ Xem Mã XML
+            </button>
           </div>
         </div>
 
-        <textarea id="sitemap-raw-box" class="form-control code-output" readonly style="min-height: 220px; font-family: var(--font-mono); font-size: 0.85rem; margin-bottom: 1rem;">${data.xml_sitemap}</textarea>
+        <textarea id="sitemap-raw-box" class="form-control code-output" readonly style="display: none; min-height: 200px; font-family: var(--font-mono); font-size: 0.82rem; margin-bottom: 1.25rem;">${data.xml_sitemap}</textarea>
 
-        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 0.85rem; color: #34d399;">
-          <span>✓ Cấu trúc XML đạt chuẩn Sitemaps.org Protocol 0.9. Sẵn sàng upload lên hosting/server.</span>
-          <span style="font-weight: 700; color: var(--text-main);">${data.urls_count} Links</span>
+        {{-- Crawled URLs Table --}}
+        <div style="border: 1px solid var(--border-subtle); border-radius: var(--radius-md); overflow: hidden; max-height: 320px; overflow-y: auto;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead style="background: var(--bg-input); position: sticky; top: 0; z-index: 2;">
+              <tr style="border-bottom: 1px solid var(--border-subtle); font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted);">
+                <th style="padding: 0.6rem 0.75rem; width: 40px;">#</th>
+                <th style="padding: 0.6rem 0.75rem;">Đường Dẫn URL</th>
+                <th style="padding: 0.6rem 0.75rem; width: 90px;">Độ Ưu Tiên</th>
+                <th style="padding: 0.6rem 0.75rem; width: 110px;">Tần Suất</th>
+                <th style="padding: 0.6rem 0.75rem; width: 100px;">Cập Nhật</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHtml}
+            </tbody>
+          </table>
         </div>
+
       </div>
     `;
     return;
