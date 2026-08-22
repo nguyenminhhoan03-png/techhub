@@ -87,6 +87,15 @@ class AdminAndSettingsSeeder extends Seeder
                 'label' => 'Email Liên Hệ',
                 'description' => 'Email nhận phản hồi và hỗ trợ',
             ],
+            // SEO & Tracking Settings
+            [
+                'key' => 'google_analytics_id',
+                'value' => env('GOOGLE_ANALYTICS_ID', ''),
+                'group' => 'seo',
+                'type' => 'text',
+                'label' => 'Google Analytics 4 (GA4) Measurement ID',
+                'description' => 'Mã đo lường Google Analytics (ví dụ: G-XXXXXXXXXX) để xem traffic Realtime',
+            ],
             // AI Content & LLM Settings
             [
                 'key' => 'gemini_api_key',

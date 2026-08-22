@@ -3,12 +3,25 @@
     use Application\Ad\Services\AdService;
 
     $footerAd = AdService::getAdForSlot('footer_banner');
+    $gaMeasurementId = SettingService::get('google_analytics_id', config('services.google.analytics_id', env('GOOGLE_ANALYTICS_ID')));
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    @if(!empty($gaMeasurementId))
+        {{-- Google tag (gtag.js) - Realtime Traffic Analytics --}}
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ $gaMeasurementId }}"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '{{ $gaMeasurementId }}');
+        </script>
+    @endif
+
     {{-- Favicon & App Icons --}}
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon.png') }}">
