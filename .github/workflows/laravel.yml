@@ -1,4 +1,4 @@
-name: Laravel
+name: TechHub CI / CD Pipeline
 
 on:
   push:
@@ -6,30 +6,92 @@ on:
   pull_request:
     branches: [ "main" ]
 
-jobs:
-  laravel-tests:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
+jobs:
+  # ─────────────────────────────────────────────────────────────
+  # 1. CI: Automated Code Quality & Testing Suite
+  # ─────────────────────────────────────────────────────────────
+  ci-testing:
+    name: 🧪 Run Tests & Syntax Check
     runs-on: ubuntu-latest
 
     steps:
-    - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
-      with:
-        php-version: '8.3'
-    - uses: actions/checkout@v4
-    - name: Copy .env
-      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
-    - name: Install Dependencies
-      run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-    - name: Generate key
-      run: php artisan key:generate
-    - name: Directory Permissions
-      run: chmod -R 777 storage bootstrap/cache
-    - name: Create Database
-      run: |
-        mkdir -p database
-        touch database/database.sqlite
-    - name: Execute tests (Unit and Feature tests) via PHPUnit/Pest
-      env:
-        DB_CONNECTION: sqlite
-        DB_DATABASE: database/database.sqlite
-      run: php artisan test
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🐘 Setup PHP 8.3 Environment
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, xml, ctype, iconv, intl, pdo, sqlite3, pdo_sqlite, bcmath, curl
+          coverage: none
+
+      - name: 📦 Cache Composer Dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: ⚙️ Install Composer Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+      - name: 🔑 Copy .env & Generate Key
+        run: |
+          php -r "file_exists('.env') || copy('.env.example', '.env');"
+          php artisan key:generate
+
+      - name: 🔒 Set Directory Permissions
+        run: chmod -R 777 storage bootstrap/cache
+
+      - name: 🗄️ Prepare SQLite Testing Database
+        run: |
+          mkdir -p database
+          touch database/database.sqlite
+
+      - name: 🚀 Execute Automated Tests (PHPUnit / Pest)
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: php artisan test
+
+  # ─────────────────────────────────────────────────────────────
+  # 2. CD: Automated Deployment to VPS (Runs only on main push)
+  # ─────────────────────────────────────────────────────────────
+  cd-deployment:
+    name: 🚀 Deploy to Production VPS
+    needs: [ci-testing]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📡 SSH & Deploy TechHub on VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script_stop: true
+          script: |
+            echo "🚀 [TechHub CD] Bắt đầu tự động cập nhật phiên bản mới..."
+            cd ~/techhub || cd /root/techhub
+            
+            echo "📥 1. Kéo mã nguồn mới nhất từ GitHub..."
+            git pull origin main
+            
+            echo "⚡ 2. Xóa và làm mới bộ nhớ đệm Production..."
+            docker compose exec -T app php artisan optimize:clear
+            docker compose exec -T app php artisan optimize
+            
+            echo "🗄️ 3. Chạy cập nhật cấu trúc Database..."
+            docker compose exec -T app php artisan migrate --force
+            
+            echo "🔒 4. Đảm bảo phân quyền storage..."
+            docker compose exec -T app chmod -R 777 storage bootstrap/cache
+            
+            echo "✅ [TechHub CD] Triển khai thành công 100%! Website đã cập nhật tức thì."
