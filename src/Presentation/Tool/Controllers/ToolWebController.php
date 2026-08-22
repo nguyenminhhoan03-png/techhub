@@ -76,66 +76,126 @@ class ToolWebController extends Controller
     }
 
     /**
-     * Dynamic SEO XML Sitemap Generator.
+     * Dynamic SEO XML Sitemap Generator (Senior Auto-Syncing).
+     * Automatically includes all active Tools, Articles, Games, and Categories in real-time.
      */
     public function sitemap(): Response
     {
-        $tools = Tool::query()->where('is_active', true)->orderByDesc('updated_at')->get();
-        $categories = $this->toolRepository->getCategories();
-        $baseUrl = url('/');
+        $baseUrl = rtrim(url('/'), '/');
+        $nowIso  = now()->toAtomString();
 
-        $xml = '<?xml version="1.0" encoding="UTF-8"?>';
-        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">';
+        $tools       = Tool::query()->where('is_active', true)->orderByDesc('updated_at')->get();
+        $toolCats    = $this->toolRepository->getCategories();
+        $articles    = \Domain\Article\Entities\Article::query()->where('status', 'published')->orderByDesc('updated_at')->get();
+        $articleCats = \Domain\Article\Entities\ContentCategory::all();
+        $games       = \Domain\Game\Entities\Game::query()->where('is_active', true)->orderByDesc('updated_at')->get();
+        $gameCats    = \Domain\Game\Entities\GameCategory::query()->where('is_active', true)->get();
+
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">' . "\n";
 
         // 1. Homepage
-        $xml .= '<url>';
-        $xml .= "<loc>{$baseUrl}</loc>";
-        $xml .= '<lastmod>' . now()->toAtomString() . '</lastmod>';
-        $xml .= '<changefreq>daily</changefreq>';
-        $xml .= '<priority>1.0</priority>';
-        $xml .= "<xhtml:link rel=\"alternate\" hreflang=\"vi\" href=\"{$baseUrl}?lang=vi\" />";
-        $xml .= "<xhtml:link rel=\"alternate\" hreflang=\"en\" href=\"{$baseUrl}?lang=en\" />";
-        $xml .= '</url>';
+        $xml .= "  <url>\n";
+        $xml .= "    <loc>{$baseUrl}</loc>\n";
+        $xml .= "    <lastmod>{$nowIso}</lastmod>\n";
+        $xml .= "    <changefreq>daily</changefreq>\n";
+        $xml .= "    <priority>1.0</priority>\n";
+        $xml .= "    <xhtml:link rel=\"alternate\" hreflang=\"vi\" href=\"{$baseUrl}?lang=vi\" />\n";
+        $xml .= "    <xhtml:link rel=\"alternate\" hreflang=\"en\" href=\"{$baseUrl}?lang=en\" />\n";
+        $xml .= "  </url>\n";
 
-        // 2. Tools Catalog
-        $xml .= '<url>';
-        $xml .= "<loc>{$baseUrl}/tools</loc>";
-        $xml .= '<lastmod>' . now()->toAtomString() . '</lastmod>';
-        $xml .= '<changefreq>daily</changefreq>';
-        $xml .= '<priority>0.9</priority>';
-        $xml .= "<xhtml:link rel=\"alternate\" hreflang=\"vi\" href=\"{$baseUrl}/tools?lang=vi\" />";
-        $xml .= "<xhtml:link rel=\"alternate\" hreflang=\"en\" href=\"{$baseUrl}/tools?lang=en\" />";
-        $xml .= '</url>';
+        // 2. Hub Indexes
+        $hubs = [
+            ['path' => '/tools', 'priority' => '0.9', 'freq' => 'daily'],
+            ['path' => '/articles', 'priority' => '0.9', 'freq' => 'daily'],
+            ['path' => '/games', 'priority' => '0.9', 'freq' => 'daily'],
+            ['path' => '/compare', 'priority' => '0.8', 'freq' => 'weekly'],
+            ['path' => '/reviews', 'priority' => '0.8', 'freq' => 'weekly'],
+        ];
 
-        // 3. Category Filter Pages
-        foreach ($categories as $cat) {
-            $xml .= '<url>';
-            $xml .= "<loc>{$baseUrl}/tools?category={$cat->slug}</loc>";
-            $xml .= '<lastmod>' . now()->toAtomString() . '</lastmod>';
-            $xml .= '<changefreq>weekly</changefreq>';
-            $xml .= '<priority>0.8</priority>';
-            $xml .= '</url>';
+        foreach ($hubs as $hub) {
+            $loc = $baseUrl . $hub['path'];
+            $xml .= "  <url>\n";
+            $xml .= "    <loc>{$loc}</loc>\n";
+            $xml .= "    <lastmod>{$nowIso}</lastmod>\n";
+            $xml .= "    <changefreq>{$hub['freq']}</changefreq>\n";
+            $xml .= "    <priority>{$hub['priority']}</priority>\n";
+            $xml .= "  </url>\n";
         }
 
-        // 4. Tool Workspace Single Pages
+        // 3. Tools Single Workspaces & Categories
+        foreach ($toolCats as $cat) {
+            $xml .= "  <url>\n";
+            $xml .= "    <loc>{$baseUrl}/tools?category={$cat->slug}</loc>\n";
+            $xml .= "    <lastmod>{$nowIso}</lastmod>\n";
+            $xml .= "    <changefreq>weekly</changefreq>\n";
+            $xml .= "    <priority>0.8</priority>\n";
+            $xml .= "  </url>\n";
+        }
+
         foreach ($tools as $tool) {
             $toolUrl = "{$baseUrl}/tools/{$tool->slug}";
-            $lastmod = $tool->updated_at ? $tool->updated_at->toAtomString() : now()->toAtomString();
+            $lastmod = $tool->updated_at ? $tool->updated_at->toAtomString() : $nowIso;
 
-            $xml .= '<url>';
-            $xml .= "<loc>{$toolUrl}</loc>";
-            $xml .= "<lastmod>{$lastmod}</lastmod>";
-            $xml .= '<changefreq>weekly</changefreq>';
-            $xml .= '<priority>0.9</priority>';
-            $xml .= "<xhtml:link rel=\"alternate\" hreflang=\"vi\" href=\"{$toolUrl}?lang=vi\" />";
-            $xml .= "<xhtml:link rel=\"alternate\" hreflang=\"en\" href=\"{$toolUrl}?lang=en\" />";
-            $xml .= '</url>';
+            $xml .= "  <url>\n";
+            $xml .= "    <loc>{$toolUrl}</loc>\n";
+            $xml .= "    <lastmod>{$lastmod}</lastmod>\n";
+            $xml .= "    <changefreq>weekly</changefreq>\n";
+            $xml .= "    <priority>0.9</priority>\n";
+            $xml .= "    <xhtml:link rel=\"alternate\" hreflang=\"vi\" href=\"{$toolUrl}?lang=vi\" />\n";
+            $xml .= "    <xhtml:link rel=\"alternate\" hreflang=\"en\" href=\"{$toolUrl}?lang=en\" />\n";
+            $xml .= "  </url>\n";
+        }
+
+        // 4. Articles & Article Categories
+        foreach ($articleCats as $cat) {
+            $xml .= "  <url>\n";
+            $xml .= "    <loc>{$baseUrl}/articles?category={$cat->slug}</loc>\n";
+            $xml .= "    <lastmod>{$nowIso}</lastmod>\n";
+            $xml .= "    <changefreq>weekly</changefreq>\n";
+            $xml .= "    <priority>0.7</priority>\n";
+            $xml .= "  </url>\n";
+        }
+
+        foreach ($articles as $art) {
+            $artUrl  = "{$baseUrl}/articles/{$art->slug}";
+            $lastmod = $art->updated_at ? $art->updated_at->toAtomString() : $nowIso;
+
+            $xml .= "  <url>\n";
+            $xml .= "    <loc>{$artUrl}</loc>\n";
+            $xml .= "    <lastmod>{$lastmod}</lastmod>\n";
+            $xml .= "    <changefreq>weekly</changefreq>\n";
+            $xml .= "    <priority>0.8</priority>\n";
+            $xml .= "  </url>\n";
+        }
+
+        // 5. Games & Game Categories (All 220+ Games)
+        foreach ($gameCats as $cat) {
+            $xml .= "  <url>\n";
+            $xml .= "    <loc>{$baseUrl}/games?category={$cat->slug}</loc>\n";
+            $xml .= "    <lastmod>{$nowIso}</lastmod>\n";
+            $xml .= "    <changefreq>weekly</changefreq>\n";
+            $xml .= "    <priority>0.8</priority>\n";
+            $xml .= "  </url>\n";
+        }
+
+        foreach ($games as $game) {
+            $gameUrl = "{$baseUrl}/games/{$game->slug}";
+            $lastmod = $game->updated_at ? $game->updated_at->toAtomString() : $nowIso;
+
+            $xml .= "  <url>\n";
+            $xml .= "    <loc>{$gameUrl}</loc>\n";
+            $xml .= "    <lastmod>{$lastmod}</lastmod>\n";
+            $xml .= "    <changefreq>weekly</changefreq>\n";
+            $xml .= "    <priority>0.8</priority>\n";
+            $xml .= "  </url>\n";
         }
 
         $xml .= '</urlset>';
 
         return response($xml, 200, [
-            'Content-Type' => 'application/xml',
+            'Content-Type'  => 'application/xml; charset=utf-8',
+            'Cache-Control' => 'public, max-age=3600',
         ]);
     }
 }
