@@ -5,6 +5,8 @@ declare(strict_types=1);
 use Database\Seeders\ToolSeeder;
 
 beforeEach(function (): void {
+    app()->setLocale('vi');
+    session(['locale' => 'vi']);
     $this->seed(ToolSeeder::class);
 });
 
