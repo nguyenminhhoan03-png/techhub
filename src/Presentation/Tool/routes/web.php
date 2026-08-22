@@ -5,6 +5,16 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 use Presentation\Tool\Controllers\ToolWebController;
 
+// IndexNow Key Verification Route (Fail-safe for all web servers)
+Route::get('/{key}.txt', function (string $key) {
+    if (preg_match('/^[a-f0-9]{32}$/i', $key)) {
+        return response($key, 200, [
+            'Content-Type' => 'text/plain; charset=utf-8',
+        ]);
+    }
+    abort(404);
+})->where('key', '^[a-f0-9]{32}$');
+
 Route::controller(ToolWebController::class)->group(function (): void {
     Route::get('/lang/{locale}', 'setLocale')->name('lang.switch');
     Route::get('/sitemap.xml', 'sitemap')->name('sitemap');
@@ -31,4 +41,3 @@ Route::controller(\Presentation\Http\Controllers\Web\GameController::class)->gro
     Route::get('/games/{slug}', 'show')->name('games.show');
     Route::post('/games/{slug}/play', 'play')->name('games.play');
 });
-
