@@ -19,8 +19,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
-use Infrastructure\Ai\Services\GeminiContentGenerator;
-use Infrastructure\Crawler\Services\WebArticleCrawler;
+use Application\Ai\Services\GeminiContentGenerator;
+use Application\Crawler\Services\WebArticleCrawler;
 
 class AdminAiCrawlerController
 {

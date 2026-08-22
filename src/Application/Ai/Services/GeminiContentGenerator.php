@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Infrastructure\Ai\Services;
+namespace Application\Ai\Services;
 
 use Application\Setting\Services\SettingService;
 use Domain\Hardware\Entities\Brand;

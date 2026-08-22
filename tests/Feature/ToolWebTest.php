@@ -58,7 +58,7 @@ it('generates dynamic xml sitemap', function (): void {
     $response = $this->get('/sitemap.xml');
 
     $response->assertStatus(200)
-        ->assertHeader('Content-Type', 'application/xml')
+        ->assertHeader('Content-Type', 'application/xml; charset=utf-8')
         ->assertSee('<urlset', false)
         ->assertSee('/tools/json-formatter', false)
         ->assertSee('/tools/loan-calculator', false);

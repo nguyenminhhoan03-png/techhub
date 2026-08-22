@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Infrastructure\Crawler\Services;
+namespace Application\Crawler\Services;
 
 use Exception;
 use Illuminate\Support\Facades\Http;
