@@ -132,7 +132,7 @@
                 {{-- Iframe Game Container with Cinema Ambient Lighting & Responsive Aspect Ratio --}}
                 <div style="position: relative; margin-bottom: 1.25rem;">
                     <div class="cinema-ambient-glow" style="--ambient-color: {{ $game->category->color }}66;"></div>
-                    <div id="game-container" style="position: relative; z-index: 1; width: 100%; aspect-ratio: 16 / 10; min-height: 420px; max-height: calc(100vh - 180px); background: #0d1117; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 20px 60px rgba(0,0,0,0.6);">
+                    <div id="game-container" style="position: relative; z-index: 1; width: 100%; aspect-ratio: 16 / 10; min-height: 500px; max-height: calc(100vh - 120px); background: #0d1117; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 20px 60px rgba(0,0,0,0.6);">
                         
                         {{-- Loading Skeleton & Smooth Placeholder --}}
                         <div id="game-loader" style="position: absolute; inset: 0; z-index: 2; background: #0d1117; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; transition: opacity 0.4s ease; pointer-events: none;">
@@ -145,8 +145,8 @@
                             src="{{ $game->engine_path }}"
                             loading="eager"
                             frameborder="0"
-                            scrolling="no"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen; monetization; camera; gamepad; keyboard-map *; focus-without-user-activation *"
+                            scrolling="auto"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen; monetization; camera; gamepad; keyboard-map *; focus-without-user-activation *; storage-access *"
                             allowfullscreen="true"
                             webkitallowfullscreen="true"
                             mozallowfullscreen="true"
@@ -164,13 +164,16 @@
                     }
                 </style>
 
-                {{-- Controls Hint Bar --}}
-                @if($game->controls_hint)
-                    <div style="display: flex; align-items: center; gap: 0.6rem; margin-top: 0.85rem; padding: 0.75rem 1.15rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); font-size: 0.88rem; color: var(--text-sub);">
+                {{-- Controls & Cookie Hint Bar --}}
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; margin-top: 0.85rem; padding: 0.75rem 1.15rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); font-size: 0.86rem; color: var(--text-sub); flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
                         <span style="font-size: 1.1rem;">⌨️</span>
-                        <span><strong>Phím điều khiển:</strong> {{ $game->controls_hint }}</span>
+                        <span><strong>Phím điều khiển:</strong> {{ $game->controls_hint ?: 'Chuột / Cảm Ứng / Phím Mũi Tên' }}</span>
                     </div>
-                @endif
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">
+                        💡 Mẹo: Nhấn <strong>⛶ Toàn Màn Hình</strong> để phóng to và bấm <em>"Accept / Đồng ý"</em> Cookie nếu có.
+                    </div>
+                </div>
 
                 {{-- Description & Guide Section (SEO Onpage Rich Content) --}}
                 <div style="margin-top: 2rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 2rem;">
