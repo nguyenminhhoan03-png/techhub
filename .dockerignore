@@ -14,4 +14,3 @@ bootstrap/cache/*.php
 .env.backup
 .phpunit.result.cache
 *.log
-docker
