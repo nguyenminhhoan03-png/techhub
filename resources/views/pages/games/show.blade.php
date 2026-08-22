@@ -116,7 +116,10 @@
                         </div>
                     </div>
 
-                    <div style="display: flex; gap: 0.6rem; align-items: center;">
+                    <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
+                        <button type="button" onclick="reloadGameFrame()" class="btn btn-secondary btn-sm" title="Tải lại game nếu bị lỗi" style="display: flex; align-items: center; gap: 0.35rem;">
+                            <span>🔄</span> <span>Tải Lại Game</span>
+                        </button>
                         <button type="button" onclick="toggleFullscreen()" class="btn btn-secondary btn-sm" title="Chơi toàn màn hình" style="display: flex; align-items: center; gap: 0.35rem;">
                             <span>⛶</span> <span>Toàn Màn Hình</span>
                         </button>
@@ -126,19 +129,22 @@
                     </div>
                 </div>
 
-                {{-- Iframe Game Container with Cinema Ambient Lighting --}}
+                {{-- Iframe Game Container with Cinema Ambient Lighting & Responsive Aspect Ratio --}}
                 <div style="position: relative; margin-bottom: 1.25rem;">
                     <div class="cinema-ambient-glow" style="--ambient-color: {{ $game->category->color }}66;"></div>
-                    <div id="game-container" style="position: relative; z-index: 1; background: #0d1117; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 20px 60px rgba(0,0,0,0.6);">
+                    <div id="game-container" style="position: relative; z-index: 1; background: #0d1117; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 20px 60px rgba(0,0,0,0.6); aspect-ratio: 16 / 10; min-height: 460px; max-height: calc(100vh - 180px);">
                         <iframe
                             id="game-frame"
                             src="{{ $game->engine_path }}"
                             width="100%"
-                            height="620"
+                            height="100%"
                             frameborder="0"
                             scrolling="no"
-                            allow="fullscreen"
-                            style="display: block; width: 100%; border: none;"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen; monetization; camera; gamepad; keyboard-map *; focus-without-user-activation *"
+                            allowfullscreen="true"
+                            webkitallowfullscreen="true"
+                            mozallowfullscreen="true"
+                            style="display: block; width: 100%; height: 100%; border: none;"
                             title="{{ $game->name }}"
                         ></iframe>
                     </div>
@@ -276,6 +282,17 @@
 </div>
 
 <script>
+    function reloadGameFrame() {
+        const frame = document.getElementById('game-frame');
+        if (frame) {
+            const currentSrc = frame.src;
+            frame.src = 'about:blank';
+            setTimeout(() => {
+                frame.src = currentSrc;
+            }, 100);
+        }
+    }
+
 function toggleFullscreen() {
     const frame = document.getElementById('game-frame');
     if (frame.requestFullscreen) {

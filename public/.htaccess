@@ -9,6 +9,11 @@
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
+    # Redirect index.php to clean URL (SEO Canonical)
+    RewriteCond %{THE_REQUEST} ^GET\ .*/index\.php [NC]
+    RewriteRule ^(.*)index\.php/(.*)$ /$1$2 [R=301,L,NE]
+    RewriteRule ^index\.php$ / [R=301,L]
+
     # Redirect Trailing Slashes If Not A Folder...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$

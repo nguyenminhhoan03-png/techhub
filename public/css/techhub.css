@@ -1921,21 +1921,20 @@ textarea.form-control {
     top: auto !important;
   }
 
-  #game-frame {
-    height: 480px !important;
+  #game-container {
+    aspect-ratio: 16 / 10 !important;
+    min-height: 420px !important;
   }
 }
 
 @media (max-width: 640px) {
-  #game-frame {
-    height: 380px !important;
+  #game-container {
+    min-height: 340px !important;
   }
 
   .games-sidebar nav {
     display: grid !important;
     grid-template-columns: repeat(2, 1fr) !important;
   }
-}
-
 
 

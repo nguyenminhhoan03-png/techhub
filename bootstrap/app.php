@@ -30,6 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->append([
+            \Shared\Infrastructure\Http\Middleware\RemoveIndexPhpMiddleware::class,
             AssignRequestIdMiddleware::class,
             SecurityHeadersMiddleware::class,
         ]);
