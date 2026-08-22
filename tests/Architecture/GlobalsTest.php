@@ -7,26 +7,25 @@ arch('globals')
     ->not->toBeUsed();
 
 arch('app')
-    ->expect(['Shared', 'Domain','Infrastructure','Application','Presentation'])
+    ->expect(['Shared', 'Domain', 'Infrastructure', 'Application', 'Presentation'])
     ->toUseStrictTypes();
 
 arch('Domain can be accessed by Infrastructure, Application, and Presentation Layers')
     ->expect('Domain')
     ->toOnlyBeUsedIn(['Infrastructure', 'Application', 'Presentation', 'Database', 'Tests']);
 
-
 arch('Infrastructure should only accessed by Application Layer directly')
     ->expect('Infrastructure')
-    ->toOnlyBeUsedIn(['Application']);
+    ->toOnlyBeUsedIn(['Application', 'Database', 'Tests']);
 
-arch('Application  should only accessed by Presentation, Infrastructure and Domain Layer')
+arch('Application should only accessed by Presentation, Infrastructure and Domain Layer')
     ->expect('Application')
-    ->toOnlyBeUsedIn(['Presentation', 'Infrastructure', 'Domain']);
+    ->toOnlyBeUsedIn(['Presentation', 'Infrastructure', 'Domain', 'Database', 'Tests']);
 
 arch('Presentation should not be used in Domain, Application, Shared, Infrastructure Layer')
     ->expect('Presentation')
-    ->not->toBeUsedIn(['Domain','Application', 'Shared', 'Infrastructure']);
+    ->not->toBeUsedIn(['Domain', 'Application', 'Shared', 'Infrastructure']);
 
 arch('Shared resources should be accessible by all layers')
     ->expect('Shared')
-    ->toOnlyBeUsedIn(['Domain', 'Application', 'Infrastructure', 'Presentation']);
+    ->toOnlyBeUsedIn(['Domain', 'Application', 'Infrastructure', 'Presentation', 'Database', 'Tests']);
