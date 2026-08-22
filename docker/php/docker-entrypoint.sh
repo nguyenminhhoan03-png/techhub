@@ -20,8 +20,14 @@ if [ ! -f /var/www/html/.env ]; then
     fi
 fi
 
+# Ensure composer dependencies exist
+if [ ! -f /var/www/html/vendor/autoload.php ]; then
+    echo "📦 Đang cài đặt thư viện Composer (vendor)..."
+    composer install --no-interaction --prefer-dist --optimize-autoloader
+fi
+
 # Ensure storage link exists
-if [ ! -L /var/www/html/public/storage ]; then
+if [ ! -L /var/www/html/public/storage ] && [ -f /var/www/html/vendor/autoload.php ]; then
     php /var/www/html/artisan storage:link --no-interaction || true
 fi
 
