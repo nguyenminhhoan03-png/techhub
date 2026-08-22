@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use Domain\User\Entities\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -14,13 +13,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
-            'name' => 'TechHub Admin',
-            'email' => 'admin@techhub.local',
-        ]);
-
         $this->call([
+            AdminAndSettingsSeeder::class,
             ToolSeeder::class,
+            GameSeeder::class,
+            HardwareAndArticleSeeder::class,
         ]);
     }
 }
