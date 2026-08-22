@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Memory Match</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#1e1e2e;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:'Segoe UI',sans-serif;color:#cdd6f4;user-select:none}
+.hud{display:flex;gap:14px;margin-bottom:16px}
+.stat{background:#313244;border:1px solid #45475a;border-radius:10px;padding:8px 18px;text-align:center}
+.stat-l{font-size:.62rem;color:#6c7086;letter-spacing:.06em}
+.stat-v{font-size:1.2rem;font-weight:900;color:#cba6f7}
+.grid{display:grid;gap:10px;margin-bottom:16px}
+.card{width:80px;height:80px;border-radius:12px;cursor:pointer;position:relative;transform-style:preserve-3d;transition:transform .4s;background:transparent}
+.card.flipped{transform:rotateY(180deg)}
+.card.matched{transform:rotateY(180deg);pointer-events:none}
+.card-front,.card-back{position:absolute;inset:0;border-radius:12px;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;font-size:2rem}
+.card-front{background:#313244;border:2px solid #45475a}
+.card-front:hover{border-color:#cba6f7;background:#3d3f55}
+.card-back{background:linear-gradient(135deg,#45475a,#585b70);transform:rotateY(180deg);border:2px solid #cba6f7}
+.card.matched .card-back{background:linear-gradient(135deg,#059669,#10b981);border-color:#a6e3a1}
+.btn{background:linear-gradient(135deg,#89b4fa,#cba6f7);border:none;border-radius:10px;color:#1e1e2e;font-size:.9rem;font-weight:800;padding:10px 28px;cursor:pointer;font-family:inherit;transition:opacity .2s}
+.btn:hover{opacity:.85}
+.complete{text-align:center;margin-top:10px;color:#a6e3a1;font-weight:700}
+</style>
+</head>
+<body>
+<div class="hud">
+  <div class="stat"><div class="stat-l">BƯỚC</div><div class="stat-v" id="moves">0</div></div>
+  <div class="stat"><div class="stat-l">CẶP</div><div class="stat-v" id="pairs">0/8</div></div>
+  <div class="stat"><div class="stat-l">THỜI GIAN</div><div class="stat-v" id="timer">0s</div></div>
+</div>
+<div class="grid" id="grid" style="grid-template-columns:repeat(4,80px)"></div>
+<div class="complete" id="msg"></div>
+<button class="btn" onclick="startGame()" style="margin-top:14px">🔄 Chơi Lại</button>
+<script>
+const EMOJIS=['🎮','🚀','🎯','🧩','⌨️','🏆','🔥','💎'];
+let cards=[],flipped=[],matched=0,moves=0,startTime,timerInterval,locked=false;
+
+function startGame(){
+  const pairs=[...EMOJIS,...EMOJIS].sort(()=>Math.random()-.5);
+  cards=pairs;matched=0;moves=0;flipped=[];locked=false;
+  document.getElementById('moves').textContent=0;
+  document.getElementById('pairs').textContent='0/8';
+  document.getElementById('msg').textContent='';
+  clearInterval(timerInterval);startTime=null;
+  document.getElementById('timer').textContent='0s';
+  const g=document.getElementById('grid');g.innerHTML='';
+  cards.forEach((emoji,i)=>{
+    const card=document.createElement('div');card.className='card';card.dataset.idx=i;card.dataset.emoji=emoji;
+    card.innerHTML=`<div class="card-front">❓</div><div class="card-back">${emoji}</div>`;
+    card.addEventListener('click',()=>flipCard(card));
+    g.appendChild(card);
+  });
+}
+
+function flipCard(card){
+  if(locked||card.classList.contains('flipped')||card.classList.contains('matched'))return;
+  if(!startTime){startTime=Date.now();timerInterval=setInterval(()=>{document.getElementById('timer').textContent=Math.floor((Date.now()-startTime)/1000)+'s';},500);}
+  card.classList.add('flipped');flipped.push(card);
+  if(flipped.length===2){
+    moves++;document.getElementById('moves').textContent=moves;
+    locked=true;
+    setTimeout(()=>{
+      if(flipped[0].dataset.emoji===flipped[1].dataset.emoji){
+        flipped.forEach(c=>c.classList.add('matched'));matched++;
+        document.getElementById('pairs').textContent=`${matched}/8`;
+        if(matched===8){
+          clearInterval(timerInterval);
+          const t=Math.floor((Date.now()-startTime)/1000);
+          document.getElementById('msg').textContent=`🎉 Hoàn thành! ${moves} bước, ${t}s`;
+        }
+      } else {flipped.forEach(c=>c.classList.remove('flipped'));}
+      flipped=[];locked=false;
+    },900);
+  }
+}
+startGame();
+</script>
+</body>
+</html>

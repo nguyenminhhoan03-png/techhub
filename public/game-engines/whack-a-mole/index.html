@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Whack-a-Mole</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#1a1a2e;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:'Segoe UI',sans-serif;color:#cdd6f4;user-select:none}
+.hud{display:flex;gap:14px;margin-bottom:14px}
+.stat{background:#313244;border:1px solid #45475a;border-radius:10px;padding:8px 18px;text-align:center}
+.stat-l{font-size:.62rem;color:#6c7086;letter-spacing:.06em}
+.stat-v{font-size:1.3rem;font-weight:900;color:#f9e2af}
+.grid{display:grid;grid-template-columns:repeat(3,120px);grid-template-rows:repeat(3,120px);gap:14px;margin-bottom:16px}
+.hole{width:120px;height:120px;border-radius:50%;background:#16213e;border:3px solid #0f3460;position:relative;overflow:hidden;cursor:pointer;transition:border-color .15s}
+.hole:hover{border-color:#89b4fa}
+.hole .ground{position:absolute;bottom:0;left:0;right:0;height:55%;background:#2d1b0e;border-radius:0 0 50% 50%;border-top:3px solid #3d2b1e}
+.mole{position:absolute;bottom:0;left:50%;transform:translateX(-50%) translateY(100%);transition:transform .15s ease-out;font-size:2.8rem;line-height:1;z-index:2;pointer-events:none}
+.hole.up .mole{transform:translateX(-50%) translateY(20%)}
+.timer-bar{width:100%;max-width:400px;height:8px;background:#313244;border-radius:4px;margin-bottom:12px;overflow:hidden}
+.timer-fill{height:100%;background:linear-gradient(90deg,#a6e3a1,#f9e2af,#f38ba8);border-radius:4px;transition:width .1s linear}
+.btn{background:linear-gradient(135deg,#89b4fa,#cba6f7);border:none;border-radius:10px;color:#1e1e2e;font-size:.9rem;font-weight:800;padding:10px 28px;cursor:pointer;font-family:inherit}
+</style>
+</head>
+<body>
+<div class="hud">
+  <div class="stat"><div class="stat-l">ĐIỂM</div><div class="stat-v" id="sc">0</div></div>
+  <div class="stat"><div class="stat-l">THỜI GIAN</div><div class="stat-v" id="tm">60</div></div>
+  <div class="stat"><div class="stat-l">CAO NHẤT</div><div class="stat-v" id="bs">0</div></div>
+</div>
+<div class="timer-bar"><div class="timer-fill" id="tbar" style="width:100%"></div></div>
+<div class="grid" id="grid"></div>
+<button class="btn" id="startBtn" onclick="startGame()">▶ Bắt Đầu</button>
+
+<script>
+const TYPES=['mole','mole','mole','golden','bomb'];
+const EMOJIS={mole:'🦔',golden:'⭐',bomb:'💣'};
+const PTS={mole:1,golden:3,bomb:-5};
+const SHOW_TIME={mole:900,golden:600,bomb:1100};
+
+let holes=[];let score=0,best=+localStorage.getItem('wamBest')||0,timeLeft=60,running=false,timers=[],gameTimer;
+
+// Build 3×3 grid
+const grid=document.getElementById('grid');
+for(let i=0;i<9;i++){
+  const hole=document.createElement('div');hole.className='hole';hole.innerHTML=`<div class="mole" id="m${i}">🦔</div><div class="ground"></div>`;
+  hole.dataset.idx=i;
+  hole.addEventListener('click',()=>whack(i));
+  grid.appendChild(hole);holes.push({el:hole,moleEl:hole.querySelector('.mole'),active:false,type:'mole'});
+}
+
+document.getElementById('bs').textContent=best;
+
+function startGame(){
+  score=0;timeLeft=60;running=true;
+  document.getElementById('sc').textContent=0;
+  document.getElementById('startBtn').disabled=true;
+  document.getElementById('startBtn').textContent='⏳ Đang Chơi...';
+  holes.forEach(h=>{h.el.classList.remove('up');h.active=false;});
+  timers.forEach(clearTimeout);timers=[];
+
+  gameTimer=setInterval(()=>{
+    timeLeft--;document.getElementById('tm').textContent=timeLeft;
+    document.getElementById('tbar').style.width=(timeLeft/60*100)+'%';
+    if(timeLeft<=0){endGame();}
+    else popMole();
+  },1000);
+  popMole();popMole();
+}
+
+function popMole(){
+  if(!running)return;
+  const inactive=holes.map((h,i)=>h.active?null:i).filter(i=>i!==null);
+  if(!inactive.length)return;
+  const idx=inactive[Math.floor(Math.random()*inactive.length)];
+  const type=TYPES[Math.floor(Math.random()*TYPES.length)];
+  const h=holes[idx];
+  h.active=true;h.type=type;
+  h.moleEl.textContent=EMOJIS[type];
+  h.el.classList.add('up');
+  const t=setTimeout(()=>{h.el.classList.remove('up');h.active=false;if(running)setTimeout(()=>popMole(),300+Math.random()*400);},SHOW_TIME[type]);
+  timers.push(t);
+}
+
+function whack(idx){
+  const h=holes[idx];
+  if(!h.active||!running)return;
+  const pts=PTS[h.type];score=Math.max(0,score+pts);
+  document.getElementById('sc').textContent=score;
+  // Flash
+  h.el.style.borderColor=pts>0?'#a6e3a1':'#f38ba8';
+  setTimeout(()=>h.el.style.borderColor='',200);
+  h.el.classList.remove('up');h.active=false;
+  // Bounce emoji
+  const flt=document.createElement('div');
+  flt.style.cssText=`position:fixed;pointer-events:none;font-size:1.3rem;font-weight:900;color:${pts>0?'#a6e3a1':'#f38ba8'};z-index:999;animation:fadeUp .8s forwards`;
+  const r=h.el.getBoundingClientRect();flt.textContent=(pts>0?'+':'')+pts;flt.style.left=r.left+'px';flt.style.top=r.top+'px';
+  document.body.appendChild(flt);setTimeout(()=>flt.remove(),800);
+}
+
+function endGame(){
+  running=false;clearInterval(gameTimer);timers.forEach(clearTimeout);
+  holes.forEach(h=>{h.el.classList.remove('up');h.active=false;});
+  if(score>best){best=score;localStorage.setItem('wamBest',best);document.getElementById('bs').textContent=best;}
+  document.getElementById('startBtn').disabled=false;
+  document.getElementById('startBtn').textContent=`🔄 Chơi Lại (${score} điểm)`;
+}
+</script>
+<style>@keyframes fadeUp{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-40px)}}</style>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Math Sprint</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#1e1e2e;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:'Segoe UI',sans-serif;color:#cdd6f4;user-select:none}
+.hud{display:flex;gap:14px;margin-bottom:16px}
+.stat{background:#313244;border:1px solid #45475a;border-radius:10px;padding:8px 18px;text-align:center;min-width:80px}
+.stat-l{font-size:.62rem;color:#6c7086;letter-spacing:.06em}
+.stat-v{font-size:1.3rem;font-weight:900}
+#sc-val{color:#a6e3a1}#tm-val{color:#f38ba8}#streak-val{color:#f9e2af}
+.timer-bar{width:100%;max-width:420px;height:8px;background:#313244;border-radius:4px;margin-bottom:20px;overflow:hidden}
+.timer-fill{height:100%;background:linear-gradient(90deg,#a6e3a1,#f9e2af,#f38ba8);border-radius:4px;transition:width .2s linear}
+.question-card{background:#313244;border:1px solid #45475a;border-radius:16px;padding:32px 48px;margin-bottom:20px;text-align:center;min-width:280px}
+.question{font-size:2.8rem;font-weight:900;color:#cdd6f4;margin-bottom:4px;font-family:'Courier New',monospace;letter-spacing:.04em}
+.hint{font-size:.82rem;color:#6c7086;margin-top:6px}
+.input-row{display:flex;gap:10px;margin-bottom:16px}
+#ans-input{background:#181825;border:2px solid #45475a;border-radius:10px;color:#cdd6f4;font-size:1.6rem;font-weight:900;padding:10px 18px;width:140px;text-align:center;font-family:'Courier New',monospace;outline:none;transition:border-color .2s}
+#ans-input:focus{border-color:#89b4fa}
+#ans-input.correct{border-color:#a6e3a1;background:#1a3d2d}
+#ans-input.wrong{border-color:#f38ba8;background:#3d1a1a}
+.btn{background:linear-gradient(135deg,#89b4fa,#cba6f7);border:none;border-radius:10px;color:#1e1e2e;font-size:.9rem;font-weight:800;padding:10px 22px;cursor:pointer;font-family:inherit}
+.result{display:none;text-align:center;padding:20px}
+.result.show{display:block}
+.rank{font-size:1.4rem;font-weight:700;margin:10px 0;color:#cba6f7}
+.op-btns{display:flex;gap:8px;margin-bottom:14px}
+.op-btn{background:#313244;border:1px solid #45475a;border-radius:8px;color:#cdd6f4;font-size:.85rem;font-weight:700;padding:6px 14px;cursor:pointer;font-family:inherit;transition:all .15s}
+.op-btn.active,.op-btn:hover{background:#89b4fa;color:#1e1e2e;border-color:#89b4fa}
+</style>
+</head>
+<body>
+<div class="hud">
+  <div class="stat"><div class="stat-l">ĐIỂM</div><div class="stat-v" id="sc-val">0</div></div>
+  <div class="stat"><div class="stat-l">THỜI GIAN</div><div class="stat-v" id="tm-val">60</div></div>
+  <div class="stat"><div class="stat-l">CHUỖI</div><div class="stat-v" id="streak-val">0🔥</div></div>
+</div>
+<div class="timer-bar"><div class="timer-fill" id="tbar" style="width:100%"></div></div>
+<div class="op-btns">
+  <button class="op-btn active" onclick="toggleOp(this,'+')" data-op="+">➕ Cộng</button>
+  <button class="op-btn active" onclick="toggleOp(this,'-')" data-op="-">➖ Trừ</button>
+  <button class="op-btn active" onclick="toggleOp(this,'×')" data-op="×">✖️ Nhân</button>
+</div>
+<div class="question-card">
+  <div class="question" id="question">? + ? = ?</div>
+  <div class="hint" id="q-hint">Nhấn Bắt Đầu để chơi</div>
+</div>
+<div class="input-row">
+  <input type="number" id="ans-input" placeholder="?" autocomplete="off" disabled>
+  <button class="btn" id="startBtn" onclick="startGame()">▶ Bắt Đầu</button>
+</div>
+<div class="result" id="result">
+  <div style="font-size:2rem;margin-bottom:8px" id="res-emoji">🎉</div>
+  <div class="rank" id="res-rank">—</div>
+  <div style="color:#6c7086;font-size:.9rem;margin-bottom:12px" id="res-detail">—</div>
+  <button class="btn" onclick="startGame()">🔄 Chơi Lại</button>
+</div>
+
+<script>
+let ops=['+','-','×'],score=0,streak=0,maxStreak=0,correct=0,total=0,timeLeft=60,running=false,timerInterval,a,b,op,ans;
+const input=document.getElementById('ans-input');
+
+function toggleOp(btn,op){
+  btn.classList.toggle('active');
+  ops=Array.from(document.querySelectorAll('.op-btn.active')).map(b=>b.dataset.op);
+  if(!ops.length){btn.classList.add('active');ops=[op];}
+}
+
+function genQ(){
+  if(!ops.length)ops=['+'];
+  op=ops[Math.floor(Math.random()*ops.length)];
+  if(op==='+'){a=Math.floor(Math.random()*50)+1;b=Math.floor(Math.random()*50)+1;ans=a+b;}
+  else if(op==='-'){a=Math.floor(Math.random()*50)+10;b=Math.floor(Math.random()*(a-1))+1;ans=a-b;}
+  else{a=Math.floor(Math.random()*12)+1;b=Math.floor(Math.random()*12)+1;ans=a*b;}
+  document.getElementById('question').textContent=`${a} ${op} ${b} = ?`;
+  document.getElementById('q-hint').textContent='';
+  input.value='';input.className='';input.focus();
+}
+
+function startGame(){
+  score=0;streak=0;maxStreak=0;correct=0;total=0;timeLeft=60;running=true;
+  document.getElementById('result').classList.remove('show');
+  document.getElementById('startBtn').disabled=true;
+  document.getElementById('startBtn').textContent='⏳';
+  input.disabled=false;
+  updateHUD();genQ();
+  clearInterval(timerInterval);
+  timerInterval=setInterval(()=>{
+    timeLeft--;updateHUD();
+    document.getElementById('tbar').style.width=(timeLeft/60*100)+'%';
+    if(timeLeft<=0){endGame();}
+  },1000);
+}
+
+function updateHUD(){
+  document.getElementById('sc-val').textContent=score;
+  document.getElementById('tm-val').textContent=timeLeft;
+  document.getElementById('streak-val').textContent=streak+(streak>=3?'🔥':'');
+}
+
+input.addEventListener('keydown',e=>{
+  if(e.key!=='Enter'||!running)return;
+  const val=parseInt(input.value,10);total++;
+  if(val===ans){
+    score++;streak++;if(streak>maxStreak)maxStreak=streak;correct++;
+    input.classList.add('correct');setTimeout(()=>genQ(),180);
+  } else {
+    score=Math.max(0,score-1);streak=0;
+    input.classList.add('wrong');
+    document.getElementById('q-hint').textContent=`Đáp án đúng: ${ans}`;
+    setTimeout(()=>genQ(),700);
+  }
+  updateHUD();
+});
+
+function endGame(){
+  running=false;clearInterval(timerInterval);input.disabled=true;
+  document.getElementById('startBtn').disabled=false;document.getElementById('startBtn').textContent='🔄 Lại';
+  const acc=total?Math.round(correct/total*100):0;
+  let rank,emoji;
+  if(score>=25){rank='🧠 Math Wizard!';emoji='🥇';}
+  else if(score>=15){rank='✅ Khá Tốt';emoji='🥈';}
+  else if(score>=8){rank='📚 Cần Luyện';emoji='🥉';}
+  else{rank='📖 Mới Bắt Đầu';emoji='😅';}
+  document.getElementById('res-emoji').textContent=emoji;
+  document.getElementById('res-rank').textContent=rank;
+  document.getElementById('res-detail').textContent=`${score} đúng • ${acc}% chính xác • Chuỗi cao nhất: ${maxStreak}`;
+  document.getElementById('result').classList.add('show');
+  document.getElementById('question').textContent='? + ? = ?';
+}
+</script>
+</body>
+</html>

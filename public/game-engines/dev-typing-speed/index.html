@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dev Typing Speed Test</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+    background: #1e1e2e;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    min-height: 100vh; color: #cdd6f4;
+    padding: 20px;
+  }
+  .top { width: 100%; max-width: 680px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .title { font-size: 1.4rem; font-weight: 900; color: #89b4fa; }
+  .stats { display: flex; gap: 12px; }
+  .stat { background: #313244; border-radius: 10px; padding: 10px 18px; text-align: center; }
+  .stat-label { font-size: 0.6rem; color: #6c7086; letter-spacing: 0.08em; }
+  .stat-val { font-size: 1.4rem; font-weight: 900; color: #cba6f7; }
+  #timer-val { color: #f38ba8; }
+  #wpm-val { color: #a6e3a1; }
+  #acc-val { color: #f9e2af; }
+
+  .code-display {
+    background: #181825;
+    border: 1px solid #45475a;
+    border-radius: 14px;
+    padding: 24px 28px;
+    width: 100%; max-width: 680px;
+    font-size: 1.05rem;
+    line-height: 1.9;
+    letter-spacing: 0.02em;
+    position: relative;
+    margin-bottom: 16px;
+    min-height: 120px;
+  }
+  .char { color: #585b70; position: relative; }
+  .char.correct { color: #a6e3a1; }
+  .char.wrong { color: #f38ba8; text-decoration: underline; }
+  .char.cursor::after {
+    content: '';
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 2px; height: 100%;
+    background: #89b4fa;
+    animation: blink .7s infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  .input-wrap { width: 100%; max-width: 680px; margin-bottom: 16px; }
+  #typing-input {
+    width: 100%; padding: 14px 18px;
+    background: #313244; border: 2px solid #45475a;
+    border-radius: 12px; color: #cdd6f4;
+    font-family: inherit; font-size: 1rem;
+    outline: none; transition: border-color .2s;
+  }
+  #typing-input:focus { border-color: #89b4fa; }
+  #typing-input:disabled { opacity: .5; }
+
+  .controls { display: flex; gap: 12px; margin-bottom: 16px; }
+  .btn { background: linear-gradient(135deg,#89b4fa,#cba6f7); border: none; border-radius: 10px; color: #1e1e2e; font-size: 0.9rem; font-weight: 800; padding: 10px 24px; cursor: pointer; font-family: inherit; transition: opacity .2s; }
+  .btn:hover { opacity: .85; }
+
+  .lang-btns { display: flex; gap: 8px; }
+  .lang-btn { background: #313244; border: 1px solid #45475a; border-radius: 8px; color: #cdd6f4; font-size: 0.8rem; font-weight: 700; padding: 6px 14px; cursor: pointer; font-family: inherit; transition: all .2s; }
+  .lang-btn.active, .lang-btn:hover { background: #89b4fa; color: #1e1e2e; border-color: #89b4fa; }
+
+  .result-panel {
+    background: #313244; border-radius: 14px; padding: 30px 40px;
+    width: 100%; max-width: 680px; text-align: center;
+    display: none;
+  }
+  .result-panel.show { display: block; }
+  .result-title { font-size: 1.8rem; font-weight: 900; margin-bottom: 20px; }
+  .result-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 24px; }
+  .result-stat { background: #1e1e2e; border-radius: 10px; padding: 16px; }
+  .result-stat .val { font-size: 2rem; font-weight: 900; }
+  .result-stat .lbl { font-size: 0.7rem; color: #6c7086; letter-spacing: 0.06em; margin-top: 4px; }
+  .rank { font-size: 1.1rem; margin-bottom: 20px; }
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="title">⌨️ Dev Typing Speed</div>
+  <div class="stats">
+    <div class="stat"><div class="stat-label">THỜI GIAN</div><div class="stat-val" id="timer-val">60</div></div>
+    <div class="stat"><div class="stat-label">WPM</div><div class="stat-val" id="wpm-val">0</div></div>
+    <div class="stat"><div class="stat-label">ACCURACY</div><div class="stat-val" id="acc-val">100%</div></div>
+  </div>
+</div>
+
+<div style="width:100%;max-width:680px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+  <div class="lang-btns">
+    <button class="lang-btn active" onclick="setLang('js')">JavaScript</button>
+    <button class="lang-btn" onclick="setLang('python')">Python</button>
+    <button class="lang-btn" onclick="setLang('sql')">SQL</button>
+  </div>
+  <div class="controls">
+    <button class="btn" onclick="restart()">🔄 Thử Lại</button>
+  </div>
+</div>
+
+<div class="code-display" id="code-display"></div>
+
+<div class="input-wrap">
+  <input type="text" id="typing-input" placeholder="Bắt đầu gõ để bắt đầu bài test..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+</div>
+
+<div class="result-panel" id="result-panel">
+  <div class="result-title" id="result-title">🎯 Kết Quả</div>
+  <div class="result-grid">
+    <div class="result-stat"><div class="val" id="r-wpm" style="color:#a6e3a1">0</div><div class="lbl">WPM</div></div>
+    <div class="result-stat"><div class="val" id="r-acc" style="color:#f9e2af">0%</div><div class="lbl">ACCURACY</div></div>
+    <div class="result-stat"><div class="val" id="r-chars" style="color:#89b4fa">0</div><div class="lbl">KÝ TỰ ĐÚNG</div></div>
+  </div>
+  <div class="rank" id="rank-msg"></div>
+  <button class="btn" onclick="restart()">🔄 Thử Lại</button>
+</div>
+
+<script>
+const SNIPPETS = {
+  js: [
+    `const fibonacci = (n) => {\n  if (n <= 1) return n;\n  return fibonacci(n - 1) + fibonacci(n - 2);\n};\nconsole.log(fibonacci(10));`,
+    `async function fetchData(url) {\n  try {\n    const res = await fetch(url);\n    const data = await res.json();\n    return data;\n  } catch (err) {\n    console.error('Error:', err);\n  }\n}`,
+    `const debounce = (fn, delay) => {\n  let timer;\n  return (...args) => {\n    clearTimeout(timer);\n    timer = setTimeout(() => fn(...args), delay);\n  };\n};`,
+    `class EventEmitter {\n  constructor() { this.events = {}; }\n  on(event, cb) {\n    (this.events[event] ||= []).push(cb);\n  }\n  emit(event, ...args) {\n    this.events[event]?.forEach(cb => cb(...args));\n  }\n}`,
+  ],
+  python: [
+    `def binary_search(arr, target):\n    low, high = 0, len(arr) - 1\n    while low <= high:\n        mid = (low + high) // 2\n        if arr[mid] == target:\n            return mid\n        elif arr[mid] < target:\n            low = mid + 1\n        else:\n            high = mid - 1\n    return -1`,
+    `from functools import lru_cache\n\n@lru_cache(maxsize=None)\ndef fib(n: int) -> int:\n    if n < 2:\n        return n\n    return fib(n - 1) + fib(n - 2)\n\nprint([fib(i) for i in range(10)])`,
+    `def flatten(lst):\n    result = []\n    for item in lst:\n        if isinstance(item, list):\n            result.extend(flatten(item))\n        else:\n            result.append(item)\n    return result`,
+  ],
+  sql: [
+    `SELECT u.name, COUNT(o.id) AS order_count,\n       SUM(o.total) AS revenue\nFROM users u\nLEFT JOIN orders o ON o.user_id = u.id\nWHERE o.created_at >= '2024-01-01'\nGROUP BY u.id, u.name\nHAVING COUNT(o.id) > 5\nORDER BY revenue DESC\nLIMIT 10;`,
+    `WITH ranked AS (\n  SELECT *,\n    ROW_NUMBER() OVER (\n      PARTITION BY category_id\n      ORDER BY views DESC\n    ) AS rn\n  FROM articles\n)\nSELECT * FROM ranked WHERE rn <= 3;`,
+    `CREATE INDEX CONCURRENTLY idx_orders_user_date\nON orders (user_id, created_at DESC)\nWHERE status = 'completed';`,
+  ],
+};
+
+let currentLang = 'js';
+let currentText = '';
+let typed = [];
+let startTime = null;
+let timer = null;
+let timeLeft = 60;
+let totalTyped = 0, correctTyped = 0;
+let finished = false;
+
+function setLang(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  restart();
+}
+
+function pickSnippet() {
+  const arr = SNIPPETS[currentLang];
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function restart() {
+  clearInterval(timer);
+  currentText = pickSnippet();
+  typed = [];
+  startTime = null;
+  timeLeft = 60;
+  totalTyped = 0; correctTyped = 0;
+  finished = false;
+  document.getElementById('timer-val').textContent = '60';
+  document.getElementById('wpm-val').textContent = '0';
+  document.getElementById('acc-val').textContent = '100%';
+  document.getElementById('typing-input').value = '';
+  document.getElementById('typing-input').disabled = false;
+  document.getElementById('result-panel').classList.remove('show');
+  renderDisplay();
+  document.getElementById('typing-input').focus();
+}
+
+function renderDisplay() {
+  const el = document.getElementById('code-display');
+  const chars = currentText.split('');
+  el.innerHTML = chars.map((ch, i) => {
+    let cls = 'char';
+    if (i < typed.length) cls += typed[i] === ch ? ' correct' : ' wrong';
+    if (i === typed.length) cls += ' cursor';
+    const display = ch === '\n' ? '↵\n' : ch === ' ' ? '&nbsp;' : ch;
+    return `<span class="${cls}">${ch === '\n' ? '↵\n' : ch === '<' ? '&lt;' : ch === '>' ? '&gt;' : ch === '&' ? '&amp;' : ch}</span>`;
+  }).join('');
+}
+
+function calcWPM() {
+  const elapsed = (Date.now() - startTime) / 1000 / 60;
+  return elapsed > 0 ? Math.round((correctTyped / 5) / elapsed) : 0;
+}
+
+function updateStats() {
+  const wpm = calcWPM();
+  const acc = totalTyped > 0 ? Math.round((correctTyped / totalTyped) * 100) : 100;
+  document.getElementById('wpm-val').textContent = wpm;
+  document.getElementById('acc-val').textContent = acc + '%';
+}
+
+document.getElementById('typing-input').addEventListener('input', function(e) {
+  if (finished) return;
+
+  const val = this.value;
+
+  // Start timer on first input
+  if (!startTime) {
+    startTime = Date.now();
+    timer = setInterval(() => {
+      timeLeft--;
+      document.getElementById('timer-val').textContent = timeLeft;
+      updateStats();
+      if (timeLeft <= 0) finishGame();
+    }, 1000);
+  }
+
+  // Track typed
+  if (val.length > typed.length) {
+    // New char
+    const idx = typed.length;
+    const expected = currentText[idx];
+    const actual = val[val.length - 1];
+    typed.push(actual);
+    totalTyped++;
+    if (actual === expected) correctTyped++;
+  } else {
+    // Backspace
+    typed = typed.slice(0, val.length);
+  }
+
+  renderDisplay();
+  updateStats();
+
+  // Finished all text
+  if (typed.length >= currentText.length) {
+    finishGame();
+  }
+});
+
+function finishGame() {
+  if (finished) return;
+  finished = true;
+  clearInterval(timer);
+  document.getElementById('typing-input').disabled = true;
+
+  const wpm = calcWPM();
+  const acc = totalTyped > 0 ? Math.round((correctTyped / totalTyped) * 100) : 100;
+
+  document.getElementById('r-wpm').textContent = wpm;
+  document.getElementById('r-acc').textContent = acc + '%';
+  document.getElementById('r-chars').textContent = correctTyped;
+
+  let rank, emoji;
+  if (wpm >= 80)       { rank = 'Staff Engineer 🚀'; emoji = '🏆'; }
+  else if (wpm >= 60)  { rank = 'Senior Developer 🥇'; emoji = '🥇'; }
+  else if (wpm >= 40)  { rank = 'Mid-Level Dev 🥈'; emoji = '🥈'; }
+  else if (wpm >= 20)  { rank = 'Junior Developer 🥉'; emoji = '🥉'; }
+  else                 { rank = 'Intern Mode 😅'; emoji = '😅'; }
+
+  document.getElementById('result-title').textContent = `${emoji} ${wpm} WPM`;
+  document.getElementById('rank-msg').innerHTML = `Xếp hạng: <strong style="color:#cba6f7">${rank}</strong>`;
+  document.getElementById('result-panel').classList.add('show');
+}
+
+restart();
+</script>
+</body>
+</html>

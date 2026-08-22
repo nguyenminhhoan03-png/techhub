@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dino Runner</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#1a1a2e;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:'Segoe UI',sans-serif;color:#cdd6f4;user-select:none}
+.hud{display:flex;gap:14px;margin-bottom:10px}
+.stat{background:#313244;border:1px solid #45475a;border-radius:8px;padding:7px 16px;text-align:center}
+.stat-l{font-size:.6rem;color:#6c7086;letter-spacing:.06em}
+.stat-v{font-size:1.2rem;font-weight:900;color:#a6e3a1}
+canvas{border-radius:12px;box-shadow:0 20px 50px rgba(0,0,0,.6)}
+.hint{margin-top:10px;font-size:.78rem;color:#6c7086}
+</style>
+</head>
+<body>
+<div class="hud">
+  <div class="stat"><div class="stat-l">ĐIỂM</div><div class="stat-v" id="sc">0</div></div>
+  <div class="stat"><div class="stat-l">CAO NHẤT</div><div class="stat-v" id="bs">0</div></div>
+  <div class="stat"><div class="stat-l">TỐC ĐỘ</div><div class="stat-v" id="spd">1x</div></div>
+</div>
+<canvas id="c" width="520" height="200"></canvas>
+<div class="hint">Space / ↑: Nhảy &nbsp;|&nbsp; ↓: Cúi &nbsp;|&nbsp; Click / Tap để bắt đầu</div>
+<script>
+const c=document.getElementById('c'),ctx=c.getContext('2d');
+const W=c.width,H=c.height;
+const GROUND=H-40;
+let dino,obstacles,clouds,score,best=+localStorage.getItem('dinoBest')||0,speed,frame,state='idle',jumpQueued=false,duck=false;
+
+function init(){
+  dino={x:60,y:GROUND,w:30,h:40,vy:0,ducking:false};
+  obstacles=[];clouds=[];score=0;speed=4;frame=0;state='play';
+  updateHUD();
+}
+
+function jump(){
+  if(state!=='play'){init();return;}
+  if(dino.y>=GROUND-2&&!dino.ducking)dino.vy=-13;
+}
+
+function tick(){
+  if(state!=='play')return;
+  frame++;score++;
+  speed=4+frame/600;
+  updateHUD();
+
+  // Dino
+  if(duck&&dino.y>=GROUND-2){dino.ducking=true;dino.h=22;dino.y=GROUND-22+40;}
+  else{dino.ducking=false;dino.h=40;}
+  dino.vy+=0.7;dino.y+=dino.vy;
+  if(dino.y>=GROUND){dino.y=GROUND;dino.vy=0;}
+
+  // Clouds
+  if(frame%120===0)clouds.push({x:W,y:20+Math.random()*40,w:60+Math.random()*40});
+  clouds.forEach(cl=>cl.x-=speed*.3);
+  clouds=clouds.filter(cl=>cl.x+100>0);
+
+  // Obstacles
+  const lastX=obstacles.length?obstacles[obstacles.length-1].x:0;
+  if(obstacles.length===0||lastX<W-200-Math.random()*300){
+    const type=Math.random();
+    if(type<.5){// cactus
+      obstacles.push({x:W,y:GROUND-30,w:20,h:35,type:'cactus'});
+    } else {// bat
+      obstacles.push({x:W,y:GROUND-70-Math.random()*30,w:38,h:16,type:'bat',wing:0});
+    }
+  }
+  obstacles.forEach(o=>{o.x-=speed;if(o.type==='bat')o.wing=(o.wing+0.2)%Math.PI;});
+  obstacles=obstacles.filter(o=>o.x+o.w>0);
+
+  // Collision
+  const dr={x:dino.x+4,y:dino.y-dino.h+4,w:dino.w-8,h:dino.h-8};
+  for(const o of obstacles){
+    const or={x:o.x+3,y:o.y,w:o.w-6,h:o.h-3};
+    if(dr.x<or.x+or.w&&dr.x+dr.w>or.x&&dr.y<or.y+or.h&&dr.y+dr.h>or.y){
+      if(score>best){best=score;localStorage.setItem('dinoBest',best);}
+      state='dead';return;
+    }
+  }
+}
+
+function updateHUD(){
+  document.getElementById('sc').textContent=Math.floor(score/5);
+  document.getElementById('bs').textContent=Math.floor(best/5);
+  document.getElementById('spd').textContent=speed.toFixed(1)+'x';
+}
+
+function draw(){
+  // Sky
+  const sky=ctx.createLinearGradient(0,0,0,H);
+  sky.addColorStop(0,'#1e1e2e');sky.addColorStop(1,'#313244');
+  ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
+
+  // Stars
+  ctx.fillStyle='rgba(205,214,244,.3)';
+  for(let i=0;i<20;i++)ctx.fillRect((i*173+frame*.05)%W,10+i*7%30,1,1);
+
+  // Clouds
+  clouds.forEach(cl=>{
+    ctx.fillStyle='rgba(205,214,244,.1)';ctx.beginPath();ctx.ellipse(cl.x+cl.w/2,cl.y,cl.w/2,14,0,0,Math.PI*2);ctx.fill();
+  });
+
+  // Ground
+  ctx.fillStyle='#45475a';ctx.fillRect(0,GROUND+1,W,3);
+  ctx.fillStyle='#585b70';
+  for(let i=0;i<15;i++)ctx.fillRect((i*38-frame*speed*.8%38)%W,GROUND+2,20,1);
+
+  // Obstacles
+  obstacles.forEach(o=>{
+    if(o.type==='cactus'){
+      ctx.fillStyle='#a6e3a1';
+      ctx.fillRect(o.x+7,o.y,6,o.h);
+      ctx.fillRect(o.x,o.y+8,o.w,5);
+      ctx.fillRect(o.x+2,o.y+3,4,8);ctx.fillRect(o.x+14,o.y+5,4,8);
+    } else {
+      ctx.fillStyle='#f38ba8';
+      ctx.fillRect(o.x+12,o.y+5,14,8);// body
+      const wf=Math.sin(o.wing)*8;
+      ctx.fillRect(o.x,o.y+wf,12,4);ctx.fillRect(o.x+26,o.y+wf,12,4);// wings
+      ctx.fillStyle='#f5c2e7';ctx.fillRect(o.x+16,o.y+3,6,4);// head
+      ctx.fillStyle='#1e1e2e';ctx.fillRect(o.x+20,o.y+4,2,2);// eye
+    }
+  });
+
+  // Dino
+  const dx=dino.x,dy=dino.y-dino.h;
+  ctx.fillStyle='#a6e3a1';
+  if(dino.ducking){
+    ctx.fillRect(dx,dy,dino.w+10,dino.h);// body stretched
+    ctx.fillStyle='#74c7ec';ctx.fillRect(dx+30,dy+4,8,4);// head
+    ctx.fillStyle='#1e1e2e';ctx.fillRect(dx+36,dy+5,3,3);// eye
+  } else {
+    ctx.fillRect(dx,dy+10,dino.w,dino.h-10);// body
+    ctx.fillRect(dx+4,dy,dino.w-4,14);// head
+    ctx.fillStyle='#74c7ec';ctx.fillRect(dx+14,dy,10,8);// face
+    ctx.fillStyle='#1e1e2e';ctx.fillRect(dx+20,dy+2,4,4);// eye
+    // legs animate
+    const legOff=dino.y<GROUND?0:Math.sin(frame*.4)*5;
+    ctx.fillStyle='#a6e3a1';
+    ctx.fillRect(dx+4,dy+dino.h-10+legOff,7,10);
+    ctx.fillRect(dx+15,dy+dino.h-10-legOff,7,10);
+  }
+
+  // Score display
+  ctx.fillStyle='rgba(205,214,244,.6)';ctx.font='bold 16px Segoe UI';ctx.textAlign='right';
+  ctx.fillText('HI '+Math.floor(best/5).toString().padStart(5,'0'),W-10,24);
+  ctx.fillStyle='#cdd6f4';ctx.fillText(Math.floor(score/5).toString().padStart(5,'0'),W-10,24+20);
+
+  // Overlays
+  ctx.textAlign='center';
+  if(state==='idle'){
+    ctx.fillStyle='rgba(30,30,46,.85)';ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='#a6e3a1';ctx.font='bold 22px Segoe UI';ctx.fillText('🦕 Dino Runner',W/2,H/2-20);
+    ctx.fillStyle='#cdd6f4';ctx.font='14px Segoe UI';ctx.fillText('Nhấn Space / Click để bắt đầu',W/2,H/2+14);
+  }
+  if(state==='dead'){
+    ctx.fillStyle='rgba(231,29,72,.15)';ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='#f38ba8';ctx.font='bold 22px Segoe UI';ctx.fillText('💀 Bạn Đã Bị Ăn Thịt!',W/2,H/2-20);
+    ctx.fillStyle='#cdd6f4';ctx.font='13px Segoe UI';ctx.fillText('Space / Click để thử lại',W/2,H/2+16);
+  }
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.code==='Space'||e.key==='ArrowUp'){e.preventDefault();jump();}
+  if(e.key==='ArrowDown'){e.preventDefault();duck=true;}
+});
+document.addEventListener('keyup',e=>{if(e.key==='ArrowDown')duck=false;});
+c.addEventListener('click',jump);
+c.addEventListener('touchstart',e=>{e.preventDefault();jump();},{passive:false});
+
+function loop(){tick();draw();requestAnimationFrame(loop);}
+document.getElementById('bs').textContent=Math.floor(best/5);
+draw();loop();
+</script>
+</body>
+</html>

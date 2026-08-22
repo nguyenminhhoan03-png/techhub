@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Simon Says</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#1e1e2e;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:'Segoe UI',sans-serif;color:#cdd6f4;user-select:none}
+.hud{display:flex;gap:14px;margin-bottom:20px}
+.stat{background:#313244;border:1px solid #45475a;border-radius:10px;padding:8px 18px;text-align:center}
+.stat-l{font-size:.62rem;color:#6c7086;letter-spacing:.06em}
+.stat-v{font-size:1.3rem;font-weight:900;color:#cba6f7}
+.board{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:14px;width:280px;height:280px;margin-bottom:20px}
+.btn-color{border-radius:16px;border:none;cursor:pointer;transition:filter .1s,transform .1s;position:relative;overflow:hidden}
+.btn-color:active{transform:scale(.96)}
+.btn-color.lit{filter:brightness(1.8);transform:scale(1.04)}
+.btn-color.disabled{cursor:not-allowed;opacity:.6}
+#btn-green{background:linear-gradient(135deg,#1a7f37,#2da44e)}
+#btn-red{background:linear-gradient(135deg,#8b0000,#cf2020)}
+#btn-yellow{background:linear-gradient(135deg,#b45309,#f59e0b)}
+#btn-blue{background:linear-gradient(135deg,#1d4ed8,#3b82f6)}
+.status{font-size:1rem;font-weight:600;margin-bottom:14px;min-height:1.4em;color:#a6adc8;text-align:center}
+.btn{background:linear-gradient(135deg,#89b4fa,#cba6f7);border:none;border-radius:10px;color:#1e1e2e;font-size:.9rem;font-weight:800;padding:10px 28px;cursor:pointer;font-family:inherit}
+</style>
+</head>
+<body>
+<div class="hud">
+  <div class="stat"><div class="stat-l">VÒNG</div><div class="stat-v" id="round">0</div></div>
+  <div class="stat"><div class="stat-l">CAO NHẤT</div><div class="stat-v" id="best">0</div></div>
+</div>
+<div class="status" id="status">Nhấn Bắt Đầu để chơi</div>
+<div class="board" id="board">
+  <button class="btn-color" id="btn-green" data-idx="0"></button>
+  <button class="btn-color" id="btn-red" data-idx="1"></button>
+  <button class="btn-color" id="btn-yellow" data-idx="2"></button>
+  <button class="btn-color" id="btn-blue" data-idx="3"></button>
+</div>
+<button class="btn" id="startBtn" onclick="startGame()">▶ Bắt Đầu</button>
+
+<script>
+const COLORS=['green','red','yellow','blue'];
+const SOUNDS=[261,329,392,523];// C E G C (approx)
+let seq=[],playerSeq=[],round=0,best=+localStorage.getItem('simonBest')||0,accepting=false;
+const btns=COLORS.map(c=>document.getElementById('btn-'+c));
+document.getElementById('best').textContent=best;
+
+function startGame(){
+  seq=[];round=0;accepting=false;
+  document.getElementById('startBtn').disabled=true;
+  btns.forEach(b=>{b.classList.remove('disabled');b.onclick=()=>handleClick(+b.dataset.idx);});
+  nextRound();
+}
+
+function nextRound(){
+  round++;playerSeq=[];accepting=false;
+  document.getElementById('round').textContent=round;
+  setStatus('🤖 Nhìn...',  '#89b4fa');
+  seq.push(Math.floor(Math.random()*4));
+  setTimeout(()=>playSeq(0),600);
+}
+
+function playSeq(i){
+  if(i>=seq.length){setTimeout(()=>{accepting=true;setStatus('👆 Lặp lại!','#a6e3a1');},400);return;}
+  const idx=seq[i];
+  setTimeout(()=>{light(idx);setTimeout(()=>{unlight(idx);setTimeout(()=>playSeq(i+1),200);},400);},i*700);
+}
+
+function light(idx){btns[idx].classList.add('lit');beep(SOUNDS[idx]);}
+function unlight(idx){btns[idx].classList.remove('lit');}
+
+function beep(freq){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const o=ctx.createOscillator(),g=ctx.createGain();
+    o.connect(g);g.connect(ctx.destination);
+    o.type='sine';o.frequency.value=freq;
+    g.gain.setValueAtTime(.3,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.35);
+    o.start();o.stop(ctx.currentTime+.35);
+  }catch(e){}
+}
+
+function handleClick(idx){
+  if(!accepting)return;
+  light(idx);setTimeout(()=>unlight(idx),200);
+  playerSeq.push(idx);
+  const i=playerSeq.length-1;
+  if(playerSeq[i]!==seq[i]){
+    // Wrong
+    accepting=false;
+    setStatus(`❌ Sai rồi! Vòng ${round}`,'#f38ba8');
+    if(round>best){best=round;localStorage.setItem('simonBest',best);document.getElementById('best').textContent=best;}
+    btns.forEach(b=>{b.classList.add('disabled');b.onclick=null;});
+    document.getElementById('startBtn').disabled=false;
+    document.getElementById('startBtn').textContent='🔄 Thử Lại';
+    return;
+  }
+  if(playerSeq.length===seq.length){
+    accepting=false;
+    setStatus('✅ Đúng rồi!','#a6e3a1');
+    setTimeout(()=>nextRound(),900);
+  }
+}
+
+function setStatus(msg,color){
+  const el=document.getElementById('status');el.textContent=msg;el.style.color=color||'#a6adc8';
+}
+</script>
+</body>
+</html>

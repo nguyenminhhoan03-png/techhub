@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tetris</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0a1a;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Segoe UI',sans-serif;color:#fff;user-select:none}
+.wrap{display:flex;gap:20px;align-items:flex-start}
+.side{display:flex;flex-direction:column;gap:12px;width:120px}
+.panel{background:#16213e;border:1px solid #0f3460;border-radius:10px;padding:14px;text-align:center}
+.panel-label{font-size:.62rem;color:#8892a4;letter-spacing:.06em;margin-bottom:4px}
+.panel-val{font-size:1.3rem;font-weight:900;color:#cba6f7}
+.panel-sub{font-size:.75rem;color:#6c7086;margin-top:6px}
+canvas{border-radius:10px;box-shadow:0 20px 50px rgba(0,0,0,.7)}
+.msg-overlay{position:absolute;inset:0;background:rgba(10,10,26,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;border-radius:10px}
+.msg-overlay h2{font-size:1.8rem;color:#cba6f7}
+.btn{background:linear-gradient(135deg,#89b4fa,#cba6f7);border:none;border-radius:10px;color:#1e1e2e;font-size:.9rem;font-weight:800;padding:10px 28px;cursor:pointer;font-family:inherit}
+#preview-canvas{border-radius:6px}
+.relative{position:relative}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="side">
+    <div class="panel"><div class="panel-label">ĐIỂM</div><div class="panel-val" id="score">0</div></div>
+    <div class="panel"><div class="panel-label">CAO NHẤT</div><div class="panel-val" id="best">0</div></div>
+    <div class="panel"><div class="panel-label">LEVEL</div><div class="panel-val" id="level">1</div></div>
+    <div class="panel"><div class="panel-label">HÀNG</div><div class="panel-val" id="lines">0</div></div>
+    <div class="panel"><div class="panel-label">TIẾP THEO</div><canvas id="preview-canvas" width="80" height="80"></canvas></div>
+    <div class="panel"><div class="panel-sub">↑ Xoay<br>← → Di chuyển<br>↓ Nhanh<br>Space Drop</div></div>
+  </div>
+  <div class="relative">
+    <canvas id="c" width="200" height="400"></canvas>
+    <div class="msg-overlay" id="overlay">
+      <h2>🎮 Tetris</h2>
+      <button class="btn" onclick="startGame()">▶ Bắt Đầu</button>
+    </div>
+  </div>
+</div>
+<script>
+const COLS=10,ROWS=20,CS=20;
+const COLORS=['#89b4fa','#f38ba8','#a6e3a1','#f9e2af','#cba6f7','#fab387','#74c7ec'];
+const SHAPES=[
+  [[1,1,1,1]],
+  [[1,1],[1,1]],
+  [[0,1,0],[1,1,1]],
+  [[1,0,0],[1,1,1]],
+  [[0,0,1],[1,1,1]],
+  [[0,1,1],[1,1,0]],
+  [[1,1,0],[0,1,1]],
+];
+
+const c=document.getElementById('c'),ctx=c.getContext('2d');
+const pc=document.getElementById('preview-canvas'),pctx=pc.getContext('2d');
+let board,cur,next,score,best=+localStorage.getItem('tetBest')||0,level,lines,interval,running=false;
+
+function newPiece(){
+  const s=next||randShape();next=randShape();
+  return{shape:s.shape,color:s.color,x:Math.floor((COLS-s.shape[0].length)/2),y:0};
+}
+function randShape(){const i=Math.floor(Math.random()*SHAPES.length);return{shape:SHAPES[i],color:COLORS[i]};}
+
+function startGame(){
+  document.getElementById('overlay').style.display='none';
+  board=Array.from({length:ROWS},()=>Array(COLS).fill(0));
+  score=0;level=1;lines=0;next=null;cur=newPiece();
+  running=true;updateHUD();
+  clearInterval(interval);interval=setInterval(drop,600);
+  loop();
+}
+
+function drop(){
+  if(!running)return;
+  if(!move(0,1)){place();clearLines();cur=newPiece();if(!valid(cur,0,0)){gameOver();}};
+}
+
+function move(dx,dy){
+  if(valid(cur,dx,dy)){cur.x+=dx;cur.y+=dy;return true;}return false;
+}
+
+function rotate(){
+  const r={...cur,shape:cur.shape[0].map((_,i)=>cur.shape.map(row=>row[i]).reverse())};
+  if(valid(r,0,0))cur=r;
+}
+
+function valid(p,dx,dy){
+  return p.shape.every((row,ry)=>row.every((v,cx)=>{
+    if(!v)return true;
+    const nx=p.x+cx+dx,ny=p.y+ry+dy;
+    return nx>=0&&nx<COLS&&ny<ROWS&&!(ny>=0&&board[ny][nx]);
+  }));
+}
+
+function place(){
+  cur.shape.forEach((row,ry)=>row.forEach((v,cx)=>{if(v&&cur.y+ry>=0)board[cur.y+ry][cur.x+cx]=cur.color;}));
+}
+
+function clearLines(){
+  let cleared=0;
+  for(let r=ROWS-1;r>=0;r--){
+    if(board[r].every(c=>c)){board.splice(r,1);board.unshift(Array(COLS).fill(0));cleared++;r++;}
+  }
+  if(cleared){
+    const pts=[0,100,300,500,800];
+    score+=pts[cleared]*level;lines+=cleared;level=1+Math.floor(lines/10);
+    clearInterval(interval);interval=setInterval(drop,Math.max(100,600-level*50));
+    if(score>best){best=score;localStorage.setItem('tetBest',best);}
+    updateHUD();
+  }
+}
+
+function gameOver(){
+  running=false;clearInterval(interval);
+  const o=document.getElementById('overlay');o.style.display='flex';
+  o.innerHTML=`<h2>💀 Game Over!</h2><p style="color:#8892a4">Điểm: ${score}</p><button class="btn" onclick="startGame()">🔄 Thử Lại</button>`;
+}
+
+function updateHUD(){
+  document.getElementById('score').textContent=score;
+  document.getElementById('best').textContent=best;
+  document.getElementById('level').textContent=level;
+  document.getElementById('lines').textContent=lines;
+}
+
+function loop(){
+  if(!running)return;
+  ctx.fillStyle='#0a0a1a';ctx.fillRect(0,0,c.width,c.height);
+  // Grid
+  ctx.strokeStyle='#1a1a3a';ctx.lineWidth=.5;
+  for(let r=0;r<ROWS;r++)for(let cl=0;cl<COLS;cl++){ctx.strokeRect(cl*CS,r*CS,CS,CS);}
+  // Board
+  board.forEach((row,r)=>row.forEach((v,cl)=>{if(v){drawBlock(ctx,cl,r,v);}}));
+  // Current piece
+  cur.shape.forEach((row,ry)=>row.forEach((v,cx)=>{if(v)drawBlock(ctx,cur.x+cx,cur.y+ry,cur.color);}));
+  // Ghost piece
+  let gy=0;while(valid(cur,0,gy+1))gy++;
+  cur.shape.forEach((row,ry)=>row.forEach((v,cx)=>{if(v){ctx.fillStyle='rgba(255,255,255,.08)';ctx.fillRect((cur.x+cx)*CS,(cur.y+ry+gy)*CS,CS,CS);}}));
+  // Preview
+  pctx.fillStyle='#16213e';pctx.fillRect(0,0,80,80);
+  if(next){const os=Math.floor((4-next.shape[0].length)/2)*16,osr=Math.floor((4-next.shape.length)/2)*16;
+  next.shape.forEach((row,ry)=>row.forEach((v,cx)=>{if(v){pctx.fillStyle=next.color;pctx.fillRect(os+cx*16+2,osr+ry*16+2,14,14);}}));}
+  requestAnimationFrame(loop);
+}
+
+function drawBlock(ctx,x,y,color){
+  ctx.fillStyle=color;ctx.fillRect(x*CS+1,y*CS+1,CS-2,CS-2);
+  ctx.fillStyle='rgba(255,255,255,.2)';ctx.fillRect(x*CS+1,y*CS+1,CS-2,4);
+}
+
+document.addEventListener('keydown',e=>{
+  if(!running)return;
+  if(e.key==='ArrowLeft'){e.preventDefault();move(-1,0);}
+  if(e.key==='ArrowRight'){e.preventDefault();move(1,0);}
+  if(e.key==='ArrowDown'){e.preventDefault();move(0,1);}
+  if(e.key==='ArrowUp'){e.preventDefault();rotate();}
+  if(e.code==='Space'){e.preventDefault();while(move(0,1));drop();}
+});
+document.getElementById('best').textContent=best;
+</script>
+</body>
+</html>

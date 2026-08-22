@@ -24,3 +24,11 @@ Route::controller(\Presentation\Http\Controllers\Web\ArticleController::class)->
         return redirect()->route('articles.index', ['type' => 'review']);
     })->name('reviews.index');
 });
+
+// Web Games
+Route::controller(\Presentation\Http\Controllers\Web\GameController::class)->group(function (): void {
+    Route::get('/games', 'index')->name('games.index');
+    Route::get('/games/{slug}', 'show')->name('games.show');
+    Route::post('/games/{slug}/play', 'play')->name('games.play');
+});
+

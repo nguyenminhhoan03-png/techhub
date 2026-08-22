@@ -1695,3 +1695,247 @@ textarea.form-control {
     transform: translateY(0);
   }
 }
+
+/* ==========================================================================
+   Senior Gaming Portal Design System (CrazyGames / Poki standard)
+   ========================================================================== */
+
+.game-portal-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.28s ease, border-color 0.25s ease;
+  position: relative;
+}
+
+.game-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.game-card-cover {
+  position: relative;
+  width: calc(100% - 12px);
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 12px;
+  margin: 6px 6px 0;
+  background: #090a14;
+}
+
+.game-card-cover .poster-bg {
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.game-cover-badges {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.game-badge-cat {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.game-badge-hot {
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #f43f5e, #fb923c);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(244, 63, 94, 0.5);
+  letter-spacing: 0.04em;
+}
+
+.game-card-body {
+  padding: 12px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.game-card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.game-diff-tag {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 6px;
+}
+
+.game-plays-count {
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.game-card-title {
+  font-size: 1.08rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0 0 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.2s ease;
+}
+
+.game-card-desc {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Card Hover Interactions */
+.game-portal-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(99, 102, 241, 0.6);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45), 0 0 24px rgba(99, 102, 241, 0.25);
+}
+
+.game-portal-card:hover .poster-bg {
+  transform: scale(1.08);
+}
+
+.game-portal-card:hover .poster-play-btn {
+  opacity: 1 !important;
+  transform: scale(1) !important;
+}
+
+.game-portal-card:hover .game-card-title {
+  color: var(--accent-cyan);
+}
+
+/* Hero Spotlight Bento Grid */
+.gaming-bento-hero {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 2.75rem;
+}
+
+.spotlight-main-card {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 320px;
+  padding: 2rem;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+
+.spotlight-main-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent-indigo);
+  box-shadow: 0 20px 50px rgba(99, 102, 241, 0.3);
+}
+
+.spotlight-side-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+/* Cinema Game Frame Ambient Lighting */
+.cinema-ambient-glow {
+  position: absolute;
+  inset: -20px;
+  background: radial-gradient(circle, var(--ambient-color, rgba(99, 102, 241, 0.35)) 0%, transparent 70%);
+  filter: blur(50px);
+  opacity: 0.45;
+  z-index: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+/* Sidebar Styling */
+.sidebar-game-cat {
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.sidebar-game-cat:hover, .sidebar-game-cat.active {
+  background: var(--bg-surface-elevated) !important;
+  color: var(--text-main) !important;
+  border-color: var(--accent-indigo) !important;
+  transform: translateX(4px);
+}
+
+/* Responsive Media Queries */
+@media (max-width: 1024px) {
+  .games-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .gaming-bento-hero {
+    grid-template-columns: 1fr !important;
+  }
+
+  .games-sidebar {
+    position: static !important;
+    top: auto !important;
+    margin-bottom: 1.5rem;
+  }
+
+  .game-show-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .game-show-sidebar {
+    position: static !important;
+    top: auto !important;
+  }
+
+  #game-frame {
+    height: 480px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  #game-frame {
+    height: 380px !important;
+  }
+
+  .games-sidebar nav {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+
+

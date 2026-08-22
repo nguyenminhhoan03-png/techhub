@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2048</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #1a1a2e;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    color: #fff;
+    user-select: none;
+  }
+  .header { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 420px; margin-bottom: 14px; }
+  .title { font-size: 2.5rem; font-weight: 900; color: #f5a623; letter-spacing: -0.04em; }
+  .scores { display: flex; gap: 10px; }
+  .score-box { background: #16213e; border: 1px solid #0f3460; border-radius: 10px; padding: 8px 18px; text-align: center; }
+  .score-label { font-size: 0.65rem; font-weight: 700; color: #8892a4; letter-spacing: 0.06em; }
+  .score-val { font-size: 1.3rem; font-weight: 800; color: #e94560; }
+  .controls { display: flex; gap: 10px; margin-bottom: 14px; }
+  .btn-game { background: linear-gradient(135deg,#e94560,#f5a623); border: none; border-radius: 10px; color: #fff; font-size: 0.85rem; font-weight: 700; padding: 8px 20px; cursor: pointer; transition: opacity .2s; }
+  .btn-game:hover { opacity: .82; }
+  .board-wrap { background: #0f3460; border-radius: 14px; padding: 12px; box-shadow: 0 20px 60px rgba(0,0,0,.5); }
+  .grid { display: grid; grid-template-columns: repeat(4, 90px); grid-template-rows: repeat(4, 90px); gap: 10px; }
+  .cell {
+    width: 90px; height: 90px; border-radius: 10px;
+    background: #16213e;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.7rem; font-weight: 800;
+    transition: background .1s;
+  }
+  .cell[data-v="2"]    { background:#eee4da; color:#776e65; }
+  .cell[data-v="4"]    { background:#ede0c8; color:#776e65; }
+  .cell[data-v="8"]    { background:#f2b179; color:#fff; }
+  .cell[data-v="16"]   { background:#f59563; color:#fff; font-size:1.4rem; }
+  .cell[data-v="32"]   { background:#f67c5f; color:#fff; font-size:1.4rem; }
+  .cell[data-v="64"]   { background:#f65e3b; color:#fff; font-size:1.4rem; }
+  .cell[data-v="128"]  { background:#edcf72; color:#fff; font-size:1.2rem; }
+  .cell[data-v="256"]  { background:#edcc61; color:#fff; font-size:1.2rem; }
+  .cell[data-v="512"]  { background:#edc850; color:#fff; font-size:1.2rem; }
+  .cell[data-v="1024"] { background:#edc53f; color:#fff; font-size:1rem; }
+  .cell[data-v="2048"] { background:#edc22e; color:#fff; font-size:1rem; box-shadow:0 0 30px #f5a62388; }
+  .msg { margin-top: 16px; font-size: 0.85rem; color: #8892a4; }
+  .overlay { position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(26,26,46,.85);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;display:none;z-index:10; }
+  .overlay.show{display:flex;}
+  .overlay h2{font-size:2.5rem;color:#f5a623;}
+  .overlay p{color:#8892a4;font-size:1rem;}
+  @media(max-width:420px){
+    .grid{grid-template-columns:repeat(4,70px);grid-template-rows:repeat(4,70px);}
+    .cell{width:70px;height:70px;font-size:1.2rem;}
+  }
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="title">2048</div>
+  <div class="scores">
+    <div class="score-box"><div class="score-label">ĐIỂM</div><div class="score-val" id="score">0</div></div>
+    <div class="score-box"><div class="score-label">TỐT NHẤT</div><div class="score-val" id="best">0</div></div>
+  </div>
+</div>
+<div class="controls">
+  <button class="btn-game" onclick="newGame()">🔄 Chơi Lại</button>
+</div>
+<div class="board-wrap"><div class="grid" id="grid"></div></div>
+<div class="msg">← → ↑ ↓ Phím Mũi Tên &nbsp;|&nbsp; Vuốt trên Mobile</div>
+
+<div class="overlay" id="overlay">
+  <h2 id="overlay-title">🎉 Bạn Thắng!</h2>
+  <p id="overlay-msg">Đạt ô số 2048!</p>
+  <button class="btn-game" onclick="closeOverlay()">Tiếp Tục</button>
+  <button class="btn-game" onclick="newGame()">🔄 Chơi Lại</button>
+</div>
+
+<script>
+const SIZE = 4;
+let board, score, best = 0, won = false;
+
+function newGame() {
+  board = Array.from({length:SIZE}, () => Array(SIZE).fill(0));
+  score = 0; won = false;
+  document.getElementById('overlay').classList.remove('show');
+  addTile(); addTile(); render();
+}
+
+function addTile() {
+  let empty = [];
+  board.forEach((row,r) => row.forEach((v,c) => { if(!v) empty.push([r,c]); }));
+  if (!empty.length) return;
+  const [r,c] = empty[Math.floor(Math.random()*empty.length)];
+  board[r][c] = Math.random() < 0.9 ? 2 : 4;
+}
+
+function render() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  board.forEach(row => row.forEach(v => {
+    const el = document.createElement('div');
+    el.className = 'cell';
+    if (v) { el.textContent = v; el.dataset.v = v; }
+    grid.appendChild(el);
+  }));
+  document.getElementById('score').textContent = score;
+  if (score > best) { best = score; localStorage.setItem('2048best', best); }
+  document.getElementById('best').textContent = best;
+}
+
+function slide(row) {
+  let arr = row.filter(x => x), added = false, pts = 0;
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (!added && arr[i] === arr[i+1]) {
+      arr[i] *= 2; pts += arr[i];
+      arr.splice(i+1, 1); added = true;
+    } else { added = false; }
+  }
+  while (arr.length < SIZE) arr.push(0);
+  return { row: arr, pts };
+}
+
+function move(dir) {
+  let moved = false;
+  const prev = JSON.stringify(board);
+
+  if (dir === 'left' || dir === 'right') {
+    board = board.map(row => {
+      const r = dir === 'right' ? [...row].reverse() : row;
+      const { row: s, pts } = slide(r);
+      score += pts;
+      return dir === 'right' ? s.reverse() : s;
+    });
+  } else {
+    for (let c = 0; c < SIZE; c++) {
+      let col = board.map(r => r[c]);
+      if (dir === 'down') col.reverse();
+      const { row: s, pts } = slide(col);
+      score += pts;
+      if (dir === 'down') s.reverse();
+      s.forEach((v, r) => board[r][c] = v);
+    }
+  }
+
+  moved = JSON.stringify(board) !== prev;
+  if (moved) { addTile(); render(); checkState(); }
+}
+
+function checkState() {
+  // Win
+  if (!won && board.flat().includes(2048)) {
+    won = true;
+    showOverlay('🎉 Bạn Thắng!', 'Đạt ô số 2048! Xuất sắc!');
+    return;
+  }
+  // Lose
+  let canMove = board.flat().some(v => !v);
+  if (!canMove) {
+    for (let r = 0; r < SIZE; r++)
+      for (let c = 0; c < SIZE; c++)
+        if ((r<SIZE-1 && board[r][c]===board[r+1][c]) || (c<SIZE-1 && board[r][c]===board[r][c+1]))
+          canMove = true;
+  }
+  if (!canMove) showOverlay('😢 Game Over!', `Điểm của bạn: ${score}`);
+}
+
+function showOverlay(title, msg) {
+  document.getElementById('overlay-title').textContent = title;
+  document.getElementById('overlay-msg').textContent = msg;
+  document.getElementById('overlay').classList.add('show');
+}
+function closeOverlay() { document.getElementById('overlay').classList.remove('show'); }
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  const map = {ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down'};
+  if (map[e.key]) { e.preventDefault(); move(map[e.key]); }
+});
+
+// Touch/Swipe
+let tx, ty;
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, {passive:true});
+document.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - tx;
+  const dy = e.changedTouches[0].clientY - ty;
+  if (Math.abs(dx) > Math.abs(dy)) move(dx > 0 ? 'right' : 'left');
+  else move(dy > 0 ? 'down' : 'up');
+});
+
+best = parseInt(localStorage.getItem('2048best') || '0');
+newGame();
+</script>
+</body>
+</html>

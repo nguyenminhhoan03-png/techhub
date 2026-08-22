@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Platform Jumper</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0a1a;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:'Segoe UI',sans-serif;color:#cdd6f4;user-select:none;overflow:hidden}
+.hud{display:flex;gap:14px;margin-bottom:10px}
+.stat{background:#16213e;border:1px solid #0f3460;border-radius:8px;padding:7px 16px;text-align:center}
+.stat-l{font-size:.6rem;color:#8892a4;letter-spacing:.06em}
+.stat-v{font-size:1.2rem;font-weight:900;color:#f9e2af}
+canvas{border-radius:10px;box-shadow:0 20px 50px rgba(0,0,0,.7)}
+.hint{margin-top:10px;font-size:.78rem;color:#6c7086;text-align:center}
+</style>
+</head>
+<body>
+<div class="hud">
+  <div class="stat"><div class="stat-l">CHIỀU CAO</div><div class="stat-v" id="sc">0</div></div>
+  <div class="stat"><div class="stat-l">XU</div><div class="stat-v" id="coins">0</div></div>
+  <div class="stat"><div class="stat-l">CAO NHẤT</div><div class="stat-v" id="bs">0</div></div>
+</div>
+<canvas id="c" width="320" height="480"></canvas>
+<div class="hint">← → / A D: Di chuyển &nbsp;|&nbsp; Space / ↑: Nhảy &nbsp;|&nbsp; Enter: Bắt đầu</div>
+<script>
+const c=document.getElementById('c'),ctx=c.getContext('2d');
+const W=c.width,H=c.height;
+const GRAV=0.45,JUMP=-11,DOUBLE_JUMP=-9;
+let player,platforms,coins_arr,particles,cameraY,score,coinCount,best=+localStorage.getItem('pjBest')||0,state='idle',frame=0;
+const keys={};
+
+const PLAT_COLORS=['#89b4fa','#a6e3a1','#f9e2af','#cba6f7','#fab387'];
+
+function init(){
+  player={x:W/2-12,y:H-120,w:24,h:28,vx:0,vy:0,onGround:false,jumps:0,trail:[]};
+  platforms=[
+    {x:W/2-40,y:H-80,w:80,h:10,color:'#a6e3a1',moving:false},
+  ];
+  coins_arr=[];particles=[];cameraY=0;score=0;coinCount=0;state='play';frame=0;
+  // Generate initial platforms
+  for(let i=1;i<20;i++) addPlatform(H-80-i*70);
+  updateHUD();
+}
+
+function addPlatform(y){
+  const w=50+Math.random()*60;
+  const x=Math.random()*(W-w);
+  const moving=Math.random()<.3&&y<-200;
+  const color=PLAT_COLORS[Math.floor(Math.random()*PLAT_COLORS.length)];
+  platforms.push({x,y,w,h:10,color,moving,dir:1,speed:1+Math.random()*1.5});
+  // Maybe place coin above
+  if(Math.random()<.5){
+    coins_arr.push({x:x+w/2-8,y:y-30,w:16,h:16,collected:false,anim:Math.random()*Math.PI*2});
+  }
+}
+
+function tick(){
+  if(state!=='play')return;
+  frame++;
+  const spd=Math.min(4+score/800,7);
+
+  // Input
+  if(keys['ArrowLeft']||keys['a']||keys['A'])player.vx=Math.max(player.vx-.8,-spd);
+  else if(keys['ArrowRight']||keys['d']||keys['D'])player.vx=Math.min(player.vx+.8,spd);
+  else player.vx*=.82;
+
+  // Jump
+  if((keys['ArrowUp']||keys[' ']||keys['w']||keys['W'])&&!keys['_prevJump']){
+    keys['_prevJump']=true;
+    if(player.onGround){player.vy=JUMP;player.jumps=1;player.onGround=false;burst(player.x+player.w/2,player.y+player.h,'#89b4fa',6);}
+    else if(player.jumps<2){player.vy=DOUBLE_JUMP;player.jumps=2;burst(player.x+player.w/2,player.y+player.h,'#cba6f7',6);}
+  }
+  if(!(keys['ArrowUp']||keys[' ']||keys['w']||keys['W']))keys['_prevJump']=false;
+
+  player.vy+=GRAV;
+  player.y+=player.vy;
+  player.x+=player.vx;
+  // Wrap horizontally
+  if(player.x>W)player.x=-player.w;
+  if(player.x+player.w<0)player.x=W;
+
+  // Camera
+  const camTarget=player.y-H*0.45;
+  if(camTarget<cameraY)cameraY=camTarget;
+  const height=Math.floor(-cameraY/10);
+  if(height>score){score=height;if(score>best){best=score;localStorage.setItem('pjBest',best);}updateHUD();}
+
+  // Platforms
+  player.onGround=false;
+  platforms.forEach(p=>{
+    if(p.moving){p.x+=p.dir*p.speed;if(p.x<0||p.x+p.w>W)p.dir*=-1;}
+    const worldY=p.y-cameraY;
+    if(player.vy>=0&&player.y+player.h>p.y&&player.y+player.h<p.y+p.h+player.vy+2&&player.x+player.w>p.x+4&&player.x<p.x+p.w-4){
+      player.y=p.y-player.h;player.vy=0;player.onGround=true;player.jumps=0;
+    }
+  });
+
+  // Coins
+  coins_arr.forEach(coin=>{
+    if(coin.collected)return;
+    coin.anim+=0.08;
+    if(player.x+player.w>coin.x&&player.x<coin.x+coin.w&&player.y+player.h>coin.y&&player.y<coin.y+coin.h){
+      coin.collected=true;coinCount++;burst(coin.x+8,coin.y+8,'#f9e2af',8);updateHUD();
+    }
+  });
+
+  // Remove off-screen
+  const cullY=cameraY+H+100;
+  platforms=platforms.filter(p=>p.y<cullY);
+  coins_arr=coins_arr.filter(c=>c.y<cullY);
+
+  // Generate more platforms upward
+  const topPlat=platforms.reduce((t,p)=>Math.min(t,p.y),0);
+  while(topPlat-cameraY>-H*2)addPlatform(platforms.reduce((t,p)=>Math.min(t,p.y),0)-60-Math.random()*50);
+
+  // Trail
+  player.trail.push({x:player.x+player.w/2,y:player.y+player.h/2});
+  if(player.trail.length>8)player.trail.shift();
+
+  // Particles
+  particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.life--;p.vy+=.1;});
+  particles=particles.filter(p=>p.life>0);
+
+  // Fall death
+  if(player.y-cameraY>H+60){state='dead';if(score>best){best=score;localStorage.setItem('pjBest',best);}updateHUD();}
+}
+
+function burst(x,y,color,n){
+  for(let i=0;i<n;i++)particles.push({x,y,vx:(Math.random()-.5)*4,vy:-Math.random()*3,life:20+Math.random()*15,color});
+}
+
+function updateHUD(){
+  document.getElementById('sc').textContent=score+'m';
+  document.getElementById('coins').textContent='🪙'+coinCount;
+  document.getElementById('bs').textContent=best+'m';
+}
+
+function draw(){
+  // BG gradient (sky changes with height)
+  const prog=Math.min(Math.abs(cameraY)/3000,1);
+  const sky=ctx.createLinearGradient(0,0,0,H);
+  sky.addColorStop(0,`hsl(${230-prog*60},${60-prog*30}%,${12+prog*8}%)`);
+  sky.addColorStop(1,`hsl(${220-prog*40},${50}%,${8}%)`);
+  ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
+
+  // Stars
+  ctx.fillStyle='rgba(255,255,255,.4)';
+  for(let i=0;i<40;i++)ctx.fillRect((i*173+frame*.02)%W,(i*97)%H,1,1);
+
+  // Particles
+  particles.forEach(p=>{ctx.fillStyle=p.color+'aa';ctx.fillRect(p.x-3,p.y-cameraY-3,6,6);});
+
+  // Coins
+  coins_arr.forEach(coin=>{
+    if(coin.collected)return;
+    const wy=coin.y-cameraY;
+    if(wy<-20||wy>H+20)return;
+    ctx.fillStyle='#f9e2af';
+    ctx.beginPath();ctx.arc(coin.x+8,wy+8+Math.sin(coin.anim)*3,7,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#b45309';ctx.beginPath();ctx.arc(coin.x+8,wy+8+Math.sin(coin.anim)*3,4,0,Math.PI*2);ctx.fill();
+  });
+
+  // Platforms
+  platforms.forEach(p=>{
+    const wy=p.y-cameraY;
+    if(wy<-20||wy>H+20)return;
+    ctx.fillStyle=p.color;
+    ctx.beginPath();
+    ctx.roundRect?ctx.roundRect(p.x,wy,p.w,p.h,5):ctx.rect(p.x,wy,p.w,p.h);
+    ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,.25)';ctx.fillRect(p.x+4,wy+2,p.w-8,3);
+    if(p.moving){ctx.fillStyle='rgba(0,0,0,.2)';ctx.fillRect(p.x+p.w-10,wy+2,6,6);}
+  });
+
+  // Player trail
+  player.trail.forEach((t,i)=>{
+    const a=(i/player.trail.length)*.3;
+    ctx.fillStyle=`rgba(139,180,250,${a})`;
+    ctx.beginPath();ctx.arc(t.x,t.y-cameraY,6*(i/player.trail.length),0,Math.PI*2);ctx.fill();
+  });
+
+  // Player
+  const px=player.x,py=player.y-cameraY;
+  // Body
+  ctx.fillStyle='#89b4fa';ctx.fillRect(px,py,player.w,player.h);
+  // Face
+  ctx.fillStyle='#cdd6f4';ctx.fillRect(px+4,py+4,16,12);
+  ctx.fillStyle='#1e1e2e';ctx.fillRect(px+6,py+6,4,4);ctx.fillRect(px+14,py+6,4,4);
+  // Smile
+  ctx.strokeStyle='#1e1e2e';ctx.lineWidth=1.5;ctx.beginPath();
+  ctx.arc(px+12,py+13,4,0.2,Math.PI-.2);ctx.stroke();
+  // Hat
+  ctx.fillStyle='#cba6f7';ctx.fillRect(px+4,py-6,16,6);ctx.fillRect(px+2,py-7,20,3);
+
+  // Height indicator
+  ctx.fillStyle='rgba(249,226,175,.15)';ctx.font='11px Segoe UI';ctx.textAlign='right';
+  ctx.fillText(`↑ ${score}m`,W-8,24);
+
+  // Overlays
+  ctx.textAlign='center';
+  if(state==='idle'){
+    ctx.fillStyle='rgba(10,10,26,.85)';ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='#f9e2af';ctx.font='bold 26px Segoe UI';ctx.fillText('🎮 Platform Jumper',W/2,H/2-60);
+    ctx.fillStyle='#cdd6f4';ctx.font='15px Segoe UI';ctx.fillText('Nhấn Enter để bắt đầu',W/2,H/2-20);
+    ctx.font='12px Segoe UI';ctx.fillStyle='#6c7086';ctx.fillText('← → Di chuyển &nbsp; Space / ↑ Nhảy',W/2,H/2+10);
+  }
+  if(state==='dead'){
+    ctx.fillStyle='rgba(10,10,26,.85)';ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='#f38ba8';ctx.font='bold 24px Segoe UI';ctx.fillText('💀 Bạn Đã Rơi Xuống!',W/2,H/2-60);
+    ctx.fillStyle='#f9e2af';ctx.font='22px Segoe UI';ctx.fillText(score+'m',W/2,H/2-20);
+    ctx.font='12px Segoe UI';ctx.fillStyle='#cba6f7';ctx.fillText('🪙 '+coinCount+' xu thu thập được',W/2,H/2+10);
+    ctx.font='13px Segoe UI';ctx.fillStyle='#8892a4';ctx.fillText('Enter để thử lại',W/2,H/2+40);
+  }
+}
+
+document.addEventListener('keydown',e=>{
+  keys[e.key]=true;
+  if(e.key==='Enter'){if(state!=='play')init();}
+  if(e.code==='Space')e.preventDefault();
+  if(e.key.startsWith('Arrow'))e.preventDefault();
+});
+document.addEventListener('keyup',e=>{keys[e.key]=false;});
+
+// Touch
+let touchX=null;
+c.addEventListener('touchstart',e=>{e.preventDefault();touchX=e.touches[0].clientX;if(state!=='play')init();},{passive:false});
+c.addEventListener('touchmove',e=>{e.preventDefault();const dx=e.touches[0].clientX-touchX;if(dx>20){keys['ArrowRight']=true;keys['ArrowLeft']=false;}else if(dx<-20){keys['ArrowLeft']=true;keys['ArrowRight']=false;}},{passive:false});
+c.addEventListener('touchend',e=>{e.preventDefault();keys['ArrowLeft']=keys['ArrowRight']=false;const dy=-(e.changedTouches[0].clientY);if(dy>0)keys[' ']=true;setTimeout(()=>keys[' ']=false,100);},{passive:false});
+
+function loop(){tick();draw();requestAnimationFrame(loop);}
+document.getElementById('bs').textContent=best+'m';
+draw();loop();
+</script>
+</body>
+</html>

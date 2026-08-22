@@ -62,6 +62,7 @@
     }
     </script>
     @stack('schema')
+    @stack('schemas')
 </head>
 <body>
 
@@ -79,7 +80,7 @@
                 <ul class="nav-menu">
                     <li><a href="{{ url('/tools') }}" class="nav-item-link {{ request()->is('tools*') && !request('category') ? 'active' : '' }}"><x-heroicon-s-bolt style="width: 14px; height: 14px; flex-shrink: 0;" /> {{ __('tools_hub') }}</a></li>
                     <li><a href="{{ route('articles.index') }}" class="nav-item-link {{ request()->is('articles*') ? 'active' : '' }}"><x-heroicon-o-newspaper style="width: 14px; height: 14px; flex-shrink: 0;" /> Bài Viết</a></li>
-                    <li><a href="{{ url('/tools?category=developer') }}" class="nav-item-link {{ request('category') === 'developer' ? 'active' : '' }}"><x-heroicon-o-code-bracket style="width: 14px; height: 14px; flex-shrink: 0;" /> Developer</a></li>
+                    <li><a href="{{ route('games.index') }}" class="nav-item-link {{ request()->is('games*') ? 'active' : '' }}"><x-heroicon-o-puzzle-piece style="width: 14px; height: 14px; flex-shrink: 0;" /> Games</a></li>
                     <li><a href="{{ url('/tools?category=seo') }}" class="nav-item-link {{ request('category') === 'seo' ? 'active' : '' }}"><x-heroicon-o-globe-alt style="width: 14px; height: 14px; flex-shrink: 0;" /> SEO</a></li>
                 </ul>
             </nav>
@@ -123,8 +124,14 @@
                     </li>
                     <li>
                         <a href="{{ route('articles.index') }}" class="mobile-nav-link {{ request()->is('articles*') ? 'active' : '' }}">
-                            <x-heroicon-o-scale style="width: 1.2em; height: 1.2em;" />
-                            <span>So Sánh &amp; Review</span>
+                            <x-heroicon-o-newspaper style="width: 1.2em; height: 1.2em;" />
+                            <span>Bài Viết</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('games.index') }}" class="mobile-nav-link {{ request()->is('games*') ? 'active' : '' }}">
+                            <x-heroicon-o-puzzle-piece style="width: 1.2em; height: 1.2em;" />
+                            <span>🎮 Web Games</span>
                         </a>
                     </li>
                     <li>

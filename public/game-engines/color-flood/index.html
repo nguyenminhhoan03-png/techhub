@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Color Flood</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#1e1e2e;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:'Segoe UI',sans-serif;color:#cdd6f4;user-select:none}
+.hud{display:flex;gap:14px;margin-bottom:14px}
+.stat{background:#313244;border:1px solid #45475a;border-radius:10px;padding:8px 18px;text-align:center}
+.stat-l{font-size:.62rem;color:#6c7086;letter-spacing:.06em}
+.stat-v{font-size:1.3rem;font-weight:900;color:#cba6f7}
+#board{display:grid;gap:2px;margin-bottom:16px}
+.cell{width:28px;height:28px;border-radius:3px;transition:background .2s}
+.color-btns{display:flex;gap:10px;margin-bottom:14px}
+.color-btn{width:50px;height:50px;border-radius:12px;border:3px solid transparent;cursor:pointer;transition:all .15s;font-size:1.4rem}
+.color-btn:hover{transform:scale(1.1)}
+.color-btn.selected{border-color:#fff;transform:scale(1.15);box-shadow:0 0 12px rgba(255,255,255,.4)}
+.moves-bar{display:flex;gap:4px;margin-bottom:14px}
+.move-dot{width:10px;height:10px;border-radius:50%;background:#45475a;transition:background .3s}
+.move-dot.used{background:#f38ba8}
+.btn{background:linear-gradient(135deg,#89b4fa,#cba6f7);border:none;border-radius:10px;color:#1e1e2e;font-size:.9rem;font-weight:800;padding:10px 28px;cursor:pointer;font-family:inherit}
+.status{font-size:.95rem;font-weight:600;margin-bottom:10px;min-height:1.4em;text-align:center}
+</style>
+</head>
+<body>
+<div class="hud">
+  <div class="stat"><div class="stat-l">BƯỚC CÒN</div><div class="stat-v" id="moves-left">25</div></div>
+  <div class="stat"><div class="stat-l">% CHIẾM</div><div class="stat-v" id="pct">0%</div></div>
+  <div class="stat"><div class="stat-l">MÀN</div><div class="stat-v" id="lvl">1</div></div>
+</div>
+<div class="status" id="status"></div>
+<div id="board"></div>
+<div class="color-btns" id="color-btns"></div>
+<div class="moves-bar" id="moves-bar"></div>
+<button class="btn" onclick="newGame()">🔄 Chơi Lại</button>
+
+<script>
+const COLS = ['#f38ba8','#fab387','#f9e2af','#a6e3a1','#89b4fa','#cba6f7'];
+const SIZE = 14;
+let grid, flood, movesLeft, maxMoves, level = 1;
+
+function newGame() {
+  maxMoves = 22 + Math.floor(Math.random() * 6);
+  movesLeft = maxMoves;
+  grid = Array.from({length: SIZE}, () => Array.from({length: SIZE}, () => Math.floor(Math.random() * COLS.length)));
+  flood = new Set();
+  // Seed flood from top-left
+  floodFill(0, 0, grid[0][0], true);
+  render();
+  document.getElementById('status').textContent = '';
+  document.getElementById('lvl').textContent = level;
+  buildMovesBar();
+}
+
+function floodFill(r, c, targetColor, init = false) {
+  const stack = [[r, c]];
+  const visited = new Set();
+  while (stack.length) {
+    const [cr, cc] = stack.pop();
+    const key = cr * SIZE + cc;
+    if (visited.has(key)) continue;
+    if (cr < 0 || cr >= SIZE || cc < 0 || cc >= SIZE) continue;
+    if (grid[cr][cc] !== targetColor && !init) continue;
+    visited.add(key);
+    if (init) flood.add(key);
+    else flood.add(key);
+    [[1,0],[-1,0],[0,1],[0,-1]].forEach(([dr, dc]) => stack.push([cr+dr, cc+dc]));
+  }
+  return visited;
+}
+
+function applyColor(colorIdx) {
+  if (movesLeft <= 0) return;
+  const curColor = grid[0][0];
+  if (curColor === colorIdx) return;
+  // Expand flood region
+  const newFlood = new Set(flood);
+  const border = [];
+  flood.forEach(key => {
+    const r = Math.floor(key / SIZE), c = key % SIZE;
+    [[1,0],[-1,0],[0,1],[0,-1]].forEach(([dr, dc]) => {
+      const nr = r+dr, nc = c+dc;
+      if (nr>=0&&nr<SIZE&&nc>=0&&nc<SIZE&&!flood.has(nr*SIZE+nc)&&grid[nr][nc]===colorIdx) {
+        border.push([nr, nc]);
+      }
+    });
+  });
+  // Set flood color
+  flood.forEach(key => { grid[Math.floor(key/SIZE)][key%SIZE] = colorIdx; });
+  // BFS expand through same-color neighbors
+  const queue = [...border];
+  const seen = new Set(flood);
+  while (queue.length) {
+    const [r, c] = queue.shift();
+    const key = r*SIZE+c;
+    if (seen.has(key)) continue;
+    seen.add(key); newFlood.add(key);
+    grid[r][c] = colorIdx;
+    [[1,0],[-1,0],[0,1],[0,-1]].forEach(([dr,dc]) => {
+      const nr=r+dr, nc=c+dc;
+      if (nr>=0&&nr<SIZE&&nc>=0&&nc<SIZE&&!seen.has(nr*SIZE+nc)&&grid[nr][nc]===colorIdx)
+        queue.push([nr,nc]);
+    });
+  }
+  flood = newFlood;
+  movesLeft--;
+  render();
+  checkWin();
+}
+
+function checkWin() {
+  const total = SIZE * SIZE;
+  const pct = Math.round(flood.size / total * 100);
+  document.getElementById('pct').textContent = pct + '%';
+  document.getElementById('moves-left').textContent = movesLeft;
+  updateMovesBar();
+  if (flood.size === total) {
+    document.getElementById('status').textContent = `🎉 Thắng! Còn ${movesLeft} bước dư!`;
+    level++;
+    setTimeout(newGame, 1500);
+  } else if (movesLeft <= 0) {
+    document.getElementById('status').textContent = `😢 Hết bước! Chiếm được ${pct}%`;
+  }
+}
+
+function render() {
+  const board = document.getElementById('board');
+  board.style.gridTemplateColumns = `repeat(${SIZE}, 28px)`;
+  board.innerHTML = '';
+  for (let r = 0; r < SIZE; r++) {
+    for (let c = 0; c < SIZE; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.style.background = COLS[grid[r][c]];
+      if (flood.has(r * SIZE + c)) {
+        cell.style.outline = '1px solid rgba(255,255,255,.18)';
+      }
+      board.appendChild(cell);
+    }
+  }
+  // Color buttons
+  const cb = document.getElementById('color-btns');
+  cb.innerHTML = '';
+  const cur = grid[0][0];
+  COLS.forEach((col, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'color-btn' + (i === cur ? ' selected' : '');
+    btn.style.background = col;
+    btn.onclick = () => applyColor(i);
+    cb.appendChild(btn);
+  });
+}
+
+function buildMovesBar() {
+  const bar = document.getElementById('moves-bar');
+  bar.innerHTML = '';
+  for (let i = 0; i < maxMoves; i++) {
+    const dot = document.createElement('div'); dot.className = 'move-dot'; bar.appendChild(dot);
+  }
+}
+
+function updateMovesBar() {
+  const dots = document.querySelectorAll('.move-dot');
+  const used = maxMoves - movesLeft;
+  dots.forEach((d, i) => d.classList.toggle('used', i < used));
+}
+
+newGame();
+</script>
+</body>
+</html>

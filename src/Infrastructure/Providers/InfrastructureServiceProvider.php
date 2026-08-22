@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace Infrastructure\Providers;
 
+use Domain\Game\Repositories\GameRepositoryInterface;
 use Domain\User\Repositories\UserRepositoryContract;
 use Illuminate\Support\ServiceProvider;
+use Infrastructure\Game\Persistence\Repositories\GameRepository;
 use Infrastructure\User\Persistence\Repositories\UserRepository;
 
 class InfrastructureServiceProvider extends ServiceProvider
 {
     public $singletons = [
         UserRepositoryContract::class => UserRepository::class,
+        GameRepositoryInterface::class => GameRepository::class,
     ];
 
     public function register(): void {}
