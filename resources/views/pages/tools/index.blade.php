@@ -12,12 +12,12 @@
             $currentCategoryModel = request('category') ? $categories->firstWhere('slug', request('category')) : null;
         @endphp
         <div class="breadcrumb">
-            <a href="{{ url('/') }}">Trang Chủ</a>
+            <a href="{{ url('/') }}">{{ __('home') }}</a>
             <span>/</span>
             <a href="{{ url('/tools') }}" style="color: inherit; text-decoration: none;">{{ __('tools_hub') }}</a>
             @if($currentCategoryModel)
                 <span>/</span>
-                <span style="color: var(--text-main); font-weight: 600;">{{ $currentCategoryModel->name }}</span>
+                <span style="color: var(--text-main); font-weight: 600;">{{ $currentCategoryModel->display_name }}</span>
             @elseif(request('category'))
                 <span>/</span>
                 <span style="color: var(--text-main); font-weight: 600;">{{ request('category') }}</span>
@@ -25,7 +25,7 @@
         </div>
 
         <div style="margin-bottom: 2.5rem;">
-            <h1>{{ __('all_tools') }} <span class="gradient-text">&amp; Tiện Ích Trực Tuyến</span></h1>
+            <h1>{{ __('all_tools') }} <span class="gradient-text">&amp; {{ __('online_utilities') }}</span></h1>
             <p style="margin-top: 0.5rem; font-size: 1.05rem;">
                 {{ __('popular_tools_subtitle') }}
             </p>
@@ -58,7 +58,7 @@
                                     @else <x-heroicon-s-bolt style="width: 1.2em; height: 1.2em;" />
                                     @endif
                                 </span>
-                                <span>{{ $category->name }} ({{ $category->tools_count ?? $category->tools->count() }})</span>
+                                <span>{{ $category->display_name }} ({{ $category->tools_count ?? $category->tools->count() }})</span>
                             </a>
                         </div>
                     @endforeach
@@ -70,8 +70,8 @@
         {{-- Tools Grid --}}
         @if($tools->isEmpty())
             <div class="tool-card" style="text-align: center; padding: 4rem 2rem;">
-                <h3>Không tìm thấy công cụ phù hợp</h3>
-                <p style="margin-top: 0.5rem;">Vui lòng thử lại với từ khóa khác hoặc xóa bộ lọc.</p>
+                <h3>{{ __('no_tools_found') }}</h3>
+                <p style="margin-top: 0.5rem;">{{ __('no_tools_found_desc') }}</p>
                 <a href="{{ url('/tools') }}" class="btn btn-primary btn-sm" style="margin-top: 1.5rem;">
                     {{ __('all_tools') }}
                 </a>
@@ -80,8 +80,8 @@
             <div class="grid-cards">
                 @foreach($tools as $tool)
                     <div class="tool-card"
-                         data-tool-name="{{ $tool->name }}" 
-                         data-tool-summary="{{ $tool->summary }}" 
+                         data-tool-name="{{ $tool->display_name }}" 
+                         data-tool-summary="{{ $tool->display_summary }}" 
                          data-tool-category="{{ $tool->category?->slug ?? '' }}">
                         
                         <div class="card-top">
@@ -99,11 +99,11 @@
                                 @else <x-heroicon-s-bolt style="width: 1.2em; height: 1.2em;" />
                                 @endif
                             </div>
-                            <span class="badge">{{ $tool->category?->name ?? 'Utility' }}</span>
+                            <span class="badge">{{ $tool->category?->display_name ?? 'Utility' }}</span>
                         </div>
 
-                        <h3 class="card-title">{{ $tool->name }}</h3>
-                        <p class="card-desc">{{ $tool->summary }}</p>
+                        <h3 class="card-title">{{ $tool->display_name }}</h3>
+                        <p class="card-desc">{{ $tool->display_summary }}</p>
 
                         <div class="card-footer">
                             <span style="display: flex; align-items: center; gap: 0.35rem;">

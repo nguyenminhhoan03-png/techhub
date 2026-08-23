@@ -99,9 +99,9 @@
             <nav class="nav-desktop">
                 <ul class="nav-menu">
                     <li><a href="{{ url('/tools') }}" class="nav-item-link {{ request()->is('tools*') && !request('category') ? 'active' : '' }}"><x-heroicon-s-bolt style="width: 14px; height: 14px; flex-shrink: 0;" /> {{ __('tools_hub') }}</a></li>
-                    <li><a href="{{ route('articles.index') }}" class="nav-item-link {{ request()->is('articles*') ? 'active' : '' }}"><x-heroicon-o-newspaper style="width: 14px; height: 14px; flex-shrink: 0;" /> Bài Viết</a></li>
-                    <li><a href="{{ route('games.index') }}" class="nav-item-link {{ request()->is('games*') ? 'active' : '' }}"><x-heroicon-o-puzzle-piece style="width: 14px; height: 14px; flex-shrink: 0;" /> Games</a></li>
-                    <li><a href="{{ url('/tools?category=seo') }}" class="nav-item-link {{ request('category') === 'seo' ? 'active' : '' }}"><x-heroicon-o-globe-alt style="width: 14px; height: 14px; flex-shrink: 0;" /> SEO</a></li>
+                    <li><a href="{{ route('articles.index') }}" class="nav-item-link {{ request()->is('articles*') ? 'active' : '' }}"><x-heroicon-o-newspaper style="width: 14px; height: 14px; flex-shrink: 0;" /> {{ __('articles') }}</a></li>
+                    <li><a href="{{ route('games.index') }}" class="nav-item-link {{ request()->is('games*') ? 'active' : '' }}"><x-heroicon-o-puzzle-piece style="width: 14px; height: 14px; flex-shrink: 0;" /> {{ __('games') }}</a></li>
+                    <li><a href="{{ url('/tools?category=seo') }}" class="nav-item-link {{ request('category') === 'seo' ? 'active' : '' }}"><x-heroicon-o-globe-alt style="width: 14px; height: 14px; flex-shrink: 0;" /> {{ __('seo') }}</a></li>
                 </ul>
             </nav>
 
@@ -117,8 +117,6 @@
                         <span>🇬🇧</span> <span>EN</span>
                     </a>
                 </div>
-
-
 
                 <a href="{{ url('/tools') }}" class="btn btn-primary btn-sm header-cta-btn">
                     {{ __('explore_tools') }} →
@@ -145,13 +143,13 @@
                     <li>
                         <a href="{{ route('articles.index') }}" class="mobile-nav-link {{ request()->is('articles*') ? 'active' : '' }}">
                             <x-heroicon-o-newspaper style="width: 1.2em; height: 1.2em;" />
-                            <span>Bài Viết</span>
+                            <span>{{ __('articles') }}</span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('games.index') }}" class="mobile-nav-link {{ request()->is('games*') ? 'active' : '' }}">
                             <x-heroicon-o-puzzle-piece style="width: 1.2em; height: 1.2em;" />
-                            <span>🎮 Web Games</span>
+                            <span>🎮 {{ __('games') }}</span>
                         </a>
                     </li>
                     <li>
@@ -163,14 +161,14 @@
                     <li>
                         <a href="{{ url('/tools?category=seo') }}" class="mobile-nav-link {{ request('category') === 'seo' ? 'active' : '' }}">
                             <x-heroicon-o-globe-alt style="width: 1.2em; height: 1.2em;" />
-                            <span>SEO Tools</span>
+                            <span>{{ __('seo') }}</span>
                         </a>
                     </li>
                     @if(auth()->check() && auth()->user()?->role === 'admin')
                         <li>
                             <a href="{{ route('admin.dashboard') }}" class="mobile-nav-link" style="color: var(--accent-indigo);">
                                 <x-heroicon-s-shield-check style="width: 1.2em; height: 1.2em;" />
-                                <span>Trang Quản Trị (Admin)</span>
+                                <span>{{ __('admin_portal') }}</span>
                             </a>
                         </li>
                     @endif
@@ -229,7 +227,7 @@
                     <ul class="footer-links">
                         <li><a href="{{ url('/tools/loan-calculator') }}">Loan Calculator (EMI)</a></li>
                         <li><a href="{{ url('/tools/percentage-calculator') }}">Percentage Calculator</a></li>
-                        <li><a href="{{ url('/tools/bmi-calculator') }}">BMI & Body Weight</a></li>
+                        <li><a href="{{ url('/tools/bmi-calculator') }}">BMI &amp; Body Weight</a></li>
                         <li><a href="{{ url('/tools/image-color-extractor') }}">Color Palette Extractor</a></li>
                         <li><a href="{{ url('/tools/image-metadata-inspector') }}">EXIF Metadata</a></li>
                     </ul>
@@ -240,8 +238,8 @@
                     <ul class="footer-links">
                         <li><a href="{{ url('/api/tools') }}">{{ __('api_access') }}</a></li>
                         <li><a href="{{ url('/up') }}">{{ __('system_status') }}</a></li>
-                        <li><a href="{{ url('/admin/login') }}">Quản Trị Viên (Admin)</a></li>
-                        <li><a href="{{ url('/tools') }}">{{ __('all_tools') }} (11+)</a></li>
+                        <li><a href="{{ url('/admin/login') }}">{{ __('admin_portal') }}</a></li>
+                        <li><a href="{{ url('/tools') }}">{{ __('all_tools') }} (18+)</a></li>
                     </ul>
                 </div>
             </div>

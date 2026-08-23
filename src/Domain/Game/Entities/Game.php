@@ -65,13 +65,32 @@ class Game extends Model
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
+    public function getDisplayNameAttribute(): string
+    {
+        $key = 'games.' . $this->slug . '.name';
+        return \Illuminate\Support\Facades\Lang::has($key) ? __($key) : $this->name;
+    }
+
+    public function getDisplaySummaryAttribute(): string
+    {
+        $key = 'games.' . $this->slug . '.summary';
+        return \Illuminate\Support\Facades\Lang::has($key) ? __($key) : $this->summary;
+    }
+
+    public function getDisplayControlsHintAttribute(): ?string
+    {
+        $key = 'games.' . $this->slug . '.controls_hint';
+        return \Illuminate\Support\Facades\Lang::has($key) ? __($key) : $this->controls_hint;
+    }
+
     public function getDifficultyLabelAttribute(): string
     {
+        $isEn = app()->getLocale() === 'en';
         return match ($this->difficulty) {
-            'easy'   => 'Dễ',
-            'medium' => 'Trung Bình',
-            'hard'   => 'Khó',
-            default  => 'Dễ',
+            'easy'   => $isEn ? 'Easy' : 'Dễ',
+            'medium' => $isEn ? 'Medium' : 'Trung Bình',
+            'hard'   => $isEn ? 'Hard' : 'Khó',
+            default  => $isEn ? 'Easy' : 'Dễ',
         };
     }
 

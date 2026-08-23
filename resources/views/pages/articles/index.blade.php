@@ -16,16 +16,16 @@
             So Sánh <span class="gradient-text">Phần Cứng &amp; Thiết Bị</span> Thông Minh
         </h1>
         <p style="font-size: 1.15rem; color: var(--text-sub); line-height: 1.6;">
-            Tra cứu thông số kỹ thuật, so sánh điểm Benchmark đối đầu và tìm ra sản phẩm phù hợp nhất với ngân sách của bạn.
+            Tra cứu thông số kỹ thuật, so sánh điểm benchmark đối đầu và tìm ra sản phẩm phù hợp nhất với ngân sách của bạn.
         </p>
 
         {{-- Search Form --}}
         <form method="GET" action="{{ route('articles.index') }}" style="max-width: 580px; margin: 2rem auto 0; position: relative; display: flex; gap: 0.5rem;">
             <div style="position: relative; flex: 1;">
-                <input type="text" name="search" class="form-control" style="padding-left: 2.8rem; height: 50px; font-size: 1rem; border-radius: var(--radius-full);" placeholder="Tìm bài so sánh, review, cấu hình..." value="{{ request('search') }}">
+                <input type="text" name="search" class="form-control" style="padding-left: 2.8rem; height: 50px; font-size: 1rem; border-radius: var(--radius-full);" placeholder="{{ __('search_articles_placeholder') }}" value="{{ request('search') }}">
                 <x-heroicon-s-magnifying-glass style="position: absolute; left: 1.1rem; top: 50%; transform: translateY(-50%); width: 1.3em; height: 1.3em; color: var(--text-muted);" />
             </div>
-            <button type="submit" class="btn btn-primary" style="border-radius: var(--radius-full); padding: 0 1.5rem;">Tìm Kiếm</button>
+            <button type="submit" class="btn btn-primary" style="border-radius: var(--radius-full); padding: 0 1.5rem;">{{ __('search') }}</button>
         </form>
     </div>
 </section>
@@ -36,32 +36,32 @@
         <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem;">
             <a href="{{ route('articles.index') }}" class="cat-tab {{ empty($currentType) ? 'active' : '' }}">
                 <x-heroicon-o-squares-2x2 style="width: 1.2em; height: 1.2em;" />
-                <span>Tất Cả Bài Viết</span>
+                <span>{{ __('all_articles') }}</span>
             </a>
             <a href="{{ route('articles.index', ['type' => 'comparison']) }}" class="cat-tab {{ $currentType === 'comparison' ? 'active' : '' }}">
                 <x-heroicon-o-scale style="width: 1.2em; height: 1.2em;" />
-                <span>So Sánh Đối Đầu</span>
+                <span>{{ __('type_comparison') }}</span>
             </a>
             <a href="{{ route('articles.index', ['type' => 'review']) }}" class="cat-tab {{ $currentType === 'review' ? 'active' : '' }}">
                 <x-heroicon-o-star style="width: 1.2em; height: 1.2em;" />
-                <span>Đánh Giá Chi Tiết</span>
+                <span>{{ __('type_review') }}</span>
             </a>
             <a href="{{ route('articles.index', ['type' => 'buying_guide']) }}" class="cat-tab {{ $currentType === 'buying_guide' ? 'active' : '' }}">
                 <x-heroicon-o-shopping-bag style="width: 1.2em; height: 1.2em;" />
-                <span>Tư Vấn Mua Sắm</span>
+                <span>{{ __('type_buying_guide') }}</span>
             </a>
             <a href="{{ route('articles.index', ['type' => 'news']) }}" class="cat-tab {{ $currentType === 'news' ? 'active' : '' }}">
                 <x-heroicon-o-newspaper style="width: 1.2em; height: 1.2em;" />
-                <span>Tin Công Nghệ</span>
+                <span>{{ __('type_news') }}</span>
             </a>
         </div>
 
         {{-- Articles Grid --}}
         @if($articles->isEmpty())
             <div class="tool-card" style="text-align: center; padding: 4rem 2rem; max-width: 600px; margin: 0 auto;">
-                <h3>Không tìm thấy bài viết phù hợp</h3>
-                <p style="margin-top: 0.5rem;">Thử tìm kiếm với từ khóa khác hoặc quay lại danh sách đầy đủ.</p>
-                <a href="{{ route('articles.index') }}" class="btn btn-primary btn-sm" style="margin-top: 1.5rem;">Xem Tất Cả Bài Viết</a>
+                <h3>{{ __('no_articles_found') }}</h3>
+                <p style="margin-top: 0.5rem;">{{ __('no_articles_found_desc') }}</p>
+                <a href="{{ route('articles.index') }}" class="btn btn-primary btn-sm" style="margin-top: 1.5rem;">{{ __('all_articles') }}</a>
             </div>
         @else
             <div class="grid-cards">
@@ -85,9 +85,9 @@
 
                         <div style="padding: 1.5rem; display: flex; flex-direction: column; flex: 1;">
                             <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.65rem;">
-                                <span>{{ $art->category?->name ?? 'Công Nghệ' }}</span>
+                                <span>{{ $art->category?->display_name ?? 'Tech' }}</span>
                                 <span>•</span>
-                                <span>{{ $art->read_time_minutes }} phút đọc</span>
+                                <span>{{ __('read_time', ['count' => $art->read_time_minutes]) }}</span>
                                 <span>•</span>
                                 <span>{{ $art->published_at ? $art->published_at->format('d/m/Y') : '' }}</span>
                             </div>
@@ -98,17 +98,16 @@
                                 </a>
                             </h3>
 
-                            <p style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.55; margin-bottom: 1.25rem; flex: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
-                                {{ $art->excerpt }}
-                            </p>
+                            @if($art->summary)
+                                <p style="font-size: 0.9rem; color: var(--text-sub); line-height: 1.6; margin-bottom: 1.25rem; flex: 1;">
+                                    {{ Str::limit($art->summary, 120) }}
+                                </p>
+                            @endif
 
-                            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 0.85rem;">
-                                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--text-muted);">
-                                    <x-heroicon-o-eye style="width: 1.1em; height: 1.1em;" />
-                                    <span>{{ number_format($art->view_count) }} lượt xem</span>
-                                </div>
+                            <div style="margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 0.82rem; color: var(--text-muted);">{{ number_format($art->view_count) }} views</span>
                                 <a href="{{ route('articles.show', $art->slug) }}" class="btn btn-secondary btn-sm" style="padding: 0.35rem 0.75rem; font-size: 0.82rem;">
-                                    Đọc Tiếp →
+                                    {{ __('read_article') }}
                                 </a>
                             </div>
                         </div>

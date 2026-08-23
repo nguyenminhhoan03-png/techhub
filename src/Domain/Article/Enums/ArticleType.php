@@ -14,12 +14,13 @@ enum ArticleType: string
 
     public function label(): string
     {
+        $isEn = app()->getLocale() === 'en';
         return match ($this) {
-            self::Article => 'Bài Viết',
-            self::Comparison => 'So Sánh Đối Đầu',
-            self::Review => 'Đánh Giá Chi Tiết',
-            self::BuyingGuide => 'Tư Vấn Mua Sắm',
-            self::News => 'Tin Công Nghệ',
+            self::Article => $isEn ? 'Article' : 'Bài Viết',
+            self::Comparison => $isEn ? 'Head-to-Head Comparison' : 'So Sánh Đối Đầu',
+            self::Review => $isEn ? 'In-Depth Review' : 'Đánh Giá Chi Tiết',
+            self::BuyingGuide => $isEn ? 'Buying Guide' : 'Tư Vấn Mua Sắm',
+            self::News => $isEn ? 'Tech News' : 'Tin Công Nghệ',
         };
     }
 

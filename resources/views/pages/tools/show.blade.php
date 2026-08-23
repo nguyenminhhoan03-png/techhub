@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('meta_title', $tool->name . ' — TechHub')
-@section('meta_description', $tool->summary)
+@section('meta_title', $tool->display_name . ' — TechHub')
+@section('meta_description', $tool->display_summary)
 @section('canonical_url', url('/tools/' . $tool->slug))
 
 @push('head')
@@ -10,7 +10,7 @@
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "{{ $tool->name }}",
+  "name": "{{ $tool->display_name }}",
   "operatingSystem": "Web Browser",
   "applicationCategory": "DeveloperApplication",
   "offers": {
@@ -35,19 +35,19 @@
     {
       "@type": "ListItem",
       "position": 1,
-      "name": "Home",
+      "name": "{{ __('home') }}",
       "item": "{{ url('/') }}"
     },
     {
       "@type": "ListItem",
       "position": 2,
-      "name": "{{ $tool->category?->name ?? 'Tools' }}",
+      "name": "{{ $tool->category?->display_name ?? 'Tools' }}",
       "item": "{{ url('/tools?category=' . ($tool->category?->slug ?? '')) }}"
     },
     {
       "@type": "ListItem",
       "position": 3,
-      "name": "{{ $tool->name }}",
+      "name": "{{ $tool->display_name }}",
       "item": "{{ url('/tools/' . $tool->slug) }}"
     }
   ]
@@ -61,28 +61,28 @@
         
         {{-- Breadcrumb Navigation --}}
         <div class="breadcrumb">
-            <a href="{{ url('/') }}">Trang Chủ</a>
+            <a href="{{ url('/') }}">{{ __('home') }}</a>
             <span>/</span>
             <a href="{{ url('/tools') }}">{{ __('tools_hub') }}</a>
             <span>/</span>
             @if($tool->category)
-                <a href="{{ url('/tools?category=' . $tool->category->slug) }}">{{ $tool->category->name }}</a>
+                <a href="{{ url('/tools?category=' . $tool->category->slug) }}">{{ $tool->category->display_name }}</a>
                 <span>/</span>
             @endif
-            <span style="color: var(--text-main);">{{ $tool->name }}</span>
+            <span style="color: var(--text-main);">{{ $tool->display_name }}</span>
         </div>
 
         {{-- Workspace Header --}}
         <div style="margin-bottom: 2.5rem;">
             <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; flex-wrap: wrap;">
-                <span class="badge">{{ $tool->category?->name ?? 'Utility' }}</span>
+                <span class="badge">{{ $tool->category?->display_name ?? 'Utility' }}</span>
                 <span class="badge badge-emerald">★ {{ number_format((float)$tool->rating_avg, 2) }}</span>
                 <span style="font-size: 0.85rem; color: var(--text-muted);">
                     {{ __('executions_count', ['count' => number_format($tool->execution_count)]) }}
                 </span>
             </div>
-            <h1>{{ $tool->name }}</h1>
-            <p style="font-size: 1.12rem; margin-top: 0.5rem; color: var(--text-sub);">{{ $tool->summary }}</p>
+            <h1>{{ $tool->display_name }}</h1>
+            <p style="font-size: 1.12rem; margin-top: 0.5rem; color: var(--text-sub);">{{ $tool->display_summary }}</p>
         </div>
 
         {{-- Main Workspace Grid --}}
@@ -888,7 +888,7 @@ Hỏi: TechHub có hỗ trợ tạo Schema miễn phí không?
                         <div style="display: flex; flex-direction: column; gap: 0.85rem;">
                             @foreach($relatedTools as $related)
                                 <a href="{{ url('/tools/' . $related->slug) }}" style="display: flex; align-items: center; justify-content: space-between; font-size: 0.92rem; color: var(--text-sub);">
-                                    <span>{{ $related->name }}</span>
+                                    <span>{{ $related->display_name }}</span>
                                     <span style="color: var(--accent-cyan);">→</span>
                                 </a>
                             @endforeach
@@ -916,12 +916,12 @@ Hỏi: TechHub có hỗ trợ tạo Schema miễn phí không?
 
         {{-- SEO Longform Content & Documentation --}}
         <div class="tool-card" style="padding: 2.8rem; line-height: 1.75;">
-            <h2>{{ __('about_tool', ['name' => $tool->name]) }}</h2>
+            <h2>{{ __('about_tool', ['name' => $tool->display_name]) }}</h2>
             <div style="margin-top: 1.25rem; color: var(--text-sub); font-size: 0.98rem;">
-                @if($tool->description_markdown)
-                    {!! nl2br(e($tool->description_markdown)) !!}
+                @if($tool->display_description_markdown)
+                    {!! nl2br(e($tool->display_description_markdown)) !!}
                 @else
-                    <p>{{ $tool->summary }}</p>
+                    <p>{{ $tool->display_summary }}</p>
                 @endif
 
                 <h3 style="margin-top: 2.5rem; margin-bottom: 0.85rem; color: var(--text-main);">{{ __('how_to_use') }}</h3>

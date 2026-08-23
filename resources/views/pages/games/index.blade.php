@@ -64,16 +64,16 @@
 
         {{-- Breadcrumb --}}
         <div class="breadcrumb" style="margin-bottom: 1.5rem;">
-            <a href="{{ url('/') }}">Trang Chủ</a>
+            <a href="{{ url('/') }}">{{ __('home') }}</a>
             <span>/</span>
             @if($activeCategory || $search)
-                <a href="{{ route('games.index') }}">Web Games</a>
+                <a href="{{ route('games.index') }}">{{ __('games') }}</a>
                 <span>/</span>
                 <span style="color: var(--text-main); font-weight: 600;">
-                    {{ $activeCategory ? $activeCategory->name : 'Tìm kiếm: "' . e($search) . '"' }}
+                    {{ $activeCategory ? $activeCategory->display_name : (app()->getLocale() === 'en' ? 'Search: "' . e($search) . '"' : 'Tìm kiếm: "' . e($search) . '"') }}
                 </span>
             @else
-                <span style="color: var(--text-main); font-weight: 600;">🎮 Web Games Portal</span>
+                <span style="color: var(--text-main); font-weight: 600;">🎮 {{ __('games') }} Portal</span>
             @endif
         </div>
 
@@ -86,7 +86,7 @@
                 {{-- Quick Search Box --}}
                 <div>
                     <label for="game-search-input" style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); display: block; margin-bottom: 0.5rem;">
-                        🔍 Tìm Kiếm Game
+                        🔍 {{ __('search') }} Game
                     </label>
                     <form action="{{ route('games.index') }}" method="GET" style="position: relative;">
                         <input
@@ -94,13 +94,13 @@
                             name="q"
                             id="game-search-input"
                             value="{{ request('q') }}"
-                            placeholder="Gõ tên game (VD: 2 người, đua xe)..."
+                            placeholder="{{ __('search_games_placeholder') }}"
                             style="width: 100%; padding: 0.6rem 2.2rem 0.6rem 0.85rem; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: var(--text-main); font-size: 0.85rem; outline: none; transition: border-color 0.2s;"
                             onfocus="this.style.borderColor='var(--accent-indigo)'"
                             onblur="this.style.borderColor='var(--border-subtle)'"
                         >
                         @if(request('q'))
-                            <a href="{{ route('games.index') }}" style="position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); text-decoration: none; font-size: 0.85rem;" title="Xóa tìm kiếm">✕</a>
+                            <a href="{{ route('games.index') }}" style="position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); text-decoration: none; font-size: 0.85rem;" title="Clear">✕</a>
                         @endif
                         @if($categorySlug)
                             <input type="hidden" name="category" value="{{ $categorySlug }}">
@@ -109,10 +109,10 @@
 
                     {{-- Popular Keyword Tags --}}
                     <div style="display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.65rem;">
-                        <a href="{{ route('games.index', ['q' => '2 người']) }}" style="font-size: 0.72rem; padding: 0.15rem 0.45rem; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: 4px; color: var(--text-muted); text-decoration: none;">2 người</a>
-                        <a href="{{ route('games.index', ['q' => 'đua xe']) }}" style="font-size: 0.72rem; padding: 0.15rem 0.45rem; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: 4px; color: var(--text-muted); text-decoration: none;">đua xe</a>
-                        <a href="{{ route('games.index', ['q' => 'bắn súng']) }}" style="font-size: 0.72rem; padding: 0.15rem 0.45rem; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: 4px; color: var(--text-muted); text-decoration: none;">bắn súng</a>
-                        <a href="{{ route('games.index', ['q' => 'zombie']) }}" style="font-size: 0.72rem; padding: 0.15rem 0.45rem; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: 4px; color: var(--text-muted); text-decoration: none;">zombie</a>
+                        <a href="{{ route('games.index', ['q' => '2048']) }}" style="font-size: 0.72rem; padding: 0.15rem 0.45rem; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: 4px; color: var(--text-muted); text-decoration: none;">2048</a>
+                        <a href="{{ route('games.index', ['q' => 'snake']) }}" style="font-size: 0.72rem; padding: 0.15rem 0.45rem; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: 4px; color: var(--text-muted); text-decoration: none;">snake</a>
+                        <a href="{{ route('games.index', ['q' => 'runner']) }}" style="font-size: 0.72rem; padding: 0.15rem 0.45rem; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: 4px; color: var(--text-muted); text-decoration: none;">runner</a>
+                        <a href="{{ route('games.index', ['q' => 'puzzle']) }}" style="font-size: 0.72rem; padding: 0.15rem 0.45rem; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: 4px; color: var(--text-muted); text-decoration: none;">puzzle</a>
                     </div>
                 </div>
 
@@ -121,14 +121,14 @@
                 {{-- Category Nav Links --}}
                 <div>
                     <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.65rem;">
-                        🗂️ Danh Mục Game
+                        🗂️ {{ __('games') }}
                     </div>
                     <nav style="display: flex; flex-direction: column; gap: 0.35rem;">
                         <a href="{{ route('games.index') }}"
                            class="sidebar-game-cat {{ !$categorySlug && !$search ? 'active' : '' }}"
                            style="display: flex; align-items: center; justify-content: space-between; padding: 0.65rem 0.85rem; border-radius: var(--radius-sm); text-decoration: none; font-size: 0.9rem; font-weight: 600; color: {{ !$categorySlug && !$search ? 'var(--text-main)' : 'var(--text-sub)' }}; background: {{ !$categorySlug && !$search ? 'var(--bg-surface-elevated)' : 'transparent' }}; border: 1px solid {{ !$categorySlug && !$search ? 'var(--accent-indigo)' : 'transparent' }};">
                             <span style="display: flex; align-items: center; gap: 0.5rem;">
-                                <span>🎮</span> <span>Tất Cả Games</span>
+                                <span>🎮</span> <span>{{ __('filter_all') }}</span>
                             </span>
                             <span style="font-size: 0.75rem; font-weight: 700; background: var(--border-subtle); color: var(--text-muted); padding: 0.15rem 0.5rem; border-radius: 999px;">
                                 {{ $totalGamesCount }}
@@ -140,7 +140,7 @@
                                class="sidebar-game-cat {{ $categorySlug === $cat->slug ? 'active' : '' }}"
                                style="display: flex; align-items: center; justify-content: space-between; padding: 0.65rem 0.85rem; border-radius: var(--radius-sm); text-decoration: none; font-size: 0.9rem; font-weight: 600; color: {{ $categorySlug === $cat->slug ? 'var(--text-main)' : 'var(--text-sub)' }}; background: {{ $categorySlug === $cat->slug ? 'var(--bg-surface-elevated)' : 'transparent' }}; border: 1px solid {{ $categorySlug === $cat->slug ? $cat->color : 'transparent' }};">
                                 <span style="display: flex; align-items: center; gap: 0.5rem;">
-                                    <span>{{ $cat->icon }}</span> <span>{{ $cat->name }}</span>
+                                    <span>{{ $cat->icon }}</span> <span>{{ $cat->display_name }}</span>
                                 </span>
                                 <span style="font-size: 0.75rem; font-weight: 700; background: {{ $cat->color }}22; color: {{ $cat->color }}; padding: 0.15rem 0.5rem; border-radius: 999px;">
                                     {{ $cat->games_count }}

@@ -1,5 +1,5 @@
 <article class="game-portal-card {{ !empty($isFeaturedHero) ? 'is-hero-card' : '' }}">
-    <a href="{{ route('games.show', $game->slug) }}" class="game-card-link" title="Chơi game {{ $game->name }} ngay">
+    <a href="{{ route('games.show', $game->slug) }}" class="game-card-link" title="{{ __('play_game') }} {{ $game->display_name }}">
         
         {{-- Cover Poster Artwork Container (16:10 Aspect Ratio) --}}
         <div class="game-card-cover">
@@ -8,7 +8,7 @@
             {{-- Floating Badges over Cover --}}
             <div class="game-cover-badges">
                 <span class="game-badge-cat" style="background: rgba(15, 17, 32, 0.75); backdrop-filter: blur(8px); color: {{ $game->category->color }}; border: 1px solid {{ $game->category->color }}44;">
-                    {{ $game->category->icon }} {{ $game->category->name }}
+                    {{ $game->category->icon }} {{ $game->category->display_name }}
                 </span>
 
                 @if($game->is_featured)
@@ -31,11 +31,11 @@
             </div>
 
             <h3 class="game-card-title">
-                {{ $game->name }}
+                {{ $game->display_name }}
             </h3>
 
             <p class="game-card-desc">
-                {{ Str::limit($game->summary, 72) }}
+                {{ Str::limit($game->display_summary, 72) }}
             </p>
         </div>
 

@@ -93,4 +93,22 @@ class Tool extends Model
             'config_schema' => 'array',
         ];
     }
+
+    public function getDisplayNameAttribute(): string
+    {
+        $key = 'tools.' . $this->slug . '.name';
+        return \Illuminate\Support\Facades\Lang::has($key) ? __($key) : $this->name;
+    }
+
+    public function getDisplaySummaryAttribute(): string
+    {
+        $key = 'tools.' . $this->slug . '.summary';
+        return \Illuminate\Support\Facades\Lang::has($key) ? __($key) : $this->summary;
+    }
+
+    public function getDisplayDescriptionMarkdownAttribute(): ?string
+    {
+        $key = 'tools.' . $this->slug . '.description_markdown';
+        return \Illuminate\Support\Facades\Lang::has($key) ? __($key) : $this->description_markdown;
+    }
 }

@@ -27,7 +27,11 @@ it('switches locale to English successfully', function (): void {
 
     $response = $this->withSession(['locale' => 'en'])->get('/');
     $response->assertStatus(200)
-        ->assertSee('Tools Hub');
+        ->assertSee('Tools Hub')
+        ->assertSee('Articles')
+        ->assertSee('Developer Tools')
+        ->assertSee('JSON Formatter & Validator')
+        ->assertSee('Open Tool');
 });
 
 it('renders tools catalog page', function (): void {

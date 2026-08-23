@@ -57,4 +57,22 @@ class ToolCategory extends Model
             'sort_order' => 'integer',
         ];
     }
+
+    public function getDisplayNameAttribute(): string
+    {
+        $key = 'categories.' . $this->slug . '.name';
+        if (\Illuminate\Support\Facades\Lang::has($key)) {
+            return __($key);
+        }
+        if (\Illuminate\Support\Facades\Lang::has($this->slug)) {
+            return __($this->slug);
+        }
+        return $this->name;
+    }
+
+    public function getDisplayDescriptionAttribute(): string
+    {
+        $key = 'categories.' . $this->slug . '.description';
+        return \Illuminate\Support\Facades\Lang::has($key) ? __($key) : ($this->description ?? '');
+    }
 }

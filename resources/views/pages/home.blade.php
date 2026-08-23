@@ -1,8 +1,13 @@
 @php
     use Application\Setting\Services\SettingService;
 
-    $heroTitle = SettingService::get('hero_title', __('hero_title_1'));
-    $heroSubtitle = SettingService::get('hero_subtitle', __('hero_subtitle'));
+    $isEn = app()->getLocale() === 'en';
+    $heroTitle = $isEn
+        ? SettingService::get('hero_title_en', __('hero_title_1'))
+        : SettingService::get('hero_title', __('hero_title_1'));
+    $heroSubtitle = $isEn
+        ? SettingService::get('hero_subtitle_en', __('hero_subtitle'))
+        : SettingService::get('hero_subtitle', __('hero_subtitle'));
 @endphp
 @extends('layouts.app')
 
@@ -89,7 +94,7 @@
         {{-- Stats Grid --}}
         <div class="stats-grid">
             <div class="stat-box">
-                <span class="stat-number gradient-text">11+</span>
+                <span class="stat-number gradient-text">{{ $tools->count() }}+</span>
                 <span class="stat-label">{{ __('all_tools') }}</span>
             </div>
             <div class="stat-box">
@@ -143,7 +148,7 @@
                                 @else <x-heroicon-s-bolt style="width: 1.2em; height: 1.2em;" />
                                 @endif
                             </span>
-                            <span>{{ $category->name }} ({{ $category->tools_count ?? $category->tools->count() }})</span>
+                            <span>{{ $category->display_name }} ({{ $category->tools_count ?? $category->tools->count() }})</span>
                         </a>
                     </div>
                 @endforeach
@@ -175,8 +180,8 @@
         <div class="grid-cards">
             @foreach($tools as $tool)
                 <div class="tool-card" 
-                     data-tool-name="{{ $tool->name }}" 
-                     data-tool-summary="{{ $tool->summary }}" 
+                     data-tool-name="{{ $tool->display_name }}" 
+                     data-tool-summary="{{ $tool->display_summary }}" 
                      data-tool-category="{{ $tool->category?->slug ?? '' }}">
                     
                     <div class="card-top">
@@ -194,11 +199,11 @@
                             @else <x-heroicon-s-bolt style="width: 1.2em; height: 1.2em;" />
                             @endif
                         </div>
-                        <span class="badge">{{ $tool->category?->name ?? 'Utility' }}</span>
+                        <span class="badge">{{ $tool->category?->display_name ?? 'Utility' }}</span>
                     </div>
 
-                    <h3 class="card-title">{{ $tool->name }}</h3>
-                    <p class="card-desc">{{ $tool->summary }}</p>
+                    <h3 class="card-title">{{ $tool->display_name }}</h3>
+                    <p class="card-desc">{{ $tool->display_summary }}</p>
 
                     <div class="card-footer">
                         <span style="display: flex; align-items: center; gap: 0.35rem;">

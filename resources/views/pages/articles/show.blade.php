@@ -40,12 +40,12 @@
 <div style="background: var(--bg-surface); border-bottom: 1px solid var(--border-subtle); padding: 0.85rem 0;">
     <div class="container">
         <nav style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--text-muted); flex-wrap: wrap;">
-            <a href="{{ url('/') }}" style="color: var(--text-sub); text-decoration: none;">Trang Chủ</a>
+            <a href="{{ url('/') }}" style="color: var(--text-sub); text-decoration: none;">{{ __('home') }}</a>
             <span>›</span>
-            <a href="{{ route('articles.index') }}" style="color: var(--text-sub); text-decoration: none;">So Sánh &amp; Review</a>
+            <a href="{{ route('articles.index') }}" style="color: var(--text-sub); text-decoration: none;">{{ __('articles') }}</a>
             <span>›</span>
             @if($article->category)
-                <a href="{{ route('articles.index', ['category' => $article->category->slug]) }}" style="color: var(--text-sub); text-decoration: none;">{{ $article->category->name }}</a>
+                <a href="{{ route('articles.index', ['category' => $article->category->slug]) }}" style="color: var(--text-sub); text-decoration: none;">{{ $article->category->display_name }}</a>
                 <span>›</span>
             @endif
             <span style="color: var(--text-main); font-weight: 600;">{{ Str::limit($article->title, 45) }}</span>
@@ -62,12 +62,12 @@
                 {{ $article->type->label() }}
             </span>
             <span style="font-size: 0.85rem; color: var(--text-muted);">
-                Xuất bản: {{ $article->published_at ? $article->published_at->format('d/m/Y') : date('d/m/Y') }}
+                {{ $article->published_at ? $article->published_at->format('d/m/Y') : date('d/m/Y') }}
             </span>
             <span style="color: var(--text-muted);">•</span>
             <span style="font-size: 0.85rem; color: var(--text-muted); display: inline-flex; align-items: center; gap: 0.25rem;">
                 <x-heroicon-o-clock style="width: 1.1em; height: 1.1em;" />
-                {{ $article->read_time_minutes }} phút đọc
+                {{ __('read_time', ['count' => $article->read_time_minutes]) }}
             </span>
             <span style="color: var(--text-muted);">•</span>
             <span style="font-size: 0.85rem; color: var(--text-muted); display: inline-flex; align-items: center; gap: 0.25rem;">

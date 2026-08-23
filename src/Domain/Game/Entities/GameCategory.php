@@ -48,4 +48,19 @@ class GameCategory extends Model
     {
         return $this->hasMany(Game::class, 'category_id')->where('is_active', true);
     }
+
+    public function getDisplayNameAttribute(): string
+    {
+        $key = 'categories.' . $this->slug . '.name';
+        if (\Illuminate\Support\Facades\Lang::has($key)) {
+            return __($key);
+        }
+        return $this->name;
+    }
+
+    public function getDisplayDescriptionAttribute(): string
+    {
+        $key = 'categories.' . $this->slug . '.description';
+        return \Illuminate\Support\Facades\Lang::has($key) ? __($key) : ($this->description ?? '');
+    }
 }

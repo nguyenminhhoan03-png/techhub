@@ -49,4 +49,13 @@ class ContentCategory extends Model
     {
         return $this->hasMany(Article::class, 'category_id');
     }
+
+    public function getDisplayNameAttribute(): string
+    {
+        $key = 'categories.' . $this->slug . '.name';
+        if (\Illuminate\Support\Facades\Lang::has($key)) {
+            return __($key);
+        }
+        return $this->name;
+    }
 }

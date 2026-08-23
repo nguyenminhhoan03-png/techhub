@@ -46,25 +46,25 @@
     {
       "@type": "ListItem",
       "position": 1,
-      "name": "Trang Chủ",
+      "name": "{{ __('home') }}",
       "item": "{{ url('/') }}"
     },
     {
       "@type": "ListItem",
       "position": 2,
-      "name": "Web Games",
+      "name": "{{ __('games') }}",
       "item": "{{ route('games.index') }}"
     },
     {
       "@type": "ListItem",
       "position": 3,
-      "name": "{{ $game->category->name }}",
+      "name": "{{ $game->category->display_name }}",
       "item": "{{ route('games.index', ['category' => $game->category->slug]) }}"
     },
     {
       "@type": "ListItem",
       "position": 4,
-      "name": "{{ $game->name }}",
+      "name": "{{ $game->display_name }}",
       "item": "{{ route('games.show', $game->slug) }}"
     }
   ]
@@ -78,13 +78,13 @@
 
         {{-- Breadcrumb --}}
         <div class="breadcrumb" style="margin-bottom: 1.5rem;">
-            <a href="{{ url('/') }}">Trang Chủ</a>
+            <a href="{{ url('/') }}">{{ __('home') }}</a>
             <span>/</span>
-            <a href="{{ route('games.index') }}">Web Games</a>
+            <a href="{{ route('games.index') }}">{{ __('games') }}</a>
             <span>/</span>
-            <a href="{{ route('games.index', ['category' => $game->category->slug]) }}">{{ $game->category->name }}</a>
+            <a href="{{ route('games.index', ['category' => $game->category->slug]) }}">{{ $game->category->display_name }}</a>
             <span>/</span>
-            <span style="color: var(--text-main); font-weight: 600;">{{ $game->name }}</span>
+            <span style="color: var(--text-main); font-weight: 600;">{{ $game->display_name }}</span>
         </div>
 
         {{-- 2-Column Game Player Layout --}}
@@ -97,18 +97,18 @@
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
                     <div>
                         <h1 style="font-size: 1.85rem; margin-bottom: 0.4rem; color: var(--text-main);">
-                            {{ $game->name }}
+                            {{ $game->display_name }}
                         </h1>
                         <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
                             <a href="{{ route('games.index', ['category' => $game->category->slug]) }}"
                                style="background: {{ $game->category->color }}22; color: {{ $game->category->color }}; font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.65rem; border-radius: 999px; border: 1px solid {{ $game->category->color }}33; text-decoration: none;">
-                                {{ $game->category->icon }} {{ $game->category->name }}
+                                {{ $game->category->icon }} {{ $game->category->display_name }}
                             </a>
                             <span style="font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.65rem; border-radius: 999px; background: {{ $game->difficulty_color }}22; color: {{ $game->difficulty_color }}; border: 1px solid {{ $game->difficulty_color }}33;">
-                                Độ khó: {{ $game->difficulty_label }}
+                                {{ app()->getLocale() === 'en' ? 'Difficulty' : 'Độ khó' }}: {{ $game->difficulty_label }}
                             </span>
                             <span style="font-size: 0.78rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.25rem;">
-                                🕹️ {{ number_format($game->play_count) }} lượt chơi
+                                🕹️ {{ number_format($game->play_count) }} {{ app()->getLocale() === 'en' ? 'plays' : 'lượt chơi' }}
                             </span>
                             <span style="font-size: 0.78rem; color: #f59e0b; font-weight: 700;">
                                 ⭐ 4.9 / 5.0
@@ -251,7 +251,7 @@
                 @if($related->isNotEmpty())
                     <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.5rem;">
                         <h3 style="font-size: 1.05rem; margin-bottom: 1.15rem; color: var(--text-main);">
-                            🎲 Game Cùng Thể Loại
+                            🎲 {{ app()->getLocale() === 'en' ? 'Similar Games' : 'Game Cùng Thể Loại' }}
                         </h3>
                         <div style="display: flex; flex-direction: column; gap: 0.75rem;">
                             @foreach($related as $r)
@@ -264,10 +264,10 @@
                                     </div>
                                     <div style="min-width: 0; flex-grow: 1;">
                                         <div style="font-weight: 700; font-size: 0.88rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                            {{ $r->name }}
+                                            {{ $r->display_name }}
                                         </div>
                                         <div style="font-size: 0.75rem; color: var(--text-muted);">
-                                            🕹️ {{ number_format($r->play_count) }} lượt
+                                            🕹️ {{ number_format($r->play_count) }} {{ app()->getLocale() === 'en' ? 'plays' : 'lượt' }}
                                         </div>
                                     </div>
                                 </a>
@@ -280,7 +280,7 @@
                 @if(isset($categories) && $categories->isNotEmpty())
                     <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem;">
                         <h3 style="font-size: 0.95rem; margin-bottom: 0.85rem; color: var(--text-main);">
-                            🗂️ Khám Phá Thể Loại Khác
+                            🗂️ {{ app()->getLocale() === 'en' ? 'Explore Categories' : 'Khám Phá Thể Loại Khác' }}
                         </h3>
                         <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
                             @foreach($categories as $cat)
@@ -288,7 +288,7 @@
                                    style="font-size: 0.75rem; font-weight: 700; padding: 0.25rem 0.6rem; border-radius: 999px; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); color: var(--text-sub); text-decoration: none; transition: var(--transition-fast);"
                                    onmouseover="this.style.borderColor='var(--accent-indigo)';this.style.color='var(--text-main)'"
                                    onmouseout="this.style.borderColor='var(--border-subtle)';this.style.color='var(--text-sub)'">
-                                    {{ $cat->icon }} {{ $cat->name }}
+                                    {{ $cat->icon }} {{ $cat->display_name }}
                                 </a>
                             @endforeach
                         </div>
