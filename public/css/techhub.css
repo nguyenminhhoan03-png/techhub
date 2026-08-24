@@ -1518,13 +1518,21 @@ textarea.form-control {
 /* Mobile Devices (max-width: 768px) */
 @media (max-width: 768px) {
   body::before,
-  body::after {
+  body::after,
+  .hero-mesh-orb {
     display: none !important;
   }
 
   .container {
     padding-left: 1.25rem !important;
     padding-right: 1.25rem !important;
+  }
+
+  .catalog-section,
+  .tools-grid,
+  .footer {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 500px;
   }
 
   .hero {

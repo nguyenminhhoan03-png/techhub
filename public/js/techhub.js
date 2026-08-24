@@ -4,15 +4,26 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  initCategoriesSwiper();
-  initCategoryLiveFilter();
-  initLiveSearch();
+  // 1. Khởi tạo tức thì các sự kiện cần tương tác ngay
   initKeyboardShortcuts();
   initCopyButtons();
-  initDropzones();
-  initSampleLoaders();
   initToolForm();
-  initSeoLiveCounters();
+
+  // 2. Hoãn các tác vụ tính toán DOM & Layout nặng (Swiper, Filter, Search) khi Main Thread rảnh
+  const initDeferredComponents = () => {
+    initCategoriesSwiper();
+    initCategoryLiveFilter();
+    initLiveSearch();
+    initDropzones();
+    initSampleLoaders();
+    initSeoLiveCounters();
+  };
+
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(initDeferredComponents, { timeout: 1500 });
+  } else {
+    setTimeout(initDeferredComponents, 30);
+  }
 });
 
 // Mobile Navigation Toggle
