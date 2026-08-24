@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Application\SEO\Services;
+namespace Application\Seo\Services;
 
 use Google\Client as GoogleClient;
 use Google\Service\Exception as GoogleServiceException;

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Application\SEO\Commands;
+namespace Application\Seo\Commands;
 
-use Application\SEO\Services\GoogleIndexingService;
+use Application\Seo\Services\GoogleIndexingService;
 use Illuminate\Console\Command;
 
 class SeoIndexUrlsCommand extends Command
