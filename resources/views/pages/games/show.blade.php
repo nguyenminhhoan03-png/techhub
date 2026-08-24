@@ -88,42 +88,42 @@
         </div>
 
         {{-- 2-Column Game Player Layout --}}
-        <div class="game-show-grid" style="display: grid; grid-template-columns: 1fr 340px; gap: 2rem; align-items: start;">
+        <div class="game-show-grid">
 
             {{-- ── LEFT: Game Player & Instructions ── --}}
-            <div style="min-width: 0;">
+            <div class="gs-left-col">
 
                 {{-- Header Title & Controls --}}
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
+                <div class="gs-header">
                     <div>
-                        <h1 style="font-size: 1.85rem; margin-bottom: 0.4rem; color: var(--text-main);">
-                            {{ $game->display_name }}
-                        </h1>
-                        <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                        <h1 class="gs-title">{{ $game->display_name }}</h1>
+                        <div class="gs-meta-row">
                             <a href="{{ route('games.index', ['category' => $game->category->slug]) }}"
-                               style="background: {{ $game->category->color }}22; color: {{ $game->category->color }}; font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.65rem; border-radius: 999px; border: 1px solid {{ $game->category->color }}33; text-decoration: none;">
+                               class="game-badge-cat"
+                               style="background: {{ $game->category->color }}22; color: {{ $game->category->color }}; border: 1px solid {{ $game->category->color }}33;">
                                 {{ $game->category->icon }} {{ $game->category->display_name }}
                             </a>
-                            <span style="font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.65rem; border-radius: 999px; background: {{ $game->difficulty_color }}22; color: {{ $game->difficulty_color }}; border: 1px solid {{ $game->difficulty_color }}33;">
+                            <span class="game-diff-tag"
+                                  style="background: {{ $game->difficulty_color }}22; color: {{ $game->difficulty_color }}; border: 1px solid {{ $game->difficulty_color }}33;">
                                 {{ app()->getLocale() === 'en' ? 'Difficulty' : 'Độ khó' }}: {{ $game->difficulty_label }}
                             </span>
-                            <span style="font-size: 0.78rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.25rem;">
+                            <span class="gs-meta-plays">
                                 🕹️ {{ number_format($game->play_count) }} {{ app()->getLocale() === 'en' ? 'plays' : 'lượt chơi' }}
                             </span>
-                            <span style="font-size: 0.78rem; color: #f59e0b; font-weight: 700;">
+                            <span class="gs-meta-rating">
                                 ⭐ 4.9 / 5.0
                             </span>
                         </div>
                     </div>
 
-                    <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
-                        <button type="button" onclick="reloadGameFrame()" class="btn btn-secondary btn-sm" title="Tải lại game nếu bị lỗi" style="display: flex; align-items: center; gap: 0.35rem;">
+                    <div class="gs-btn-row">
+                        <button type="button" onclick="reloadGameFrame()" class="btn btn-secondary btn-sm btn-icon" title="Tải lại game nếu bị lỗi">
                             <span>🔄</span> <span>Tải Lại</span>
                         </button>
-                        <a href="{{ $game->engine_path }}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm" title="Mở chơi trực tiếp nếu bị chặn quảng cáo/iframe" style="display: flex; align-items: center; gap: 0.35rem;">
+                        <a href="{{ $game->engine_path }}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm btn-icon" title="Mở chơi trực tiếp nếu bị chặn quảng cáo/iframe">
                             <span>🚀</span> <span>Mở Tab Riêng</span>
                         </a>
-                        <button type="button" onclick="toggleFullscreen()" class="btn btn-secondary btn-sm" title="Chơi toàn màn hình" style="display: flex; align-items: center; gap: 0.35rem;">
+                        <button type="button" onclick="toggleFullscreen()" class="btn btn-secondary btn-sm btn-icon" title="Chơi toàn màn hình">
                             <span>⛶</span> <span>Toàn Màn Hình</span>
                         </button>
                         <a href="{{ route('games.index') }}" class="btn btn-secondary btn-sm">
@@ -132,23 +132,23 @@
                     </div>
                 </div>
 
-                {{-- Iframe Game Container with Cinema Ambient Lighting & Responsive Aspect Ratio --}}
-                <div style="position: relative; margin-bottom: 1.25rem;">
+                {{-- Iframe Game Container with Cinema Ambient Lighting --}}
+                <div class="gs-iframe-wrap">
                     <div class="cinema-ambient-glow" style="--ambient-color: {{ $game->category->color }}66;"></div>
-                    <div id="game-container" onclick="focusGameFrame()" style="position: relative; z-index: 1; width: 100%; aspect-ratio: 16 / 10; min-height: 500px; max-height: calc(100vh - 120px); background: #0d1117; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 20px 60px rgba(0,0,0,0.6); cursor: pointer;">
-                        
-                        {{-- Loading Skeleton & Smooth Placeholder --}}
-                        <div id="game-loader" style="position: absolute; inset: 0; z-index: 2; background: #0d1117; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; transition: opacity 0.5s ease; pointer-events: none;">
-                            <div style="width: 48px; height: 48px; border: 4px solid rgba(255,255,255,0.1); border-top-color: var(--accent-cyan); border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
-                            <div style="color: #94a3b8; font-size: 0.92rem; font-weight: 600;">Đang khởi chạy {{ $game->name }}...</div>
-                            <div style="font-size: 0.78rem; color: #64748b;">Vui lòng chờ trong giây lát...</div>
+                    <div id="game-container" onclick="focusGameFrame()">
+
+                        {{-- Loading Spinner --}}
+                        <div id="game-loader" class="gs-game-loader">
+                            <div class="gs-loader-spinner"></div>
+                            <div class="gs-loader-text">Đang khởi chạy {{ $game->name }}...</div>
+                            <div class="gs-loader-hint">Vui lòng chờ trong giây lát...</div>
                         </div>
 
-                        {{-- Black Screen Auto-Detect Banner (ẩn mặc định, hiện sau 6 giây nếu game chưa load) --}}
-                        <div id="game-fallback-banner" style="display: none; position: absolute; bottom: 0; left: 0; right: 0; z-index: 5; background: rgba(234,179,8,0.15); border-top: 1px solid rgba(234,179,8,0.4); backdrop-filter: blur(8px); padding: 0.75rem 1.25rem; text-align: center;">
-                            <span style="color: #fbbf24; font-size: 0.88rem; font-weight: 600;">⚡ Game chưa hiển thị? </span>
-                            <button onclick="reloadGameFrame()" style="background: #f59e0b; color: #000; border: none; border-radius: 6px; padding: 0.3rem 0.9rem; font-weight: 700; font-size: 0.82rem; cursor: pointer; margin-left: 0.5rem;">🔄 Nhấn để tải lại ngay</button>
-                            <button onclick="document.getElementById('game-fallback-banner').style.display='none'" style="background: transparent; border: none; color: #94a3b8; cursor: pointer; margin-left: 0.5rem; font-size: 0.82rem;">✕ Đóng</button>
+                        {{-- Black Screen Fallback Banner --}}
+                        <div id="game-fallback-banner" class="gs-fallback-banner">
+                            <span class="gs-fallback-text">⚡ Game chưa hiển thị? </span>
+                            <button onclick="reloadGameFrame()" class="gs-fallback-btn">🔄 Nhấn để tải lại ngay</button>
+                            <button onclick="document.getElementById('game-fallback-banner').style.display='none'" class="gs-fallback-close">✕ Đóng</button>
                         </div>
 
                         <iframe
@@ -161,19 +161,12 @@
                             allowfullscreen="true"
                             webkitallowfullscreen="true"
                             mozallowfullscreen="true"
-                            style="position: absolute; inset: 0; width: 100%; height: 100%; border: none; display: block;"
+                            class="gs-game-frame"
                             title="{{ $game->name }}"
                             onload="handleGameLoaded()"
                         ></iframe>
                     </div>
                 </div>
-
-                <style>
-                    @keyframes spin {
-                        0% { transform: rotate(0deg); }
-                        100% { transform: rotate(360deg); }
-                    }
-                </style>
 
                 {{-- Controls & Cookie Hint Bar --}}
                 <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; margin-top: 0.85rem; padding: 0.75rem 1.15rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); font-size: 0.86rem; color: var(--text-sub); flex-wrap: wrap;">
