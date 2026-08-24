@@ -138,9 +138,17 @@
                     <div id="game-container" onclick="focusGameFrame()" style="position: relative; z-index: 1; width: 100%; aspect-ratio: 16 / 10; min-height: 500px; max-height: calc(100vh - 120px); background: #0d1117; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 20px 60px rgba(0,0,0,0.6); cursor: pointer;">
                         
                         {{-- Loading Skeleton & Smooth Placeholder --}}
-                        <div id="game-loader" style="position: absolute; inset: 0; z-index: 2; background: #0d1117; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; transition: opacity 0.4s ease; pointer-events: none;">
+                        <div id="game-loader" style="position: absolute; inset: 0; z-index: 2; background: #0d1117; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; transition: opacity 0.5s ease; pointer-events: none;">
                             <div style="width: 48px; height: 48px; border: 4px solid rgba(255,255,255,0.1); border-top-color: var(--accent-cyan); border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
                             <div style="color: #94a3b8; font-size: 0.92rem; font-weight: 600;">Đang khởi chạy {{ $game->name }}...</div>
+                            <div style="font-size: 0.78rem; color: #64748b;">Vui lòng chờ trong giây lát...</div>
+                        </div>
+
+                        {{-- Black Screen Auto-Detect Banner (ẩn mặc định, hiện sau 6 giây nếu game chưa load) --}}
+                        <div id="game-fallback-banner" style="display: none; position: absolute; bottom: 0; left: 0; right: 0; z-index: 5; background: rgba(234,179,8,0.15); border-top: 1px solid rgba(234,179,8,0.4); backdrop-filter: blur(8px); padding: 0.75rem 1.25rem; text-align: center;">
+                            <span style="color: #fbbf24; font-size: 0.88rem; font-weight: 600;">⚡ Game chưa hiển thị? </span>
+                            <button onclick="reloadGameFrame()" style="background: #f59e0b; color: #000; border: none; border-radius: 6px; padding: 0.3rem 0.9rem; font-weight: 700; font-size: 0.82rem; cursor: pointer; margin-left: 0.5rem;">🔄 Nhấn để tải lại ngay</button>
+                            <button onclick="document.getElementById('game-fallback-banner').style.display='none'" style="background: transparent; border: none; color: #94a3b8; cursor: pointer; margin-left: 0.5rem; font-size: 0.82rem;">✕ Đóng</button>
                         </div>
 
                         <iframe
@@ -302,21 +310,41 @@
 </div>
 
 <script>
+    // --- Game State Flags ---
+    let _gameLoaded = false;
+    let _fallbackTimer = null;
+
+    /**
+     * Gọi bởi onload của iframe.
+     * Delay 800ms để engine HTML5 Canvas bên trong có đủ thời gian init và paint lần đầu.
+     * Đây là fix chính cho lỗi màn hình đen: onload bắn quá sớm, canvas chưa render.
+     */
     function handleGameLoaded() {
-        const loader = document.getElementById('game-loader');
-        if (loader) {
-            loader.style.opacity = '0';
-            setTimeout(() => {
-                loader.style.display = 'none';
-            }, 300);
+        // Xóa fallback timer vì game đã phản hồi
+        if (_fallbackTimer) {
+            clearTimeout(_fallbackTimer);
+            _fallbackTimer = null;
         }
-        // Dispatch instant canvas resize pulse
-        window.dispatchEvent(new Event('resize'));
+
+        // Delay 800ms để Canvas engine bên trong iframe có thời gian paint frame đầu tiên
+        setTimeout(() => {
+            _gameLoaded = true;
+            const loader = document.getElementById('game-loader');
+            const banner = document.getElementById('game-fallback-banner');
+            if (loader) {
+                loader.style.opacity = '0';
+                setTimeout(() => { loader.style.display = 'none'; }, 500);
+            }
+            if (banner) banner.style.display = 'none';
+        }, 800);
     }
 
     function reloadGameFrame() {
         const frame = document.getElementById('game-frame');
         const loader = document.getElementById('game-loader');
+        const banner = document.getElementById('game-fallback-banner');
+        _gameLoaded = false;
+        if (banner) banner.style.display = 'none';
         if (loader) {
             loader.style.display = 'flex';
             loader.style.opacity = '1';
@@ -324,19 +352,18 @@
         if (frame) {
             const currentSrc = frame.src;
             frame.src = 'about:blank';
-            setTimeout(() => {
-                frame.src = currentSrc;
-            }, 100);
+            // 200ms gap để browser flush layout trước khi load lại
+            setTimeout(() => { frame.src = currentSrc; }, 200);
         }
+        // Reset fallback timer sau reload
+        _startFallbackTimer();
     }
 
     function focusGameFrame() {
         const frame = document.getElementById('game-frame');
         if (frame) {
             frame.focus();
-            try {
-                frame.contentWindow?.focus();
-            } catch (e) {}
+            try { frame.contentWindow?.focus(); } catch (e) {}
         }
     }
 
@@ -351,13 +378,39 @@
         }
     }
 
-    // Auto Layout Hydration Watchdog for HTML5 Canvas engines
+    /**
+     * Hiện banner gợi ý tải lại sau 6 giây nếu game vẫn chưa load xong.
+     */
+    function _startFallbackTimer() {
+        if (_fallbackTimer) clearTimeout(_fallbackTimer);
+        _fallbackTimer = setTimeout(() => {
+            if (!_gameLoaded) {
+                const banner = document.getElementById('game-fallback-banner');
+                if (banner) banner.style.display = 'block';
+            }
+        }, 6000);
+    }
+
+    /**
+     * FIX CHÍNH CHO CANVAS 0x0:
+     * Thay vì spam window.resize (không đi vào iframe cross-origin được),
+     * ta reload lại src của iframe sau 350ms — đúng lúc container đã settle kích thước CSS.
+     * Lần load thứ 2 này, game engine sẽ thấy kích thước thực và init canvas đúng.
+     */
     document.addEventListener('DOMContentLoaded', () => {
-        [150, 500, 1200, 2500].forEach(delay => {
-            setTimeout(() => {
-                window.dispatchEvent(new Event('resize'));
-            }, delay);
-        });
+        const frame = document.getElementById('game-frame');
+        if (!frame) return;
+
+        const originalSrc = '{{ $game->engine_path }}';
+
+        // Bước 1: Set src về blank ngay lập tức để tránh load sớm khi layout chưa sẵn
+        frame.src = 'about:blank';
+
+        // Bước 2: Sau 350ms (layout đã paint xong), mới thực sự load game
+        setTimeout(() => {
+            frame.src = originalSrc;
+            _startFallbackTimer();
+        }, 350);
     });
 </script>
 @endsection

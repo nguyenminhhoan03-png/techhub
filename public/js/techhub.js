@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Mobile Navigation Toggle
-window.toggleMobileMenu = function() {
+window.toggleMobileMenu = function () {
   const drawer = document.getElementById('mobile-menu-drawer');
   const iconOpen = document.getElementById('icon-menu-open');
   const iconClose = document.getElementById('icon-menu-close');
@@ -702,7 +702,7 @@ function renderRichOutput(slug, data, richBox, rawTextarea) {
   if (slug === 'jwt-debugger' && data.header && data.payload) {
     richBox.style.display = 'block';
     const isExpired = data.is_expired;
-    const expBadge = isExpired === true 
+    const expBadge = isExpired === true
       ? '<span class="badge badge-danger">● Đã hết hạn (Expired)</span>'
       : '<span class="badge badge-emerald">● Còn hiệu lực (Valid)</span>';
 
@@ -1174,7 +1174,7 @@ function initSeoLiveCounters() {
   const titleCounter = document.getElementById('serp-title-counter');
   const descCounter = document.getElementById('serp-desc-counter');
 
-  window.updateSerpCounters = function() {
+  window.updateSerpCounters = function () {
     if (serpTitle && titleCounter) {
       const len = serpTitle.value.length;
       titleCounter.innerText = `${len} ký tự (~${Math.round(len * 9.6)}px)`;
@@ -1192,7 +1192,7 @@ function initSeoLiveCounters() {
   if (serpTitle || serpDesc) window.updateSerpCounters();
 }
 
-window.downloadFile = function(filename, content, mimeType = 'text/plain') {
+window.downloadFile = function (filename, content, mimeType = 'text/plain') {
   const blob = new Blob([content], { type: mimeType });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
