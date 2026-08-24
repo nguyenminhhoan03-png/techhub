@@ -3,6 +3,21 @@ set -e
 
 echo "🚀 [TechHub] Bắt đầu quá trình cập nhật / triển khai trên VPS..."
 
+# Lưu lại commit hiện tại đang chạy ổn định
+PREV_COMMIT=$(git rev-parse HEAD)
+echo "📌 Commit an toàn hiện tại: $PREV_COMMIT"
+
+rollback() {
+  echo "❌ [LỖI TRIỂN KHAI] Phát hiện lỗi trong quá trình cập nhật!"
+  echo "⏪ Đang tự động Rollback về commit an toàn trước đó: $PREV_COMMIT..."
+  git reset --hard $PREV_COMMIT
+  docker compose exec -T app php artisan optimize:clear
+  docker compose exec -T app php artisan optimize
+  echo "⚠️ Đã khôi phục website về trạng thái cũ an toàn thành công."
+  exit 1
+}
+trap rollback ERR
+
 # 1. Kéo mã nguồn mới nhất từ Git
 echo "📥 1. Đang pull code mới nhất từ nhánh main..."
 git pull origin main
@@ -30,4 +45,5 @@ echo "🔒 5. Đảm bảo phân quyền thư mục storage..."
 docker compose exec -T app chown -R www-data:www-data storage bootstrap/cache
 docker compose exec -T app chmod -R 775 storage bootstrap/cache
 
+trap - ERR
 echo "✅ [TechHub] Triển khai thành công 100%! Website đã sẵn sàng phục vụ."

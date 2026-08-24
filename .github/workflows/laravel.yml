@@ -69,20 +69,43 @@ jobs:
           port: ${{ secrets.SSH_PORT || 22 }}
           script_stop: true
           script: |
+            set -e
             echo "🚀 [TechHub CD] Bắt đầu tự động cập nhật phiên bản mới..."
             cd ~/techhub || cd /root/techhub
+            
+            # Ghi nhớ commit đang hoạt động ổn định trước khi pull
+            PREV_COMMIT=$(git rev-parse HEAD)
+            echo "📌 Commit ổn định hiện tại: $PREV_COMMIT"
+            
+            # Hàm Rollback tự động khi có bất kỳ lỗi nào xảy ra
+            rollback() {
+              echo "❌ [DEPLOY ERROR] Phát hiện lỗi trong quá trình triển khai trên VPS!"
+              echo "⏪ Đang tự động Rollback về commit an toàn trước đó: $PREV_COMMIT..."
+              git reset --hard $PREV_COMMIT
+              docker compose exec -T app php artisan optimize:clear
+              docker compose exec -T app php artisan optimize
+              echo "⚠️ Đã khôi phục website về phiên bản cũ an toàn thành công."
+              exit 1
+            }
+            trap rollback ERR
             
             echo "📥 1. Kéo mã nguồn mới nhất từ GitHub..."
             git pull origin main
             
-            echo "⚡ 2. Xóa và làm mới bộ nhớ đệm Production..."
+            echo "⚡ 2. Tối ưu bộ nhớ đệm Production..."
             docker compose exec -T app php artisan optimize:clear
+            docker compose exec -T app php artisan config:cache
+            docker compose exec -T app php artisan route:cache
+            docker compose exec -T app php artisan view:cache
+            docker compose exec -T app php artisan event:cache
             docker compose exec -T app php artisan optimize
             
             echo "🗄️ 3. Chạy cập nhật cấu trúc Database..."
             docker compose exec -T app php artisan migrate --force
             
             echo "🔒 4. Đảm bảo phân quyền storage..."
-            docker compose exec -T app chmod -R 777 storage bootstrap/cache
+            docker compose exec -T app chmod -R 775 storage bootstrap/cache
             
-            echo "✅ [TechHub CD] Triển khai thành công 100%! Website đã cập nhật tức thì."
+            # Hủy trap khi tất cả các bước đã hoàn tất thành công
+            trap - ERR
+            echo "✅ [TechHub CD] Triển khai thành công 100%! Website đã cập nhật tức thì và an toàn tuyệt đối."
