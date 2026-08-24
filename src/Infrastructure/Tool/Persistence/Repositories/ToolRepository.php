@@ -9,6 +9,7 @@ use Domain\Tool\Entities\ToolCategory;
 use Domain\Tool\Entities\ToolExecution;
 use Domain\Tool\Repositories\ToolRepositoryContract;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class ToolRepository implements ToolRepositoryContract
 {
@@ -17,17 +18,19 @@ class ToolRepository implements ToolRepositoryContract
      */
     public function getCategories(): Collection
     {
-        return ToolCategory::query()
-            ->where('is_active', true)
-            ->whereHas('tools', function ($q): void {
-                $q->where('is_active', true);
-            })
-            ->withCount(['tools' => function ($q): void {
-                $q->where('is_active', true);
-            }])
-            ->orderBy('sort_order')
-            ->orderBy('name')
-            ->get();
+        return Cache::remember('techhub_active_categories', 3600, function (): Collection {
+            return ToolCategory::query()
+                ->where('is_active', true)
+                ->whereHas('tools', function ($q): void {
+                    $q->where('is_active', true);
+                })
+                ->withCount(['tools' => function ($q): void {
+                    $q->where('is_active', true);
+                }])
+                ->orderBy('sort_order')
+                ->orderBy('name')
+                ->get();
+        });
     }
 
     public function getCategoryBySlug(string $slug): ?ToolCategory
@@ -43,6 +46,16 @@ class ToolRepository implements ToolRepositoryContract
      */
     public function getTools(?string $categorySlug = null, ?string $search = null): Collection
     {
+        if ( ! $categorySlug && ! $search) {
+            return Cache::remember('techhub_all_active_tools', 3600, function (): Collection {
+                return Tool::query()
+                    ->with('category')
+                    ->where('is_active', true)
+                    ->orderByDesc('execution_count')
+                    ->get();
+            });
+        }
+
         $query = Tool::query()
             ->with('category')
             ->where('is_active', true);

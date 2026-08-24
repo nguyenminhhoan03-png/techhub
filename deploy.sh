@@ -16,10 +16,13 @@ echo "🗄️ 3. Đang cập nhật database migration..."
 docker compose exec -T app php artisan migrate --force
 
 # 4. Tối ưu hóa Cache & Config cho Production
-echo "⚡ 4. Đang tối ưu hóa bộ nhớ đệm (Config, Routes, Views)..."
+echo "⚡ 4. Đang tối ưu hóa bộ nhớ đệm (Autoloader, Config, Routes, Views)..."
+docker compose exec -T app composer install --no-dev --optimize-autoloader --no-interaction
+docker compose exec -T app php artisan optimize:clear
 docker compose exec -T app php artisan config:cache
 docker compose exec -T app php artisan route:cache
 docker compose exec -T app php artisan view:cache
+docker compose exec -T app php artisan event:cache
 docker compose exec -T app php artisan optimize
 
 # 5. Phân quyền storage

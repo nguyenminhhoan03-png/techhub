@@ -54,13 +54,20 @@
     <meta name="twitter:title" content="@yield('meta_title', __('hero_title_1') . ' — TechHub')">
     <meta name="twitter:description" content="@yield('meta_description', __('hero_subtitle'))">
     
-    {{-- Typography & Google Fonts --}}
+    {{-- Typography & Google Fonts (Non-blocking) --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Outfit:wght@500;600;700;800&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript>
+        <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    </noscript>
     
-    {{-- Swiper.js Carousel CSS --}}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    {{-- Swiper.js Carousel CSS (Non-blocking) --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" media="print" onload="this.media='all'">
+    <noscript>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    </noscript>
 
     {{-- Custom Design System Stylesheet --}}
     <link rel="stylesheet" href="{{ asset('css/techhub.css') }}">
@@ -251,10 +258,10 @@
     </footer>
 
     {{-- Swiper.js Bundle --}}
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     {{-- Core Javascript --}}
-    <script src="{{ asset('js/techhub.js') }}"></script>
+    <script defer src="{{ asset('js/techhub.js') }}"></script>
     @stack('scripts')
 </body>
 </html>
