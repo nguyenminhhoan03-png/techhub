@@ -187,12 +187,21 @@
                 </div>
 
                 {{-- Description & Guide Section (SEO Onpage Rich Content) --}}
-                <div style="margin-top: 2rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 2rem;">
-                    <h2 style="font-size: 1.35rem; margin-bottom: 1rem; color: var(--text-main);">
-                        📖 Hướng Dẫn Cách Chơi {{ $game->name }}
-                    </h2>
-                    
-                    <div style="color: var(--text-sub); line-height: 1.8; font-size: 0.95rem;">
+                <div style="margin-top: 2rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 2rem; position: relative; overflow: hidden;">
+
+                    {{-- Decorative top-left gradient blob --}}
+                    <div style="position: absolute; top: -40px; left: -40px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%); pointer-events: none;"></div>
+
+                    {{-- Section Header --}}
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.75rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border-subtle);">
+                        <div style="width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, #6366f1, #8b5cf6); display: flex; align-items: center; justify-content: center; font-size: 1.15rem; flex-shrink: 0; box-shadow: 0 4px 12px rgba(99,102,241,0.35);">📖</div>
+                        <div>
+                            <h2 style="font-size: 1.2rem; font-weight: 800; color: var(--text-main); margin: 0; line-height: 1.3;">Hướng Dẫn Cách Chơi {{ $game->name }}</h2>
+                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem; font-weight: 500;">Hướng dẫn chi tiết · Mẹo & Thủ thuật · Tính năng nổi bật</div>
+                        </div>
+                    </div>
+
+                    <div class="game-guide-body">
                         @if($game->description_markdown)
                             {!! Str::markdown($game->description_markdown) !!}
                         @else
