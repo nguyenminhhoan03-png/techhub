@@ -90,4 +90,45 @@ class GoogleIndexingService
             'errors' => $errors,
         ];
     }
+
+    /**
+     * Get latest URLs to be pushed to Google Indexing API.
+     * 
+     * @param int $limit
+     * @return array<int, string>
+     */
+    public function getLatestUrls(int $limit = 100): array
+    {
+        $urls = [];
+        $urls[] = url('/');
+        $urls[] = url('/tools');
+        $urls[] = url('/articles');
+        $urls[] = url('/games');
+
+        // Fetch Tools
+        if (class_exists(\Domain\Tool\Entities\Tool::class)) {
+            $tools = \Domain\Tool\Entities\Tool::where('is_active', true)->orderBy('updated_at', 'desc')->limit($limit)->get();
+            foreach ($tools as $tool) {
+                $urls[] = url('/tools/' . $tool->slug);
+            }
+        }
+
+        // Fetch Articles
+        if (class_exists(\Domain\Article\Entities\Article::class)) {
+            $articles = \Domain\Article\Entities\Article::where('status', 'published')->orderBy('updated_at', 'desc')->limit($limit)->get();
+            foreach ($articles as $article) {
+                $urls[] = url('/articles/' . $article->slug);
+            }
+        }
+
+        // Fetch Games
+        if (class_exists(\Domain\Game\Entities\Game::class)) {
+            $games = \Domain\Game\Entities\Game::where('is_active', true)->orderBy('updated_at', 'desc')->limit($limit)->get();
+            foreach ($games as $game) {
+                $urls[] = url('/games/' . $game->slug);
+            }
+        }
+
+        return array_slice(array_unique($urls), 0, $limit);
+    }
 }

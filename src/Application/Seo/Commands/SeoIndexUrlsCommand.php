@@ -2,12 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Console\Commands;
+namespace Application\SEO\Commands;
 
 use Application\SEO\Services\GoogleIndexingService;
-use Domain\Tool\Entities\Tool;
-use Domain\Article\Entities\Article;
-use Domain\Game\Entities\Game;
 use Illuminate\Console\Command;
 
 class SeoIndexUrlsCommand extends Command
@@ -48,38 +45,7 @@ class SeoIndexUrlsCommand extends Command
         $limit = (int) $this->option('limit');
         $this->info("🚀 Starting to push latest {$limit} URLs to Google Indexing API...");
 
-        $urls = [];
-        $urls[] = url('/');
-        $urls[] = url('/tools');
-        $urls[] = url('/articles');
-        $urls[] = url('/games');
-
-        // Fetch Tools
-        if (class_exists(Tool::class)) {
-            $tools = Tool::where('is_active', true)->orderBy('updated_at', 'desc')->limit($limit)->get();
-            foreach ($tools as $tool) {
-                $urls[] = url('/tools/' . $tool->slug);
-            }
-        }
-
-        // Fetch Articles
-        if (class_exists(Article::class)) {
-            $articles = Article::where('status', 'published')->orderBy('updated_at', 'desc')->limit($limit)->get();
-            foreach ($articles as $article) {
-                $urls[] = url('/articles/' . $article->slug);
-            }
-        }
-
-        // Fetch Games
-        if (class_exists(Game::class)) {
-            $games = Game::where('is_active', true)->orderBy('updated_at', 'desc')->limit($limit)->get();
-            foreach ($games as $game) {
-                $urls[] = url('/games/' . $game->slug);
-            }
-        }
-
-        // Limit total if needed
-        $urls = array_slice(array_unique($urls), 0, $limit);
+        $urls = $indexingService->getLatestUrls($limit);
 
         $this->line("Found " . count($urls) . " URLs to process.");
         

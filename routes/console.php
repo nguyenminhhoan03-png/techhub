@@ -15,6 +15,7 @@ Artisan::command('inspire', function (): void {
 // ── Register Application Commands (Senior Clean Architecture) ───────────────
 Artisan::registerCommand(app(ImportGamesCommand::class));
 Artisan::registerCommand(app(SubmitIndexNowCommand::class));
+Artisan::registerCommand(app(\Application\SEO\Commands\SeoIndexUrlsCommand::class));
 
 // ── Daily Automated SEO Indexing Schedule ──────────────────────────────────
 Schedule::command('seo:indexnow')->dailyAt('03:00')->withoutOverlapping();
