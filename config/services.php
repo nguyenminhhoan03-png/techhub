@@ -37,4 +37,8 @@ return [
         ],
     ],
 
+    'google' => [
+        'indexing_key_path' => storage_path('app/google-service-account.json'),
+    ],
+
 ];

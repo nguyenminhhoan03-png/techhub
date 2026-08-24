@@ -92,6 +92,9 @@ jobs:
             echo "📥 1. Kéo mã nguồn mới nhất từ GitHub..."
             git pull origin main
             
+            echo "📦 Cập nhật các gói thư viện (Composer)..."
+            docker compose exec -T app composer install --no-dev --optimize-autoloader --no-interaction
+            
             echo "⚡ 2. Tối ưu bộ nhớ đệm Production..."
             docker compose exec -T app php artisan optimize:clear
             docker compose exec -T app php artisan config:cache
