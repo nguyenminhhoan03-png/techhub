@@ -42,17 +42,22 @@
     <link rel="alternate" hreflang="x-default" href="{{ url()->current() }}">
     
     {{-- OpenGraph & Social Cards --}}
-    <meta property="og:type" content="website">
+    <meta property="og:type" content="@yield('og_type', 'website')">
     <meta property="og:site_name" content="TechHub">
     <meta property="og:locale" content="{{ app()->getLocale() === 'vi' ? 'vi_VN' : 'en_US' }}">
     <meta property="og:locale:alternate" content="{{ app()->getLocale() === 'vi' ? 'en_US' : 'vi_VN' }}">
     <meta property="og:title" content="@yield('meta_title', __('hero_title_1') . ' — TechHub')">
     <meta property="og:description" content="@yield('meta_description', __('hero_subtitle'))">
-    <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:image" content="{{ asset('images/techhub-og.png') }}">
+    <meta property="og:url" content="@yield('canonical_url', url()->current())">
+    <meta property="og:image" content="@yield('og_image', asset('images/techhub-og.png'))">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="@yield('meta_title', 'TechHub')">
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@TechHub">
     <meta name="twitter:title" content="@yield('meta_title', __('hero_title_1') . ' — TechHub')">
     <meta name="twitter:description" content="@yield('meta_description', __('hero_subtitle'))">
+    <meta name="twitter:image" content="@yield('og_image', asset('images/techhub-og.png'))">
     
     {{-- Typography & Google Fonts (Non-blocking) --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">

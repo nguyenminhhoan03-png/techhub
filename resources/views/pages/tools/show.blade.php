@@ -1,28 +1,49 @@
 @extends('layouts.app')
 
-@section('meta_title', $tool->display_name . ' — TechHub')
+@section('meta_title', $tool->display_name . ' — Công Cụ Miễn Phí | TechHub')
 @section('meta_description', $tool->display_summary)
 @section('canonical_url', url('/tools/' . $tool->slug))
+@section('meta_keywords', $tool->display_name . ', ' . ($tool->category?->display_name ?? 'công cụ online') . ', công cụ trực tuyến miễn phí, online tool free, TechHub, ' . ($tool->category?->name ?? ''))
+@section('og_image', asset('images/techhub-og.png'))
 
 @push('head')
-{{-- SoftwareApplication Schema --}}
+{{-- SoftwareApplication Schema — enriched for Google rich results --}}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "{{ $tool->display_name }}",
-  "operatingSystem": "Web Browser",
-  "applicationCategory": "DeveloperApplication",
+  "url": "{{ url('/tools/' . $tool->slug) }}",
+  "description": "{{ addslashes($tool->display_summary) }}",
+  "operatingSystem": "Web Browser, Windows, macOS, Linux, iOS, Android",
+  "browserRequirements": "Requires JavaScript. Works on Chrome, Firefox, Safari, Edge.",
+  "applicationCategory": "{{ match($tool->category?->slug ?? '') {
+    'seo' => 'WebApplication',
+    'developer', 'dev' => 'DeveloperApplication',
+    'finance', 'calculator' => 'FinanceApplication',
+    'image', 'media' => 'MultimediaApplication',
+    default => 'UtilitiesApplication'
+  } }}",
+  "inLanguage": ["vi", "en"],
+  "isAccessibleForFree": true,
   "offers": {
     "@type": "Offer",
     "price": "0",
-    "priceCurrency": "USD"
+    "priceCurrency": "VND",
+    "availability": "https://schema.org/InStock"
   },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ url('/tools/' . $tool->slug) }}"
+  }@if($tool->rating_count > 0),
   "aggregateRating": {
     "@type": "AggregateRating",
     "ratingValue": "{{ $tool->rating_avg }}",
-    "ratingCount": "{{ $tool->rating_count }}"
+    "ratingCount": "{{ $tool->rating_count }}",
+    "bestRating": "5",
+    "worstRating": "1"
   }
+  @endif
 }
 </script>
 
@@ -41,12 +62,18 @@
     {
       "@type": "ListItem",
       "position": 2,
+      "name": "{{ __('tools_hub') }}",
+      "item": "{{ url('/tools') }}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
       "name": "{{ $tool->category?->display_name ?? 'Tools' }}",
       "item": "{{ url('/tools?category=' . ($tool->category?->slug ?? '')) }}"
     },
     {
       "@type": "ListItem",
-      "position": 3,
+      "position": 4,
       "name": "{{ $tool->display_name }}",
       "item": "{{ url('/tools/' . $tool->slug) }}"
     }

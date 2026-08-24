@@ -1,23 +1,52 @@
 @extends('layouts.app')
 
-@section('title', ($article->meta_title ?: $article->title) . ' - TechHub')
+{{-- Fix critical: layout dùng @yield('meta_title'), KHÔNG phải 'title' --}}
+@section('meta_title', ($article->meta_title ?: $article->title) . ' | TechHub')
 @section('meta_description', $article->meta_description ?: $article->excerpt)
+@section('canonical_url', url('/articles/' . $article->slug))
+@section('meta_keywords', ($article->category?->name ?? 'Technology') . ', TechHub, ' . ($article->meta_title ?: $article->title))
+@section('og_type', 'article')
+@section('og_image', $article->featured_image_url ?: asset('images/techhub-og.png'))
 
 @section('head_extra')
+{{-- Article publish/modified time for social/Google --}}
+<meta property="article:published_time" content="{{ $article->published_at ? $article->published_at->toIso8601String() : now()->toIso8601String() }}">
+<meta property="article:modified_time" content="{{ $article->updated_at->toIso8601String() }}">
+<meta property="article:author" content="{{ $article->author?->name ?? 'TechHub Editorial' }}">
+@if($article->category)
+<meta property="article:section" content="{{ $article->category->name }}">
+@endif
+<meta name="author" content="{{ $article->author?->name ?? 'TechHub Editorial' }}">
+
 @if($article->schema_markup)
 <script type="application/ld+json">
 {!! json_encode($article->schema_markup, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
 </script>
 @endif
+
+{{-- Article Schema — enriched for Google rich results --}}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "{{ addslashes($article->title) }}",
-  "description": "{{ addslashes($article->excerpt) }}",
-  "image": "{{ $article->featured_image_url ?: url('/images/og-default.jpg') }}",
+  "headline": "{{ addslashes($article->meta_title ?: $article->title) }}",
+  "description": "{{ addslashes($article->meta_description ?: $article->excerpt) }}",
+  "url": "{{ url('/articles/' . $article->slug) }}",
+  "image": {
+    "@type": "ImageObject",
+    "url": "{{ $article->featured_image_url ?: url('/images/techhub-og.png') }}",
+    "width": 1200,
+    "height": 630
+  },
   "datePublished": "{{ $article->published_at ? $article->published_at->toIso8601String() : now()->toIso8601String() }}",
   "dateModified": "{{ $article->updated_at->toIso8601String() }}",
+  "wordCount": {{ str_word_count(strip_tags($article->content ?? $article->excerpt ?? '')) }},
+  "inLanguage": "vi-VN",
+  "articleSection": "{{ $article->category?->name ?? 'Technology' }}",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ url('/articles/' . $article->slug) }}"
+  },
   "author": {
     "@type": "Person",
     "name": "{{ $article->author?->name ?? 'TechHub Editorial' }}"
@@ -25,11 +54,56 @@
   "publisher": {
     "@type": "Organization",
     "name": "TechHub",
+    "url": "{{ url('/') }}",
     "logo": {
       "@type": "ImageObject",
-      "url": "{{ url('/images/logo.png') }}"
+      "url": "{{ url('/images/logo.png') }}",
+      "width": 200,
+      "height": 60
     }
   }
+}
+</script>
+
+{{-- BreadcrumbList Schema --}}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Trang chủ",
+      "item": "{{ url('/') }}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Bài viết",
+      "item": "{{ url('/articles') }}"
+    }@if($article->category),
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "{{ $article->category->name }}",
+      "item": "{{ url('/articles?category=' . $article->category->slug) }}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 4,
+      "name": "{{ $article->title }}",
+      "item": "{{ url('/articles/' . $article->slug) }}"
+    }
+    @else,
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "{{ $article->title }}",
+      "item": "{{ url('/articles/' . $article->slug) }}"
+    }
+    @endif
+  ]
 }
 </script>
 @endsection

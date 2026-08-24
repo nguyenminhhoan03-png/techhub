@@ -1,7 +1,24 @@
 User-agent: *
 Allow: /
-Disallow: /admin/
 Disallow: /admin
+Disallow: /admin/
 Disallow: /api/
+Disallow: /storage/logs/
+Disallow: /storage/framework/
+Disallow: /_debugbar/
 
-Sitemap: http://127.0.0.1:9022/sitemap.xml
+# Allow AI search crawlers (AEO — AI Engine Optimization)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: GoogleOther
+Allow: /
+
+# Sitemap
+Sitemap: https://muabanwebsite.io.vn/sitemap.xml
