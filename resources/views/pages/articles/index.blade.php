@@ -1,7 +1,40 @@
 @extends('layouts.app')
 
-@section('title', 'So Sánh Phần Cứng, Đánh Giá & Hướng Dẫn Mua Sắm - TechHub')
-@section('meta_description', 'Khám phá các bài so sánh đối đầu CPU, GPU, điện thoại và laptop chuẩn xác nhất. Dữ liệu benchmark thực tế và lời khuyên mua sắm từ chuyên gia công nghệ.')
+{{-- Fix: dùng 'meta_title' đúng với @yield trong layout --}}
+@section('meta_title', 'Bài Viết Công Nghệ, So Sánh Phần Cứng & Hướng Dẫn Kỹ Thuật | TechHub')
+@section('meta_description', 'Khám phá các bài viết công nghệ chuyên sâu, so sánh CPU, GPU, điện thoại và laptop. Dữ liệu benchmark thực tế và tư vấn mua sắm từ đội ngũ TechHub.')
+@section('canonical_url', url('/articles'))
+@section('meta_keywords', 'bài viết công nghệ, so sánh phần cứng, đánh giá laptop, benchmark CPU GPU, hướng dẫn mua sắm, TechHub')
+@section('og_type', 'website')
+
+@push('head')
+{{-- CollectionPage Schema --}}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Bài Viết Công Nghệ — TechHub",
+  "description": "Kho bài viết công nghệ, so sánh phần cứng và hướng dẫn kỹ thuật chuyên sâu.",
+  "url": "{{ url('/articles') }}",
+  "publisher": {
+    "@type": "Organization",
+    "name": "TechHub",
+    "url": "{{ url('/') }}"
+  }
+}
+</script>
+{{-- BreadcrumbList Schema --}}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Trang Chủ", "item": "{{ url('/') }}" },
+    { "@type": "ListItem", "position": 2, "name": "Bài Viết", "item": "{{ url('/articles') }}" }
+  ]
+}
+</script>
+@endpush
 
 @section('content')
 

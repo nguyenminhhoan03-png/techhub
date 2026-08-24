@@ -2,6 +2,10 @@
 
 @section('meta_title', $activeCategory ? ($activeCategory->name . ' — Chơi Game ' . $activeCategory->name . ' Online Miễn Phí | TechHub Games') : (request('q') ? ('Tìm kiếm game: ' . e(request('q')) . ' | TechHub Games') : 'Web Games Online Miễn Phí — Chơi Game Trình Duyệt Không Cần Cài Đặt | TechHub'))
 @section('meta_description', $activeCategory ? ($activeCategory->description . '. Chơi ngay trên trình duyệt máy tính và điện thoại, không cần tải về.') : 'Cổng game Web HTML5 miễn phí hàng đầu: 2048, Flappy Bird, Tetris, Snake Classic, Dino Runner, Brick Breaker, Dev Typing Speed. Chơi ngay trên trình duyệt mượt mà 100%.')
+@section('canonical_url', $activeCategory ? url('/games?category=' . $activeCategory->slug) : url('/games'))
+@section('meta_keywords', 'chơi game online, web games miễn phí, game giải trí nhẹ nhàng, game HTML5, mini game không cần cài đặt, TechHub Games, ' . ($activeCategory ? $activeCategory->name : ''))
+@section('og_type', 'website')
+@section('og_image', asset('images/techhub-og.png'))
 
 @push('schemas')
 <script type="application/ld+json">

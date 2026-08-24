@@ -13,36 +13,59 @@
 
 @section('meta_title', $heroTitle . ' — TechHub')
 @section('meta_description', $heroSubtitle)
+@section('canonical_url', url('/'))
+@section('meta_keywords', 'TechHub, công cụ lập trình online, json formatter, jwt debugger, regex tester, base64, SEO tools, công cụ trực tuyến miễn phí, developer utilities, game online miễn phí')
+@section('og_image', asset('images/techhub-og.png'))
 
 @push('schema')
+{{-- Organization Schema (E-E-A-T signal) --}}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "TechHub",
+  "url": "{{ url('/') }}",
+  "logo": {
+    "@type": "ImageObject",
+    "url": "{{ url('/images/logo.png') }}"
+  },
+  "description": "{{ $heroSubtitle }}",
+  "sameAs": []
+}
+</script>
+{{-- WebPage Schema --}}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "{{ $heroTitle }} — TechHub",
+  "description": "{{ $heroSubtitle }}",
+  "url": "{{ url('/') }}",
+  "inLanguage": "vi-VN",
+  "isPartOf": { "@type": "WebSite", "name": "TechHub", "url": "{{ url('/') }}" }
+}
+</script>
+{{-- FAQPage Schema --}}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "FAQPage",
+  "url": "{{ url('/') }}",
   "mainEntity": [
     {
       "@type": "Question",
       "name": "{{ __('faq_q1') }}",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "{{ __('faq_a1') }}"
-      }
+      "acceptedAnswer": { "@type": "Answer", "text": "{{ __('faq_a1') }}" }
     },
     {
       "@type": "Question",
       "name": "{{ __('faq_q2') }}",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "{{ __('faq_a2') }}"
-      }
+      "acceptedAnswer": { "@type": "Answer", "text": "{{ __('faq_a2') }}" }
     },
     {
       "@type": "Question",
       "name": "{{ __('faq_q3') }}",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "{{ __('faq_a3') }}"
-      }
+      "acceptedAnswer": { "@type": "Answer", "text": "{{ __('faq_a3') }}" }
     }
   ]
 }

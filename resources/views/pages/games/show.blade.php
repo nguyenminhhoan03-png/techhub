@@ -2,6 +2,10 @@
 
 @section('meta_title', ($game->meta_title ?? $game->name . ' — Chơi Online Miễn Phí Trên Trình Duyệt') . ' | TechHub Games')
 @section('meta_description', $game->meta_description ?? ($game->summary . ' Chơi game ' . $game->name . ' online miễn phí không cần tải về, mượt mà trên máy tính và điện thoại.'))
+@section('canonical_url', route('games.show', $game->slug))
+@section('meta_keywords', $game->name . ', chơi ' . $game->name . ' online, ' . $game->category->name . ' online miễn phí, game trình duyệt, TechHub Games, HTML5 game')
+@section('og_type', 'website')
+@section('og_image', $game->thumbnail_url ?? asset('images/techhub-og.png'))
 
 @push('schemas')
 {{-- Schema.org VideoGame Rich Snippet --}}
@@ -12,23 +16,18 @@
   "name": "{{ $game->name }}",
   "description": "{{ $game->meta_description ?? $game->summary }}",
   "url": "{{ route('games.show', $game->slug) }}",
+  "image": "{{ $game->thumbnail_url ?? asset('images/techhub-og.png') }}",
   "genre": ["{{ $game->category->name }}", "Online Game", "Browser Game"],
   "gamePlatform": ["Web Browser", "HTML5", "PC", "Mobile"],
   "applicationCategory": "GameApplication",
   "operatingSystem": "Any",
   "inLanguage": "vi",
+  "isAccessibleForFree": true,
   "offers": {
     "@type": "Offer",
     "price": "0",
     "priceCurrency": "VND",
     "availability": "https://schema.org/InStock"
-  },
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "4.9",
-    "ratingCount": "{{ max(50, (int)($game->play_count / 10)) }}",
-    "bestRating": "5",
-    "worstRating": "1"
   },
   "publisher": {
     "@type": "Organization",

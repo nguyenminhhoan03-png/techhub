@@ -1,7 +1,37 @@
 @extends('layouts.app')
 
-@section('meta_title', __('all_tools') . ' — TechHub')
-@section('meta_description', __('hero_subtitle'))
+@section('meta_title', __('all_tools') . ' — Công Cụ Online Miễn Phí | TechHub')
+@section('meta_description', 'Hơn ' . (isset($tools) ? $tools->count() : '50') . '+ công cụ lập trình và tiện ích trực tuyến miễn phí: JSON Formatter, JWT Debugger, Base64, Regex Tester, SEO Tools, Calculator và nhiều hơn nữa. Không cần đăng ký.')
+@section('canonical_url', url('/tools'))
+@section('meta_keywords', 'công cụ lập trình online, json formatter, jwt debugger, base64 encode decode, regex tester, developer tools, SEO tools, công cụ trực tuyến miễn phí, TechHub')
+@section('og_image', asset('images/techhub-og.png'))
+
+@push('head')
+{{-- CollectionPage + ItemList Schema --}}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Công Cụ Online Miễn Phí — TechHub",
+  "description": "Kho công cụ trực tuyến miễn phí dành cho lập trình viên và người dùng phổ thông.",
+  "url": "{{ url('/tools') }}",
+  "publisher": { "@type": "Organization", "name": "TechHub", "url": "{{ url('/') }}" }
+}
+</script>
+{{-- BreadcrumbList Schema --}}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Trang Chủ", "item": "{{ url('/') }}" },
+    { "@type": "ListItem", "position": 2, "name": "Công Cụ", "item": "{{ url('/tools') }}" }@if(request('category')),
+    { "@type": "ListItem", "position": 3, "name": "{{ request('category') }}", "item": "{{ url('/tools?category=' . request('category')) }}" }
+    @endif
+  ]
+}
+</script>
+@endpush
 
 @section('content')
 <section style="padding: 3.5rem 0;">
