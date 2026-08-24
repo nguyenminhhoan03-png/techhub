@@ -70,7 +70,7 @@
     </noscript>
 
     {{-- Custom Design System Stylesheet --}}
-    <link rel="stylesheet" href="{{ asset('css/techhub.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/techhub.css') }}?v={{ @filemtime(public_path('css/techhub.css')) ?: '2.0.1' }}">
 
     {{-- JSON-LD Structured Data Schema --}}
     <script type="application/ld+json">
@@ -261,7 +261,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     {{-- Core Javascript --}}
-    <script defer src="{{ asset('js/techhub.js') }}"></script>
+    <script defer src="{{ asset('js/techhub.js') }}?v={{ @filemtime(public_path('js/techhub.js')) ?: '2.0.1' }}"></script>
     @stack('scripts')
 </body>
 </html>
