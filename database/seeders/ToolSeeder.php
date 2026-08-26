@@ -112,7 +112,7 @@ class ToolSeeder extends Seeder
             [
                 'category_id' => $categoryMap['developer'],
                 'slug' => 'json-formatter',
-                'name' => 'JSON Formatter Online',
+                'name' => 'Định Dạng & Kiểm Tra Cú Pháp JSON',
                 'meta_title' => 'JSON Formatter Online — Định Dạng, Validate & Nén JSON Chuẩn 100% | TechHub',
                 'meta_description' => 'Công cụ JSON Formatter trực tuyến miễn phí: Định dạng làm đẹp (Beautify), kiểm tra lỗi cú pháp (Validate) và nén gọn (Minify) chuỗi JSON tức thì dưới 5ms.',
                 'summary' => 'Làm đẹp (Beautify), nén gọn (Minify) và kiểm tra lỗi cú pháp JSON tức thì với tùy chọn thụt đầu dòng linh hoạt.',
@@ -285,7 +285,7 @@ Trong phần Payload, thuộc tính `exp` chứa mốc thời gian Unix Timestam
             [
                 'category_id' => $categoryMap['developer'],
                 'slug' => 'regex-tester',
-                'name' => 'Kiểm Tra Biểu Thức Regex',
+                'name' => 'Kiểm Tra & Bóc Tách Biểu Thức Regex',
                 'meta_title' => 'Regex Tester Online — Kiểm Tra & Bóc Tách Biểu Thức Chính Quy PCRE | TechHub',
                 'meta_description' => 'Công cụ kiểm tra biểu thức chính quy (Regex Tester) thời gian thực: Bóc tách match groups, giải thích cú pháp, kiểm tra định dạng email, số điện thoại, URL chuẩn xác.',
                 'summary' => 'Kiểm tra biểu thức chính quy (PCRE) thời gian thực, bóc tách capture group và giải thích lỗi chi tiết.',
@@ -318,7 +318,7 @@ Công cụ **Regex Tester** của TechHub cung cấp:
             [
                 'category_id' => $categoryMap['developer'],
                 'slug' => 'url-encoder-decoder',
-                'name' => 'Mã Hóa & Giải Mã URL',
+                'name' => 'Mã Hóa & Giải Mã Đường Dẫn URL',
                 'meta_title' => 'URL Encoder & Decoder Online — Mã Hóa Ký Tự Chuẩn RFC 3986 | TechHub',
                 'meta_description' => 'Công cụ mã hóa URL (URL Encode) và giải mã URL (URL Decode) trực tuyến miễn phí: Chuyển đổi dấu tiếng Việt và ký tự đặc biệt sang định dạng phần trăm an toàn.',
                 'summary' => 'Mã hóa ký tự đặc biệt theo chuẩn RFC 3986 và giải mã các tham số truy vấn URL an toàn.',
@@ -343,7 +343,7 @@ Việc mã hóa URL giúp đảm bảo các tham số truy vấn (Query String) 
             [
                 'category_id' => $categoryMap['calculators'],
                 'slug' => 'loan-calculator',
-                'name' => 'Tính Lãi Suất Vay Ngân Hàng',
+                'name' => 'Tính Lãi Suất Vay & Trả Góp Ngân Hàng',
                 'meta_title' => 'Máy Tính Lãi Suất Vay Ngân Hàng — Bảng Tính Trả Góp Gốc & Lãi Hàng Tháng | TechHub',
                 'meta_description' => 'Công cụ tính lãi suất vay mua nhà, mua xe, vay tiêu dùng theo dư nợ giảm dần hoặc dư nợ gốc. Bảng lịch biểu trả gốc lãi chi tiết từng tháng chuẩn xác 100%.',
                 'summary' => 'Tính số tiền trả hàng tháng (EMI), tổng tiền lãi, chi phí khoản vay và bảng lịch biểu trả nợ chi tiết.',
@@ -379,7 +379,7 @@ Hầu hết các ngân hàng áp dụng mức lãi suất ưu đãi trong 6 - 24
             [
                 'category_id' => $categoryMap['calculators'],
                 'slug' => 'percentage-calculator',
-                'name' => 'Máy Tính Phần Trăm Online',
+                'name' => 'Máy Tính Phần Trăm Trực Tuyến',
                 'meta_title' => 'Máy Tính Phần Trăm Online — Tính % Tăng Giảm, Chiết Khấu & Giảm Giá | TechHub',
                 'meta_description' => 'Công cụ tính phần trăm trực tuyến nhanh chóng: Tính X% của Y, tỷ lệ phần trăm chênh lệch tăng giảm giữa 2 số, tính giá trị sau chiết khấu khuyến mãi.',
                 'summary' => 'Tính phần trăm giá trị, tỷ lệ tăng giảm %, tính mức chiết khấu giảm giá và tỷ lệ nhanh chóng.',
@@ -457,7 +457,7 @@ $$BMI = \frac{\text{Cân nặng (kg)}}{\text{Chiều cao (m)}^2}$$
             [
                 'category_id' => $categoryMap['image'],
                 'slug' => 'image-color-extractor',
-                'name' => 'Trích Xuất Bảng Màu Từ Ảnh',
+                'name' => 'Trích Xuất Bảng Màu Chủ Đạo Của Ảnh',
                 'meta_title' => 'Trích Xuất Bảng Màu Từ Ảnh Online — Lấy Mã Màu HEX, RGB, HSL | TechHub',
                 'meta_description' => 'Tải ảnh lên để tự động trích xuất bảng màu (Color Palette) chủ đạo. Sao chép nhanh mã màu HEX, RGB, HSL phục vụ thiết kế đồ họa và UI/UX web.',
                 'summary' => 'Tự động trích xuất các dải màu chủ đạo, mã màu HEX, RGB, HSL từ bất kỳ bức ảnh nào được tải lên.',
@@ -480,7 +480,7 @@ Tải bất kỳ bức ảnh phong cảnh, ảnh sản phẩm hoặc bản thi�
             [
                 'category_id' => $categoryMap['seo'],
                 'slug' => 'serp-preview',
-                'name' => 'Mô Phỏng Google SERP Snippet',
+                'name' => 'Mô Phỏng Hiển Thị Google SERP Snippet',
                 'meta_title' => 'Google SERP Snippet Preview Tool — Đo Pixel & Ký Tự Chuẩn SEO | TechHub',
                 'meta_description' => 'Mô phỏng hiển thị kết quả tìm kiếm Google (SERP Preview) trên Desktop và Mobile. Đo độ rộng Pixel title (< 600px) và ký tự description chuẩn SEO 2026.',
                 'summary' => 'Xem trước giao diện kết quả tìm kiếm Google (Desktop & Mobile), đo độ rộng Pixel và phân tích độ dài chuẩn SEO.',
@@ -504,7 +504,7 @@ Công cụ **SERP Preview** của TechHub giúp bạn:
             [
                 'category_id' => $categoryMap['seo'],
                 'slug' => 'meta-tag-generator',
-                'name' => 'Tạo Thẻ Meta HTML5 Chuẩn SEO',
+                'name' => 'Tạo Thẻ Meta HTML5 Chuẩn SEO Onpage',
                 'meta_title' => 'Tạo Thẻ Meta HTML5 Chuẩn SEO Onpage — Meta Title, Description, Robots | TechHub',
                 'meta_description' => 'Công cụ tạo bộ thẻ Meta Tags chuẩn SEO Onpage cho HTML5: Khai báo Title, Description, Canonical URL, Open Graph, Twitter Card và Robots meta tag.',
                 'summary' => 'Tạo mã HTML5 thẻ Meta chuẩn SEO: Title, Description, Keywords, Canonical, Robots và phân tích SEO Onpage.',
@@ -528,7 +528,7 @@ Công cụ hỗ trợ tạo trọn bộ:
             [
                 'category_id' => $categoryMap['seo'],
                 'slug' => 'schema-generator',
-                'name' => 'Tạo Schema Markup (JSON-LD)',
+                'name' => 'Tạo Schema Markup (JSON-LD) Chuẩn Google',
                 'meta_title' => 'Tạo Schema Markup (JSON-LD) Chuẩn Google Rich Results | TechHub',
                 'meta_description' => 'Trình tạo dữ liệu có cấu trúc Schema.org JSON-LD chuẩn Google: Article, LocalBusiness, FAQPage, Product, Breadcrumbs giúp kích hoạt Rich Snippets.',
                 'summary' => 'Tạo mã dữ liệu có cấu trúc Schema.org chuẩn Google Rich Results: Article, LocalBusiness, FAQPage, Product, Breadcrumbs.',
@@ -568,7 +568,7 @@ Giao thức **Open Graph** do Facebook phát triển cho phép bất kỳ trang 
             [
                 'category_id' => $categoryMap['seo'],
                 'slug' => 'robots-txt-generator',
-                'name' => 'Tạo & Kiểm Tra File Robots.txt',
+                'name' => 'Tạo & Kiểm Tra Tệp Robots.txt',
                 'meta_title' => 'Tạo File Robots.txt Chuẩn SEO — Chặn AI Bot & Cấu Hình Sitemap | TechHub',
                 'meta_description' => 'Công cụ tạo tệp robots.txt chuẩn xác cho website: Cấu hình quyền thu thập dữ liệu User-agent, Allow/Disallow, Crawl-delay và chặn các AI scraper.',
                 'summary' => 'Tạo và kiểm tra cú pháp tệp robots.txt chuẩn SEO, hỗ trợ chặn AI Bot, thiết lập Crawl-delay và Sitemap.',
@@ -606,7 +606,7 @@ Tệp **robots.txt** đặt tại thư mục gốc của website (`https://yourd
             [
                 'category_id' => $categoryMap['seo'],
                 'slug' => 'slug-generator',
-                'name' => 'Tạo URL Slug Chuẩn SEO',
+                'name' => 'Tạo URL Slug Chuẩn SEO (Lọc Stop Words)',
                 'meta_title' => 'Tạo URL Slug Chuẩn SEO — Chuyển Tiêu Đề Có Dấu & Lọc Stop Words | TechHub',
                 'meta_description' => 'Chuyển đổi tiêu đề tiếng Việt có dấu sang URL Slug chuẩn SEO: Tự động loại bỏ từ dừng (Stop words), chuẩn hóa kebab-case và tối ưu độ dài thân thiện Google.',
                 'summary' => 'Chuyển đổi tiêu đề tiếng Việt sang slug URL chuẩn SEO, lọc từ dừng (Stop words) và đánh giá độ chuẩn SEO của URL.',
