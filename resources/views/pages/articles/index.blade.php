@@ -39,26 +39,26 @@
 @section('content')
 
 {{-- Hero Header --}}
-<section style="padding: 4rem 0 2.5rem; text-align: center; position: relative;">
+<section style="padding: 3rem 0 2rem; text-align: center; position: relative;">
     <div class="container" style="max-width: 800px;">
         <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(79, 70, 229, 0.08); border: 1px solid rgba(79, 70, 229, 0.2); padding: 0.35rem 0.9rem; border-radius: var(--radius-full); font-size: 0.85rem; color: var(--accent-indigo); font-weight: 600; margin-bottom: 1.25rem;">
             <x-heroicon-o-scale style="width: 1.2em; height: 1.2em;" />
             <span>Trung Tâm So Sánh &amp; Tư Vấn Công Nghệ</span>
         </div>
-        <h1 style="font-size: 2.75rem; line-height: 1.2; margin-bottom: 1rem;">
+        <h1 style="font-size: clamp(1.6rem, 5vw, 2.75rem); line-height: 1.2; margin-bottom: 1rem;">
             So Sánh <span class="gradient-text">Phần Cứng &amp; Thiết Bị</span> Thông Minh
         </h1>
-        <p style="font-size: 1.15rem; color: var(--text-sub); line-height: 1.6;">
+        <p style="font-size: clamp(0.95rem, 2.5vw, 1.15rem); color: var(--text-sub); line-height: 1.6;">
             Tra cứu thông số kỹ thuật, so sánh điểm benchmark đối đầu và tìm ra sản phẩm phù hợp nhất với ngân sách của bạn.
         </p>
 
         {{-- Search Form --}}
-        <form method="GET" action="{{ route('articles.index') }}" style="max-width: 580px; margin: 2rem auto 0; position: relative; display: flex; gap: 0.5rem;">
-            <div style="position: relative; flex: 1;">
-                <input type="text" name="search" class="form-control" style="padding-left: 2.8rem; height: 50px; font-size: 1rem; border-radius: var(--radius-full);" placeholder="{{ __('search_articles_placeholder') }}" value="{{ request('search') }}">
+        <form method="GET" action="{{ route('articles.index') }}" style="max-width: 580px; margin: 1.75rem auto 0; position: relative; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <div style="position: relative; flex: 1 1 220px;">
+                <input type="text" name="search" class="form-control" style="padding-left: 2.8rem; height: 48px; font-size: 0.95rem; border-radius: var(--radius-full);" placeholder="{{ __('search_articles_placeholder') }}" value="{{ request('search') }}">
                 <x-heroicon-s-magnifying-glass style="position: absolute; left: 1.1rem; top: 50%; transform: translateY(-50%); width: 1.3em; height: 1.3em; color: var(--text-muted);" />
             </div>
-            <button type="submit" class="btn btn-primary" style="border-radius: var(--radius-full); padding: 0 1.5rem;">{{ __('search') }}</button>
+            <button type="submit" class="btn btn-primary" style="border-radius: var(--radius-full); padding: 0 1.5rem; height: 48px;">{{ __('search') }}</button>
         </form>
     </div>
 </section>
@@ -131,9 +131,9 @@
                                 </a>
                             </h3>
 
-                            @if($art->summary)
+                            @if($art->excerpt)
                                 <p style="font-size: 0.9rem; color: var(--text-sub); line-height: 1.6; margin-bottom: 1.25rem; flex: 1;">
-                                    {{ Str::limit($art->summary, 120) }}
+                                    {{ Str::limit($art->excerpt, 120) }}
                                 </p>
                             @endif
 

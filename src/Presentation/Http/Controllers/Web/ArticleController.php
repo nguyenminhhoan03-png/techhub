@@ -96,8 +96,24 @@ class ArticleController
             ->take(2)
             ->get();
 
+        // Convert markdown to rich HTML
+        $htmlContent = \Illuminate\Support\Str::markdown($article->content_markdown ?? '');
+
+        // Add IDs to h2, h3, h4 tags for Table of Contents anchor links
+        $htmlContent = preg_replace_callback('/<h([2-4])>(.*?)<\/h\1>/i', function ($matches) {
+            $tag = $matches[1];
+            $title = strip_tags($matches[2]);
+            $slug = \Illuminate\Support\Str::slug($title);
+            return "<h{$tag} id=\"{$slug}\" class=\"article-heading\">{$matches[2]}</h{$tag}>";
+        }, $htmlContent);
+
+        // Wrap tables in responsive container
+        $htmlContent = preg_replace('/<table(.*?)>/i', '<div class="table-responsive"><table$1>', $htmlContent);
+        $htmlContent = preg_replace('/<\/table>/i', '</table></div>', $htmlContent);
+
         return view('pages.articles.show', [
             'article' => $article,
+            'htmlContent' => $htmlContent,
             'toc' => $toc,
             'relatedArticles' => $relatedArticles,
             'linkedProducts' => $linkedProducts,

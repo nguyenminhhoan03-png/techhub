@@ -96,4 +96,9 @@ class Article extends Model
     {
         return 'published' === $this->status;
     }
+
+    public function getSummaryAttribute(): ?string
+    {
+        return $this->excerpt;
+    }
 }

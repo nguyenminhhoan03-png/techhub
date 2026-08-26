@@ -30,8 +30,13 @@ docs/
 │   ├── ⚡ performance-and-optimization.md          # Tối ưu N+1, Strict Mode, Redis Cache Strategy
 │   └── 📏 coding-standards-and-quality.md          # PSR-12 Pint, PHPStan Level 8+, Pest Architecture Tests
 │
-└── 📁 06-frontend/
-    └── 🎨 blade-design-system-and-workspaces.md    # Design Tokens, Swiper, Base64 Drag-Drop & Rich Outputs
+├── 📁 06-frontend/
+│   └── 🎨 blade-design-system-and-workspaces.md    # Design Tokens, Swiper, Base64 Drag-Drop & Rich Outputs
+│
+└── 📁 08-seo-tools-architecture/
+    ├── 🛠️ seo-tools-suite.md                       # Kiến trúc 7 công cụ SEO Onpage
+    ├── 🚀 search-engine-indexing-suite.md          # Google Indexing API & IndexNow Protocol
+    └── 📈 topical-authority-and-seo-strategy.md    # Chiến lược SEO 2 tầng, Topic Clusters & Lộ trình 5 Phase
 ```
 
 ---
@@ -49,6 +54,8 @@ docs/
 | **05. Hiệu Năng & Code** | ⚡ [**Tối Ưu Hiệu Năng & Cache Strategy**](./05-performance-and-quality/performance-and-optimization.md) | Xử lý N+1 Query, chiến lược Cache Redis, Queue Workers, OPcache, Caching Artisan, Tối ưu Index. | Backend Engineers |
 | **05. Hiệu Năng & Code** | 📏 [**Tiêu Chuẩn Code & Đảm Bảo Chất Lượng**](./05-performance-and-quality/coding-standards-and-quality.md) | Strict Types, Laravel Pint, PHPStan Level 8+, Pest Architecture Tests, Quy tắc Git Commit. | All Developers |
 | **06. Giao Diện** | 🎨 [**Kiến Trúc Frontend & Workspaces**](./06-frontend/blade-design-system-and-workspaces.md) | Design System Tokens, Swiper Carousel, Xử lý kéo thả Base64 và 11 Bộ hiển thị đồ họa tương tác. | Frontend / Fullstack |
+| **08. Tối Ưu SEO** | 🚀 [**Google Indexing & IndexNow Suite**](./08-seo-tools-architecture/search-engine-indexing-suite.md) | Đẩy chỉ mục siêu tốc với Google Indexing API Batch và IndexNow Protocol, CLI Artisan & Cron. | SEO / Backend Dev |
+| **08. Tối Ưu SEO** | 📈 [**Topical Authority & Chiến Lược SEO**](./08-seo-tools-architecture/topical-authority-and-seo-strategy.md) | Chiến lược 2 tầng Technical vs Ranking Signals, Topic Clusters, Internal Linking 2 chiều, Lộ trình 5 Phase. | SEO / Growth / Product |
 
 ---
 

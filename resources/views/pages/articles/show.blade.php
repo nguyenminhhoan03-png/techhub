@@ -127,43 +127,65 @@
     </div>
 </div>
 
-<article class="container" style="padding: 3rem 0 5rem;">
+<article class="article-container">
     
     {{-- Article Header --}}
-    <header style="max-width: 860px; margin-bottom: 2.5rem;">
-        <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 1rem; flex-wrap: wrap;">
+    <header class="article-header">
+        <div class="article-meta-row">
             <span class="badge {{ $article->type->badgeClass() }}">
                 {{ $article->type->label() }}
             </span>
-            <span style="font-size: 0.85rem; color: var(--text-muted);">
+            <span>
                 {{ $article->published_at ? $article->published_at->format('d/m/Y') : date('d/m/Y') }}
             </span>
             <span style="color: var(--text-muted);">•</span>
-            <span style="font-size: 0.85rem; color: var(--text-muted); display: inline-flex; align-items: center; gap: 0.25rem;">
+            <span style="display: inline-flex; align-items: center; gap: 0.25rem;">
                 <x-heroicon-o-clock style="width: 1.1em; height: 1.1em;" />
                 {{ __('read_time', ['count' => $article->read_time_minutes]) }}
             </span>
             <span style="color: var(--text-muted);">•</span>
-            <span style="font-size: 0.85rem; color: var(--text-muted); display: inline-flex; align-items: center; gap: 0.25rem;">
+            <span style="display: inline-flex; align-items: center; gap: 0.25rem;">
                 <x-heroicon-o-eye style="width: 1.1em; height: 1.1em;" />
                 {{ number_format($article->view_count) }} lượt xem
             </span>
         </div>
 
-        <h1 style="font-size: 2.35rem; line-height: 1.25; margin-bottom: 1.25rem; color: var(--text-main);">
+        <h1 class="article-title">
             {{ $article->title }}
         </h1>
 
-        <p style="font-size: 1.15rem; line-height: 1.6; color: var(--text-sub); background: var(--bg-surface-elevated); padding: 1.25rem 1.5rem; border-left: 4px solid var(--accent-indigo); border-radius: var(--radius-sm);">
+        <p class="article-excerpt">
             {{ $article->excerpt }}
         </p>
     </header>
 
-    {{-- Main Reader Body Grid (Content + Sticky TOC) --}}
-    <div style="display: grid; grid-template-columns: 1fr 280px; gap: 3rem; align-items: start;">
+    {{-- Main Reader Body Grid (Content + Sidebar) --}}
+    <div class="article-reader-layout">
         
         {{-- Left: Article Content --}}
-        <div style="min-width: 0;">
+        <div class="article-main-content">
+
+            {{-- Mobile Quick Jump TOC --}}
+            @if(count($toc) > 0)
+                <details class="article-mobile-toc">
+                    <summary style="font-weight: 700; color: var(--accent-indigo); font-size: 0.92rem; cursor: pointer; display: flex; align-items: center; justify-content: space-between; outline: none; list-style: none;">
+                        <span style="display: inline-flex; align-items: center; gap: 0.45rem;">
+                            <x-heroicon-o-list-bullet style="width: 1.2em; height: 1.2em;" />
+                            Mục Lục Bài Viết ({{ count($toc) }} phần)
+                        </span>
+                        <span style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600;">Xem mục lục ▼</span>
+                    </summary>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.88rem; margin: 0.85rem 0 0; padding: 0.75rem 0 0; border-top: 1px solid var(--border-subtle);">
+                        @foreach($toc as $item)
+                            <li style="padding-left: {{ ($item['level'] - 2) * 0.75 }}rem;">
+                                <a href="#{{ $item['slug'] }}" class="toc-link">
+                                    {{ $item['title'] }}
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </details>
+            @endif
 
             {{-- Featured Image if available --}}
             @if($article->featured_image_url)
@@ -174,22 +196,22 @@
 
             {{-- Visual Hardware Benchmark Comparison Section (For Comparison Articles) --}}
             @if($article->type->value === 'comparison' && count($linkedProducts) >= 2)
-                <div class="rich-output-card" style="margin-bottom: 2.5rem; border: 1px solid var(--border-medium); background: #ffffff; padding: 1.75rem;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.75rem;">
-                        <h3 style="font-size: 1.2rem; color: var(--text-main); display: flex; align-items: center; gap: 0.5rem;">
+                <div class="article-benchmark-card">
+                    <div class="benchmark-card-header">
+                        <h3>
                             <x-heroicon-o-scale style="width: 1.2em; height: 1.2em; color: var(--accent-indigo);" />
                             So Sánh Điểm Số Hiệu Năng (Benchmark Breakdown)
                         </h3>
                         <span class="badge badge-emerald">Dữ liệu chuẩn 2026</span>
                     </div>
 
-                    {{-- Product Cards Head-to-Head --}}
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                    {{-- Product Cards Head-to-Head (1 col on mobile, 2 col on tablet/desktop) --}}
+                    <div class="benchmark-product-grid">
                         @foreach($linkedProducts as $prod)
-                            <div style="background: var(--bg-surface-elevated); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); text-align: center;">
-                                <strong style="font-size: 1.1rem; color: var(--text-main); display: block; margin-bottom: 0.35rem;">{{ $prod->full_name }}</strong>
-                                <span style="font-size: 0.82rem; color: var(--text-muted); display: block; margin-bottom: 0.75rem;">{{ $prod->brand?->name }} • MSRP ${{ $prod->launch_msrp_usd }}</span>
-                                <div style="font-size: 2rem; font-weight: 800; color: var(--accent-indigo); font-family: var(--font-mono);">
+                            <div class="benchmark-product-item">
+                                <strong style="font-size: 1.05rem; color: var(--text-main); display: block; margin-bottom: 0.35rem; word-break: break-word;">{{ $prod->full_name }}</strong>
+                                <span style="font-size: 0.82rem; color: var(--text-muted); display: block; margin-bottom: 0.65rem;">{{ $prod->brand?->name }} • MSRP ${{ $prod->launch_msrp_usd }}</span>
+                                <div class="benchmark-score-display">
                                     {{ $prod->overall_score }}/10
                                 </div>
                                 <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Điểm Tổng Thể</span>
@@ -198,9 +220,9 @@
                     </div>
 
                     {{-- Comparison Metric Bars --}}
-                    <div style="display: flex; flex-direction: column; gap: 1.25rem;">
-                        <div>
-                            <div style="display: flex; justify-content: space-between; font-size: 0.88rem; font-weight: 600; margin-bottom: 0.35rem;">
+                    <div>
+                        <div class="benchmark-metric-item">
+                            <div class="benchmark-metric-label">
                                 <span>🎮 Hiệu Năng Chơi Game (Gaming 1440p/4K)</span>
                                 <span>{{ $linkedProducts[0]->gaming_score }} vs {{ $linkedProducts[1]->gaming_score }}</span>
                             </div>
@@ -210,8 +232,8 @@
                             </div>
                         </div>
 
-                        <div>
-                            <div style="display: flex; justify-content: space-between; font-size: 0.88rem; font-weight: 600; margin-bottom: 0.35rem;">
+                        <div class="benchmark-metric-item" style="margin-bottom: 0;">
+                            <div class="benchmark-metric-label">
                                 <span>⚡ Đồ Họa &amp; Năng Suất (Render / AI)</span>
                                 <span>{{ $linkedProducts[0]->productivity_score }} vs {{ $linkedProducts[1]->productivity_score }}</span>
                             </div>
@@ -224,12 +246,12 @@
             @endif
 
             {{-- Main Article Text Body --}}
-            <div class="article-prose" style="font-size: 1.05rem; line-height: 1.8; color: var(--text-main);">
-                {!! nl2br(e($article->content_markdown)) !!}
+            <div class="article-prose">
+                {!! $htmlContent ?? \Illuminate\Support\Str::markdown($article->content_markdown ?? '') !!}
             </div>
 
             {{-- Affiliate Action Box --}}
-            <div style="margin-top: 3rem; background: linear-gradient(135deg, rgba(79, 70, 229, 0.08) 0%, rgba(2, 132, 199, 0.08) 100%); border: 1px solid rgba(79, 70, 229, 0.2); border-radius: var(--radius-lg); padding: 2rem; text-align: center;">
+            <div class="article-affiliate-box">
                 <h3 style="font-size: 1.35rem; margin-bottom: 0.5rem; color: var(--text-main);">🛒 Tham Khảo Giá &amp; Khuyến Mãi Tốt Nhất</h3>
                 <p style="color: var(--text-sub); font-size: 0.95rem; margin-bottom: 1.5rem; max-width: 550px; margin-left: auto; margin-right: auto;">
                     So sánh bảng giá chính hãng tại các đại lý uy tín để nhận được ưu đãi giảm giá và chính sách bảo hành tốt nhất.
@@ -268,20 +290,20 @@
 
         </div>
 
-        {{-- Right: Sticky Sidebar with Table of Contents (TOC) --}}
-        <aside style="position: sticky; top: 90px;">
+        {{-- Right: Sidebar (Sticky Desktop TOC + Author) --}}
+        <aside class="article-sidebar">
             
-            {{-- TOC Widget --}}
+            {{-- TOC Widget (Desktop) --}}
             @if(count($toc) > 0)
-                <div class="tool-card" style="padding: 1.25rem; margin-bottom: 1.5rem;">
+                <div class="tool-card article-desktop-toc" style="padding: 1.25rem;">
                     <strong style="font-size: 0.88rem; text-transform: uppercase; color: var(--accent-indigo); display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.85rem; letter-spacing: 0.05em;">
                         <x-heroicon-o-list-bullet style="width: 1.2em; height: 1.2em;" />
                         Mục Lục Bài Viết
                     </strong>
-                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.85rem;">
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.85rem; margin: 0; padding: 0;">
                         @foreach($toc as $item)
                             <li style="padding-left: {{ ($item['level'] - 2) * 0.75 }}rem;">
-                                <a href="#{{ $item['slug'] }}" style="color: var(--text-sub); text-decoration: none; display: block; line-height: 1.4; transition: color 0.2s;" onmouseover="this.style.color='var(--accent-indigo)'" onmouseout="this.style.color='var(--text-sub)'">
+                                <a href="#{{ $item['slug'] }}" class="toc-link">
                                     {{ $item['title'] }}
                                 </a>
                             </li>

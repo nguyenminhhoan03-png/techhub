@@ -187,7 +187,7 @@
                             <textarea id="hash-text" name="text" class="form-control" style="min-height: 110px; font-family: var(--font-mono);" placeholder="Nhập chuỗi văn bản hoặc mật khẩu cần băm..." required></textarea>
                         </div>
 
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                        <div class="form-grid-2">
                             <div>
                                 <label for="hash-alg" class="form-label">Thuật toán băm (Algorithm)</label>
                                 <select id="hash-alg" name="algorithm" class="form-control">
@@ -304,7 +304,7 @@
                             </select>
                         </div>
 
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem;">
+                        <div class="form-grid-2">
                             <div class="form-group">
                                 <label for="pct-val-a" class="form-label">Giá trị A (X hoặc Giá gốc)</label>
                                 <input type="number" id="pct-val-a" name="value_a" class="form-control" value="20" step="any" required>
@@ -319,7 +319,7 @@
 
                     {{-- 9. BMI CALCULATOR --}}
                     @elseif($tool->slug === 'bmi-calculator')
-                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem;">
+                        <div class="form-grid-3">
                             <div class="form-group">
                                 <label for="bmi-unit" class="form-label">Hệ đo lường</label>
                                 <select id="bmi-unit" name="unit_system" class="form-control">
@@ -421,7 +421,7 @@
                             </div>
                         </div>
 
-                        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+                        <div class="form-grid-2">
                             <div>
                                 <label for="serp-url" class="form-label">Đường dẫn trang web (URL)</label>
                                 <input type="url" id="serp-url" name="url" class="form-control" value="https://techhub.vn/kien-thuc/toi-uu-seo-onpage" required>
@@ -471,7 +471,7 @@
                             <textarea id="meta-desc" name="description" class="form-control" style="min-height: 80px;" placeholder="Đoạn mô tả ngắn gọn về nội dung trang..." required>TechHub cung cấp hơn 20+ công cụ trực tuyến miễn phí dành cho lập trình viên và chuyên gia SEO: Định dạng JSON, Regex, Base64, Schema Generator, SERP Preview.</textarea>
                         </div>
 
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div class="form-grid-2">
                             <div>
                                 <label for="meta-keywords" class="form-label">Từ khóa (Meta Keywords)</label>
                                 <input type="text" id="meta-keywords" name="keywords" class="form-control" value="công cụ lập trình, seo tools, json formatter, schema generator, techhub">
@@ -482,7 +482,7 @@
                             </div>
                         </div>
 
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div class="form-grid-2">
                             <div>
                                 <label for="meta-author" class="form-label">Tác giả / Tổ chức (Author)</label>
                                 <input type="text" id="meta-author" name="author" class="form-control" value="TechHub Engineering Team">
@@ -555,7 +555,7 @@
                                 <label class="form-label">Mô tả tóm tắt (Description)</label>
                                 <textarea name="description" class="form-control" style="min-height: 70px;">Hướng dẫn từng bước cách refactor mã nguồn và áp dụng bộ nhớ đệm giúp giảm độ trễ dưới 5ms.</textarea>
                             </div>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                            <div class="form-grid-2">
                                 <div>
                                     <label class="form-label">URL bài viết / Trang</label>
                                     <input type="url" name="url" class="form-control" value="https://techhub.vn/blog/toi-uu-toc-do-website">
@@ -565,7 +565,7 @@
                                     <input type="url" name="image_url" class="form-control" value="https://techhub.vn/images/blog-banner.jpg">
                                 </div>
                             </div>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                            <div class="form-grid-2">
                                 <div>
                                     <label class="form-label">Tên tác giả (Author)</label>
                                     <input type="text" name="author_name" class="form-control" value="TechHub Senior Developer">
@@ -601,7 +601,7 @@ Hỏi: TechHub có hỗ trợ tạo Schema miễn phí không?
                             <textarea id="og-desc" name="description" class="form-control" style="min-height: 80px;" placeholder="Đoạn trích dẫn bài viết khi hiển thị trên newsfeed..." required>Trải nghiệm hơn 20+ tiện ích lập trình, máy tính và công cụ tối ưu SEO Onpage tốc độ cực nhanh, bảo mật tuyệt đối không lưu dữ liệu.</textarea>
                         </div>
 
-                        <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div class="form-grid-2">
                             <div>
                                 <label for="og-image" class="form-label">Đường dẫn ảnh Thumbnail (Khuyên dùng 1200x630px)</label>
                                 <input type="url" id="og-image" name="image_url" class="form-control" placeholder="https://example.com/banner-1200x630.png" value="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&h=630&fit=crop" required>
@@ -657,7 +657,7 @@ Hỏi: TechHub có hỗ trợ tạo Schema miễn phí không?
                             </select>
                         </div>
 
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div class="form-grid-2">
                             <div class="form-group">
                                 <label for="robots-disallow" class="form-label">Đường dẫn cần CHẶN (Mỗi dòng một mục Disallow)</label>
                                 <textarea id="robots-disallow" name="disallow_paths" class="form-control" style="min-height: 110px; font-family: var(--font-mono); font-size: 0.88rem;">/admin/
@@ -676,7 +676,7 @@ Hỏi: TechHub có hỗ trợ tạo Schema miễn phí không?
                             </div>
                         </div>
 
-                        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+                        <div class="form-grid-2">
                             <div>
                                 <label for="robots-sitemap" class="form-label">Đường dẫn tệp Sitemap XML</label>
                                 <input type="url" id="robots-sitemap" name="sitemap_url" class="form-control" value="https://techhub.vn/sitemap.xml">
