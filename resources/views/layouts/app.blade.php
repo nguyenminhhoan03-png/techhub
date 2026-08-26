@@ -31,13 +31,12 @@
 
     {{-- Dynamic SEO Meta Tags --}}
     <title>@yield('meta_title', __('hero_title_1') . ' — TechHub')</title>
-    <meta name="description" content="@yield('meta_description', __('hero_subtitle'))">
-    <meta name="keywords" content="@yield('meta_keywords', 'công cụ lập trình, json formatter, jwt debugger, regex tester, loan calculator, bmi calculator, base64 encode decode, hash generator, developer utilities, online tools')">
+    <meta name="keywords" content="@yield('meta_keywords', 'công cụ lập trình online, json formatter online, jwt debugger, regex tester, tính lãi suất vay, tính bmi online, base64 encode decode, hash generator, tạo sitemap xml, schema markup generator, developer utilities, online tools free, TechHub')">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <link rel="canonical" href="@yield('canonical_url', url()->current())">
     
     {{-- Hreflang Multi-Language Alternates --}}
-    <link rel="alternate" hreflang="vi" href="{{ url()->current() }}?lang=vi">
+    <link rel="alternate" hreflang="vi" href="{{ url()->current() }}">
     <link rel="alternate" hreflang="en" href="{{ url()->current() }}?lang=en">
     <link rel="alternate" hreflang="x-default" href="{{ url()->current() }}">
     

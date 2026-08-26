@@ -111,4 +111,32 @@ class Tool extends Model
         $key = 'tools.' . $this->slug . '.description_markdown';
         return \Illuminate\Support\Facades\Lang::has($key) ? __($key) : $this->description_markdown;
     }
+
+    public function getDisplayMetaTitleAttribute(): string
+    {
+        $key = 'tools.' . $this->slug . '.meta_title';
+        if (\Illuminate\Support\Facades\Lang::has($key)) {
+            return __($key);
+        }
+
+        if (!empty($this->meta_title)) {
+            return $this->meta_title;
+        }
+
+        return $this->display_name . ' Online — Miễn Phí 100% | TechHub';
+    }
+
+    public function getDisplayMetaDescriptionAttribute(): string
+    {
+        $key = 'tools.' . $this->slug . '.meta_description';
+        if (\Illuminate\Support\Facades\Lang::has($key)) {
+            return __($key);
+        }
+
+        if (!empty($this->meta_description)) {
+            return $this->meta_description;
+        }
+
+        return $this->display_summary;
+    }
 }

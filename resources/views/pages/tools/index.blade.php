@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('meta_title', __('all_tools') . ' — Công Cụ Online Miễn Phí | TechHub')
+@section('meta_title', 'Tất Cả Công Cụ Online Miễn Phí — Tiện Ích Lập Trình, Máy Tính & SEO | TechHub')
 @section('meta_description', 'Hơn ' . (isset($tools) ? $tools->count() : '50') . '+ công cụ lập trình và tiện ích trực tuyến miễn phí: JSON Formatter, JWT Debugger, Base64, Regex Tester, SEO Tools, Calculator và nhiều hơn nữa. Không cần đăng ký.')
 @section('canonical_url', url('/tools'))
 @section('meta_keywords', 'công cụ lập trình online, json formatter, jwt debugger, base64 encode decode, regex tester, developer tools, SEO tools, công cụ trực tuyến miễn phí, TechHub')

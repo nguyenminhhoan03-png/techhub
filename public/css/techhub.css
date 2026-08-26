@@ -2818,3 +2818,104 @@ textarea.form-control {
     grid-template-columns: 1fr 1fr 1fr 1fr;
   }
 }
+
+/* ==========================================================================
+   Tool Guide Body (SEO Longform Markdown Styles)
+   ========================================================================== */
+.tool-guide-body {
+  color: var(--text-sub);
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.tool-guide-body h2 {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tool-guide-body h2:first-child {
+  margin-top: 0;
+}
+
+.tool-guide-body h3 {
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.tool-guide-body p {
+  margin-bottom: 1.25rem;
+}
+
+.tool-guide-body ul, .tool-guide-body ol {
+  margin-bottom: 1.5rem;
+  padding-left: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tool-guide-body ul li {
+  list-style-type: disc;
+}
+
+.tool-guide-body ol li {
+  list-style-type: decimal;
+}
+
+.tool-guide-body strong {
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.tool-guide-body code {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  background: var(--bg-input);
+  color: var(--accent-cyan);
+  padding: 0.2rem 0.45rem;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--border-subtle);
+}
+
+.tool-guide-body pre {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--accent-indigo);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+}
+
+.tool-guide-body pre code {
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: var(--text-main);
+}
+
+.tool-guide-body blockquote {
+  border-left: 3px solid var(--accent-amber);
+  background: rgba(245, 158, 11, 0.05);
+  padding: 1rem 1.25rem;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  margin: 1.5rem 0;
+  color: var(--text-main);
+}
+
+.tool-guide-body hr {
+  border: none;
+  border-top: 1px solid var(--border-subtle);
+  margin: 2rem 0;
+}

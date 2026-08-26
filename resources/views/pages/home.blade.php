@@ -11,7 +11,7 @@
 @endphp
 @extends('layouts.app')
 
-@section('meta_title', $heroTitle . ' — TechHub')
+@section('meta_title', $heroTitle . ' | TechHub')
 @section('meta_description', $heroSubtitle)
 @section('canonical_url', url('/'))
 @section('meta_keywords', 'TechHub, công cụ lập trình online, json formatter, jwt debugger, regex tester, base64, SEO tools, công cụ trực tuyến miễn phí, developer utilities, game online miễn phí')

@@ -1,9 +1,27 @@
+@php
+    $displayTitle = $tool->display_meta_title;
+    $displayDesc = $tool->display_meta_description;
+
+    // Extract FAQs dynamically from Markdown for Google FAQPage Rich Schema
+    $faqItems = [];
+    if (!empty($tool->display_description_markdown)) {
+        if (preg_match_all('/###\s*(?:\d+[\.\)]\s*)?([^\n\r\?]+\?)\s*\n+([^#\n\r][^\n\r]+(?:\n+[^#\n\r][^\n\r]+)*)/u', $tool->display_description_markdown, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
+                $q = trim($match[1]);
+                $a = trim(strip_tags(\Illuminate\Support\Str::markdown($match[2])));
+                if (!empty($q) && !empty($a)) {
+                    $faqItems[] = ['question' => $q, 'answer' => $a];
+                }
+            }
+        }
+    }
+@endphp
 @extends('layouts.app')
 
-@section('meta_title', $tool->display_name . ' — Công Cụ Miễn Phí | TechHub')
-@section('meta_description', $tool->display_summary)
+@section('meta_title', $displayTitle)
+@section('meta_description', $displayDesc)
 @section('canonical_url', url('/tools/' . $tool->slug))
-@section('meta_keywords', $tool->display_name . ', ' . ($tool->category?->display_name ?? 'công cụ online') . ', công cụ trực tuyến miễn phí, online tool free, TechHub, ' . ($tool->category?->name ?? ''))
+@section('meta_keywords', $tool->display_name . ', ' . ($tool->category?->display_name ?? 'công cụ online') . ', ' . $tool->slug . ', công cụ trực tuyến miễn phí, online tools, TechHub, ' . ($tool->category?->name ?? ''))
 @section('og_image', asset('images/techhub-og.png'))
 
 @push('head')
@@ -14,13 +32,13 @@
   "@type": "SoftwareApplication",
   "name": "{{ $tool->display_name }}",
   "url": "{{ url('/tools/' . $tool->slug) }}",
-  "description": "{{ addslashes($tool->display_summary) }}",
+  "description": "{{ addslashes($displayDesc) }}",
   "operatingSystem": "Web Browser, Windows, macOS, Linux, iOS, Android",
   "browserRequirements": "Requires JavaScript. Works on Chrome, Firefox, Safari, Edge.",
   "applicationCategory": "{{ match($tool->category?->slug ?? '') {
     'seo' => 'WebApplication',
     'developer', 'dev' => 'DeveloperApplication',
-    'finance', 'calculator' => 'FinanceApplication',
+    'finance', 'calculator', 'calculators' => 'FinanceApplication',
     'image', 'media' => 'MultimediaApplication',
     default => 'UtilitiesApplication'
   } }}",
@@ -46,6 +64,28 @@
   @endif
 }
 </script>
+
+{{-- FAQPage Schema (Google Rich Snippets) --}}
+@if(!empty($faqItems))
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    @foreach($faqItems as $index => $faq)
+    {
+      "@type": "Question",
+      "name": "{{ addslashes($faq['question']) }}",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{{ addslashes($faq['answer']) }}"
+      }
+    }@if(!$loop->last),@endif
+    @endforeach
+  ]
+}
+</script>
+@endif
 
 {{-- BreadcrumbList Schema --}}
 <script type="application/ld+json">
@@ -942,27 +982,26 @@ Hỏi: TechHub có hỗ trợ tạo Schema miễn phí không?
         </div>
 
         {{-- SEO Longform Content & Documentation --}}
+        {{-- SEO Longform Content & Educational Guide --}}
         <div class="tool-card" style="padding: 2.8rem; line-height: 1.75;">
-            <h2>{{ __('about_tool', ['name' => $tool->display_name]) }}</h2>
-            <div style="margin-top: 1.25rem; color: var(--text-sub); font-size: 0.98rem;">
+            <div class="tool-guide-body">
                 @if($tool->display_description_markdown)
-                    {!! nl2br(e($tool->display_description_markdown)) !!}
+                    {!! \Illuminate\Support\Str::markdown($tool->display_description_markdown) !!}
                 @else
+                    <h2>{{ __('about_tool', ['name' => $tool->display_name]) }}</h2>
                     <p>{{ $tool->display_summary }}</p>
+
+                    <h3 style="margin-top: 2rem;">{{ __('how_to_use') }}</h3>
+                    <ol>
+                        <li>{{ __('step_1') }}</li>
+                        <li>{{ __('step_2') }}</li>
+                        <li>{{ __('step_3') }}</li>
+                        <li>{{ __('step_4') }}</li>
+                    </ol>
+
+                    <h3 style="margin-top: 2rem;">{{ __('privacy_statement') }}</h3>
+                    <p>{{ __('privacy_desc') }}</p>
                 @endif
-
-                <h3 style="margin-top: 2.5rem; margin-bottom: 0.85rem; color: var(--text-main);">{{ __('how_to_use') }}</h3>
-                <ol style="margin-left: 1.5rem; display: flex; flex-direction: column; gap: 0.6rem;">
-                    <li>{{ __('step_1') }}</li>
-                    <li>{{ __('step_2') }}</li>
-                    <li>{{ __('step_3') }}</li>
-                    <li>{{ __('step_4') }}</li>
-                </ol>
-
-                <h3 style="margin-top: 2.5rem; margin-bottom: 0.85rem; color: var(--text-main);">{{ __('privacy_statement') }}</h3>
-                <p>
-                    {{ __('privacy_desc') }}
-                </p>
             </div>
         </div>
 
