@@ -20,17 +20,19 @@ class SetLocaleMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $locale = $request->get('lang');
+        $queryLocale = $request->query('lang');
 
-        if (is_string($locale) && in_array($locale, self::SUPPORTED_LOCALES, true)) {
+        if (is_string($queryLocale) && in_array($queryLocale, self::SUPPORTED_LOCALES, true)) {
+            $locale = $queryLocale;
             $request->session()->put('locale', $locale);
+            cookie()->queue(cookie()->forever('locale', $locale));
         } else {
             /** @var string $locale */
-            $locale = $request->session()->get('locale', config('app.locale', 'vi'));
+            $locale = $request->session()->get('locale', $request->cookie('locale', config('app.locale', 'vi')));
         }
 
-        if ( ! in_array($locale, self::SUPPORTED_LOCALES, true)) {
-            $locale = 'vi';
+        if (! is_string($locale) || ! in_array($locale, self::SUPPORTED_LOCALES, true)) {
+            $locale = config('app.locale', 'vi');
         }
 
         App::setLocale($locale);

@@ -22,9 +22,34 @@ class ToolWebController extends Controller
     {
         if (in_array($locale, SetLocaleMiddleware::SUPPORTED_LOCALES, true)) {
             $request->session()->put('locale', $locale);
+            cookie()->queue(cookie()->forever('locale', $locale));
+            \Illuminate\Support\Facades\App::setLocale($locale);
         }
 
-        return redirect()->back();
+        $previousUrl = $request->headers->get('referer') ?: url()->previous();
+
+        if (!empty($previousUrl)) {
+            $parsed = parse_url($previousUrl);
+            $queryParams = [];
+            if (isset($parsed['query'])) {
+                parse_str($parsed['query'], $queryParams);
+                // Strip existing conflicting 'lang' query parameter from the redirect target URL
+                unset($queryParams['lang']);
+            }
+
+            $redirectUrl = ($parsed['scheme'] ?? $request->getScheme()) . '://' . ($parsed['host'] ?? $request->getHost());
+            if (isset($parsed['port']) && !in_array((int)$parsed['port'], [80, 443], true)) {
+                $redirectUrl .= ':' . $parsed['port'];
+            }
+            $redirectUrl .= ($parsed['path'] ?? '/');
+            if (!empty($queryParams)) {
+                $redirectUrl .= '?' . http_build_query($queryParams);
+            }
+
+            return redirect()->to($redirectUrl)->withCookie(cookie()->forever('locale', $locale));
+        }
+
+        return redirect()->back()->withCookie(cookie()->forever('locale', $locale));
     }
 
     public function home(): View

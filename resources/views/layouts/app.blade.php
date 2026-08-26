@@ -184,6 +184,17 @@
                             </a>
                         </li>
                     @endif
+                    <li style="padding-top: 0.75rem; border-top: 1px solid var(--border-subtle); margin-top: 0.5rem; display: flex; align-items: center; justify-content: space-between;">
+                        <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">{{ app()->getLocale() === 'vi' ? 'Ngôn ngữ' : 'Language' }}</span>
+                        <div class="lang-switcher">
+                            <a href="{{ route('lang.switch', 'vi') }}" class="lang-btn {{ app()->getLocale() === 'vi' ? 'active' : '' }}" title="Tiếng Việt">
+                                <span>🇻🇳</span> <span>VI</span>
+                            </a>
+                            <a href="{{ route('lang.switch', 'en') }}" class="lang-btn {{ app()->getLocale() === 'en' ? 'active' : '' }}" title="English">
+                                <span>🇬🇧</span> <span>EN</span>
+                            </a>
+                        </div>
+                    </li>
                 </ul>
             </div>
         </div>
