@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('meta_title', 'Tất Cả Công Cụ Online Miễn Phí — Tiện Ích Lập Trình, Máy Tính & SEO | TechHub')
-@section('meta_description', 'Hơn ' . (isset($tools) ? $tools->count() : '50') . '+ công cụ lập trình và tiện ích trực tuyến miễn phí: JSON Formatter, JWT Debugger, Base64, Regex Tester, SEO Tools, Calculator và nhiều hơn nữa. Không cần đăng ký.')
-@section('canonical_url', url('/tools'))
-@section('meta_keywords', 'công cụ lập trình online, json formatter, jwt debugger, base64 encode decode, regex tester, developer tools, SEO tools, công cụ trực tuyến miễn phí, TechHub')
+@section('meta_title', __('tools.common.tools_index_meta_title'))
+@section('meta_description', __('tools.common.tools_index_meta_desc', ['count' => isset($tools) ? $tools->count() : 50]))
+@section('canonical_url', app()->getLocale() === 'en' ? url('/tools') . '?lang=en' : url('/tools'))
+@section('meta_keywords', __('tools.common.tools_index_meta_keywords'))
 @section('og_image', asset('images/techhub-og.png'))
 
 @push('head')

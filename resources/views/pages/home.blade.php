@@ -13,8 +13,8 @@
 
 @section('meta_title', $heroTitle . ' | TechHub')
 @section('meta_description', $heroSubtitle)
-@section('canonical_url', url('/'))
-@section('meta_keywords', 'TechHub, công cụ lập trình online, json formatter, jwt debugger, regex tester, base64, SEO tools, công cụ trực tuyến miễn phí, developer utilities, game online miễn phí')
+@section('canonical_url', app()->getLocale() === 'en' ? url('/') . '?lang=en' : url('/'))
+@section('meta_keywords', __('tools.common.home_meta_keywords'))
 @section('og_image', asset('images/techhub-og.png'))
 
 @push('schema')
@@ -41,7 +41,7 @@
   "name": "{{ $heroTitle }} — TechHub",
   "description": "{{ $heroSubtitle }}",
   "url": "{{ url('/') }}",
-  "inLanguage": "vi-VN",
+  "inLanguage": "{{ app()->getLocale() === 'en' ? 'en-US' : 'vi-VN' }}",
   "isPartOf": { "@type": "WebSite", "name": "TechHub", "url": "{{ url('/') }}" }
 }
 </script>

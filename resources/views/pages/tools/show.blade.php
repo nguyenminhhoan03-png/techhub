@@ -20,8 +20,8 @@
 
 @section('meta_title', $displayTitle)
 @section('meta_description', $displayDesc)
-@section('canonical_url', url('/tools/' . $tool->slug))
-@section('meta_keywords', $tool->display_name . ', ' . ($tool->category?->display_name ?? 'công cụ online') . ', ' . $tool->slug . ', công cụ trực tuyến miễn phí, online tools, TechHub, ' . ($tool->category?->name ?? ''))
+@section('canonical_url', app()->getLocale() === 'en' ? url('/tools/' . $tool->slug) . '?lang=en' : url('/tools/' . $tool->slug))
+@section('meta_keywords', $tool->display_name . ', ' . ($tool->category?->display_name ?? __('tools.common.online_tool')) . ', ' . $tool->slug . ', ' . __('tools.common.free_online_tools') . ', ' . ($tool->category?->name ?? ''))
 @section('og_image', asset('images/techhub-og.png'))
 
 @push('head')
