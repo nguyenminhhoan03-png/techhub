@@ -328,7 +328,7 @@ a {
   font-weight: 600;
   padding: 0.35rem 0.7rem;
   border-radius: var(--radius-full);
-  color: var(--text-muted);
+  color: var(--text-sub); /* Changed for WCAG Contrast compliance on bg-elevated */
   display: flex;
   align-items: center;
   gap: 0.35rem;
@@ -611,7 +611,7 @@ a {
   border-radius: var(--radius-xs);
   padding: 0.25rem 0.55rem;
   font-size: 0.75rem;
-  color: var(--text-muted);
+  color: var(--text-sub); /* Changed for WCAG Contrast compliance */
   font-family: var(--font-mono);
 }
 
