@@ -12,8 +12,8 @@
 {
   "@context": "https://schema.org",
   "@type": "CollectionPage",
-  "name": "Công Cụ Online Miễn Phí — TechHub",
-  "description": "Kho công cụ trực tuyến miễn phí dành cho lập trình viên và người dùng phổ thông.",
+  "name": "{{ __('tools.common.tools_index_meta_title') }}",
+  "description": "{{ __('tools.common.tools_index_meta_desc', ['count' => isset($tools) ? $tools->count() : 50]) }}",
   "url": "{{ url('/tools') }}",
   "publisher": { "@type": "Organization", "name": "TechHub", "url": "{{ url('/') }}" }
 }
@@ -24,8 +24,8 @@
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Trang Chủ", "item": "{{ url('/') }}" },
-    { "@type": "ListItem", "position": 2, "name": "Công Cụ", "item": "{{ url('/tools') }}" }@if(request('category')),
+    { "@type": "ListItem", "position": 1, "name": "{{ __('home') }}", "item": "{{ url('/') }}" },
+    { "@type": "ListItem", "position": 2, "name": "{{ __('tools_hub') }}", "item": "{{ url('/tools') }}" }@if(request('category')),
     { "@type": "ListItem", "position": 3, "name": "{{ request('category') }}", "item": "{{ url('/tools?category=' . request('category')) }}" }
     @endif
   ]

@@ -183,3 +183,78 @@ Thêm 2 dòng sau vào cuối:
 # Tự động import thêm game mới mỗi ngày lúc 2h sáng
 0 2 * * * cd /var/www/techhub && docker compose exec -T app php artisan games:import --amount=30 >> /dev/null 2>&1
 ```
+
+---
+
+## 📂 Hướng Dẫn Chuyển Tệp Lên VPS Bằng Lệnh `scp` (Hỗ Trợ Proxy & Jump Host)
+
+Khi bạn cần đẩy tệp cấu hình, file backup `.sql`, file proxy hay SSL certificate từ máy cá nhân lên VPS:
+
+### 1. Lệnh SCP cơ bản (Direct SCP)
+
+```bash
+# Đẩy 1 tệp đơn lẻ lên VPS
+scp -P 22 /path/to/local/file.txt root@YOUR_VPS_IP:/var/www/techhub/
+
+# Đẩy toàn bộ thư mục (kèm cờ -r recursive)
+scp -P 22 -r ./config/cookies root@YOUR_VPS_IP:/var/www/techhub/config/
+```
+
+### 2. Lệnh SCP qua SSH Jump Host (Bastion Server)
+Nếu VPS của bạn nằm trong mạng nội bộ (Private VPC) và phải đi qua một máy chủ trung chuyển (Jump Host / Bastion):
+
+```bash
+# Cách 1: Sử dụng tham số -J (ngắn gọn)
+scp -J user_jump@JUMP_HOST_IP:22 /path/to/file root@INTERNAL_VPS_IP:/target/path/
+
+# Cách 2: Sử dụng tùy chọn ProxyJump
+scp -o "ProxyJump user_jump@JUMP_HOST_IP" /path/to/file root@INTERNAL_VPS_IP:/target/path/
+```
+
+### 3. Lệnh SCP qua SOCKS5 Proxy (ví dụ Shadowsocks / V2Ray / SSH Dynamic Tunnel)
+Khi máy tính của bạn dùng SOCKS5 Proxy (ví dụ đang chạy tại `127.0.0.1:1080`):
+
+* **Trên Linux / macOS (dùng `nc` / `netcat`)**:
+  ```bash
+  scp -o "ProxyCommand=nc -X 5 -x 127.0.0.1:1080 %h %p" /path/to/file root@YOUR_VPS_IP:/target/path/
+  ```
+
+* **Trên Windows / Git Bash (dùng `ncat` hoặc `connect`)**:
+  ```bash
+  # Nếu máy có ncat (đi kèm Nmap):
+  scp -o "ProxyCommand=ncat --proxy-type socks5 --proxy 127.0.0.1:1080 %h %p" /path/to/file root@YOUR_VPS_IP:/target/path/
+
+  # Hoặc dùng connect-proxy có sẵn trong Git for Windows:
+  scp -o "ProxyCommand=connect -S 127.0.0.1:1080 %h %p" /path/to/file root@YOUR_VPS_IP:/target/path/
+  ```
+
+### 4. Lệnh SCP qua HTTP / HTTPS Proxy (Squid Proxy / Corporate Proxy)
+
+```bash
+# Sử dụng ncat với HTTP CONNECT:
+scp -o "ProxyCommand=ncat --proxy-type http --proxy PROXY_IP:PORT %h %p" /path/to/file root@YOUR_VPS_IP:/target/path/
+
+# Nếu proxy có mật khẩu:
+scp -o "ProxyCommand=ncat --proxy-type http --proxy PROXY_IP:PORT --proxy-auth user:pass %h %p" /path/to/file root@YOUR_VPS_IP:/target/path/
+```
+
+### 💡 Mẹo Cấu Hình Cố Định Trong `~/.ssh/config` (Khuyên Dùng)
+Để không phải gõ chuỗi proxy dài dòng mỗi lần chuyển file, bạn mở file `~/.ssh/config` trên máy cá nhân và thêm cấu hình:
+
+```ssh-config
+Host techhub-vps
+    HostName YOUR_VPS_IP
+    User root
+    Port 22
+    IdentityFile ~/.ssh/id_rsa
+    # Nếu dùng SOCKS5:
+    ProxyCommand nc -X 5 -x 127.0.0.1:1080 %h %p
+    # Hoặc nếu dùng Jump Host:
+    # ProxyJump user_jump@JUMP_HOST_IP
+```
+
+Sau đó, lệnh SCP rút gọn chỉ còn:
+```bash
+scp /path/to/local/file.txt techhub-vps:/var/www/techhub/
+```
+

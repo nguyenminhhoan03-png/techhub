@@ -1,168 +1,173 @@
-# Laravel Clean Architecture, DDD & CQRS Project
+# 🚀 TechHub — Developer Utilities, AI Content Engine & Gaming Portal
 
-This Laravel project applies the principles of Clean Architecture, Domain-Driven Design (DDD), and Command Query Responsibility Segregation (CQRS) to create a robust, scalable, and maintainable web application. It is designed for developers who aim to build complex systems with a clear separation of concerns and a strong alignment between the business domain and technology.
+<p align="center">
+  <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="320" alt="Laravel Logo">
+</p>
 
-## Table of Contents
+<p align="center">
+  <strong>Nền tảng dịch vụ tiện ích trực tuyến, studio sáng tạo nội dung AI và so sánh phần cứng thế hệ mới</strong><br>
+  Xây dựng trên nền <strong>Laravel 12</strong>, kiến trúc <strong>Clean Architecture</strong>, <strong>Domain-Driven Design (DDD)</strong> và <strong>CQRS</strong>.
+</p>
 
--   [Key Concepts](#key-concepts)
--   [Who is this project for?](#who-is-this-project-for)
--   [When to Use This Project](#when-to-use-this-project)
--   [Why Choose This Project Over Others?](#why-choose-this-project-over-others)
--   [Prerequisites](#prerequisites)
--   [Project Structure](#project-structure)
--   [Contributing](#contributing)
+<p align="center">
+  <a href="#-kiến-trúc--công-nghệ-cốt-lõi"><img src="https://img.shields.io/badge/PHP-8.3%20%7C%208.4-777bb4.svg?style=flat-square&logo=php" alt="PHP Version"></a>
+  <a href="#-kiến-trúc--công-nghệ-cốt-lõi"><img src="https://img.shields.io/badge/Laravel-12.x-ff2d20.svg?style=flat-square&logo=laravel" alt="Laravel Version"></a>
+  <a href="docs/02-architecture/clean-architecture-ddd-cqrs.md"><img src="https://img.shields.io/badge/Architecture-Clean%20%2F%20DDD%20%2F%20CQRS-indigo.svg?style=flat-square" alt="Clean Architecture"></a>
+  <a href="docs/05-performance-and-quality/coding-standards-and-quality.md"><img src="https://img.shields.io/badge/PHPStan-Level%205+-blue.svg?style=flat-square" alt="PHPStan"></a>
+  <a href="docs/05-performance-and-quality/coding-standards-and-quality.md"><img src="https://img.shields.io/badge/Pest-Architecture%20Tests-green.svg?style=flat-square" alt="Pest"></a>
+</p>
 
-## Key Concepts
+---
 
--   **Clean Architecture**: Ensures independence from UI, databases, frameworks, and external agencies. The dependency rule is central, promoting the inversion of control.
--   **Domain-Driven Design (DDD)**: Focuses on complex domain logic, placing the primary project emphasis on the core domain and domain logic.
--   **Command Query Responsibility Segregation (CQRS)**: Separates read and write operations, improving performance, scalability, and maintainability.
+## 🌟 Tổng Quan Dự Án
 
-## Who is this project for?
+**TechHub** là giải pháp web ứng dụng cấp doanh nghiệp kết hợp giữa bộ công cụ tiện ích trực tuyến cho lập trình viên/chuyên viên SEO, cổng game giải trí HTML5, và hệ thống tổng hợp thông số so sánh phần cứng tự động bằng trí tuệ nhân tạo (LLM Gateway).
 
-This project is designed for developers and teams looking to leverage advanced architectural patterns in building complex business applications using Laravel. It is particularly suited for:
+Mã nguồn được phân tách triệt để theo **Clean Architecture (5 Tầng)**, tách biệt hoàn toàn giữa nghiệp vụ lõi (Domain) và các công nghệ bên ngoài (HTTP, Database, Framework), đảm bảo khả năng bảo trì, mở rộng và kiểm thử tự động đạt mức cao nhất.
 
--   **Enterprise Applications**: Where business rules and processes are complex, necessitating a clear separation between core logic and infrastructure.
--   **Scalable Systems**: Where scalability and flexibility are crucial, enabling the system to evolve rapidly with changing business requirements.
+---
 
-## When to Use This Project
+## 🎯 5 Phân Hệ Tính Năng Cốt Lõi
 
--   **Building New Applications**: Ideal for initiating projects with a focus on long-term maintainability and adherence to sophisticated architectural patterns.
--   **Refactoring Existing Applications**: Beneficial for restructuring a cluttered Laravel project into a more manageable and performant architecture.
--   **Learning Best Practices**: Excellent for educational purposes to understand and implement high-level software architecture within a Laravel setting.
+### 1. 🛠️ Kho 19 Công Cụ Tiện Ích Trực Tuyến (Online Tools Suite)
+Hệ thống 19 công cụ xử lý nghiệp vụ với độ trễ dưới 5ms, giao diện Blade SSR tối ưu hóa SEO, hỗ trợ song ngữ (Vi/En):
+* **Developer Tools (7 công cụ)**: JSON Formatter & Validator, Base64 Encoder/Decoder, Hash Generator (MD5, SHA256, Bcrypt), JWT Debugger & Inspector, Regex Tester, URL Encoder/Decoder, Proxy Checker (HTTP/HTTPS/SOCKS4/SOCKS5).
+* **Calculators & Math (3 công cụ)**: Tính khoản vay trả góp ngân hàng (Loan EMI Calculator), Tính phần trăm (Percentage), Chỉ số khối cơ thể (BMI Calculator).
+* **Image Utilities (2 công cụ)**: Trích xuất bảng màu ảnh (Color Extractor), Đọc metadata EXIF (Image Metadata Inspector).
+* **SEO Onpage Tools (7 công cụ)**: Mô phỏng Google SERP Snippet theo Pixel Width, Trình tạo Schema Markup JSON-LD, Tạo thẻ Meta HTML5, Thẻ Open Graph & Twitter Cards, Trình tạo tệp Robots.txt, Trình tạo XML Sitemap, Trình sinh URL Slug lọc Stop Words tiếng Việt.
 
-## Why Choose This Project Over Others?
+### 2. 🤖 AI Content Studio & Hardware Comparison Pipeline
+* **Real-time LLM Gateway**: Kết nối trực tiếp với **Google Gemini 1.5 Flash / Pro** và **OpenAI GPT-4o**.
+* **So Sánh Phần Cứng Đối Đầu (Head-to-Head)**: Tự động bóc tách thông số kỹ thuật (Specs), tính toán điểm Benchmark (Gaming, Productivity, Overall), phân tích ưu/nhược điểm giữa 2 linh kiện bất kỳ trên thế giới.
+* **Web Article Scraper & Sanitizer**: Bóc tách bài viết từ URL bất kỳ, làm sạch DOM, trích xuất hình ảnh để nạp context cho AI viết bài tự động.
 
--   **Advanced Clean Architecture**: Compared to traditional MVC or other Laravel projects, this framework integrates Clean Architecture principles more rigorously, promoting a high degree of independence between the domain logic, UI, and database.
--   **Optimized for Laravel 11 & 12**: Utilizes the latest features of Laravel 11 & 12, offering a more advanced toolkit for dependency injection, queue management, and real-time event handling, which are essential for modern web applications.
--   **Enhanced DDD Implementation**: Provides a deeper implementation of Domain-Driven Design than typical repositories, focusing on complex domain logic and ensuring that business rules are encapsulated within domain entities.
--   **CQRS-Ready**: Includes a built-in structure for Command Query Responsibility Segregation, optimizing read and write operations for better performance and scalability compared to conventional Laravel architectures.
--   **Service Layer Alternative**: Alongside CQRS, the project also supports a robust Service Layer architecture, providing an alternative approach for those preferring a more traditional but equally structured pattern for handling business logic and application services.
+### 3. 🎮 Cổng Web Games HTML5 (Gaming Portal)
+* Tích hợp kho game phong phú với cơ chế Sandbox Iframe an toàn.
+* Xử lý triệt tiêu lỗi màn đen Canvas (Watchdog Timer + Two-Phase Load Delay).
+* Thống kê lượt chơi, bảng xếp hạng và giao diện tương thích hoàn hảo mọi thiết bị di động.
 
-## Prerequisites
+### 4. 🚀 Search Engine Indexing Suite
+* **Google Indexing API**: Bắn tín hiệu lập chỉ mục tự động qua Google Service Account JWT, hỗ trợ gom cụm Batch 100 URL/lần.
+* **IndexNow Protocol**: Tự động thông báo cập nhật URL mới tới Bing, Yahoo, Yandex, Naver và Copilot AI.
 
-Before you begin, ensure you have met the following requirements:
+### 5. 🛡️ Admin Control Center & Monetization
+* Bảng điều khiển KPI thời gian thực, quản lý người dùng, phân quyền quản trị.
+* Quản lý banner quảng cáo AdSense / Nhà tài trợ theo từng vị trí chiến lược.
+* Cài đặt tham số động (Dynamic Settings) kết hợp cơ chế xóa cache thông minh (Instant Invalidation).
 
--   PHP [8.2, 8.3, 8.4]
--   Composer
--   Laravel [11, 12]
--   Any other server requirements or dependencies needed to run Laravel.
+---
 
-Here are the steps to get your development environment running:
+## 🏛️ Kiến Trúc Hệ Thống (Clean Architecture & DDD)
 
-1. Create Project directly via composer:
-    ```bash
-     composer create-project shahghasiadil/laravel-clean-architecture-ddd-cqrs my-app
-    ```
-1. Clone the repository:
-    ```bash
-    git clone https://github.com/shahghasiadil/laravel-clean-architecture-ddd-cqrs.git
-    ```
+Toàn bộ mã nguồn nghiệp vụ được tổ chức tại thư mục `/src`:
 
-## Project Structure
-
-The project follows a modular architecture based on Clean Architecture principles, separating concerns into distinct layers. Below is the directory structure and a detailed description of each layer's responsibility.
-
-```plaintext
+```
 src/
-├── Application/
-│ ├── Bus/
-│ ├── Providers/
-│ └── User/
-│ ├──── CommandHandlers/
-│ ├──── Commands/
-│ ├──── Contracts/
-│ ├──── Data/
-│ ├──── Queries/
-│ └──── Services/
-├── Domain/
-│ ├── Providers/
-│ ├── Common/
-│ ├──── Enums/
-│ ├──── Traits/
-│ └── User/
-│ ├──── Enums/
-│ ├──── Entities/
-│ ├──── Events/
-│ ├──── Exceptions/
-│ ├──── Observers/
-│ ├──── Policies/
-│ └──── Repositories/
-├── Infrastructure/
-│ ├── Providers/
-│ └── User/
-│ ├──── Jobs/
-│ ├──── Notifications/
-│ └──── Persistence/
-│ └──────── Repositories/
-├── Presentation/
-│ └── UserManagement/
-│ ├──── Controllers/
-│ ├──── Middlewares/
-│ ├──── Requests/
-│ ├──── Resources/
-│ └──── routes/
-│ └── Controller.php
-└── Shared/
-├──── Contracts/
-├──── Enums/
-└──── Traits/
+├── Domain/              # 🟢 Nghiệp vụ lõi thuần túy (Entities, Value Objects, Tool Engines, Contracts)
+├── Application/         # 🔵 Điều phối nghiệp vụ, CQRS Commands/Queries, AI Services, Crawler
+├── Infrastructure/      # 🟡 Hiện thực Repositories, Database Persistence, External Adapters
+├── Presentation/        # 🔴 Controllers, Form Requests, Resources, Routes (Web & API)
+└── Shared/              # 🟣 Middleware bảo mật, Enums chung, Traits (HasUlid, ApiResponse)
 ```
 
-### Description of Layers
+---
 
--   **Application**: Manages the application logic and orchestrates the flow of data between the domain and presentation layers. This layer includes:
+## ⚡ Bắt Đầu Nhanh (Quick Start)
 
-    -   `Bus`: Responsible for dispatching commands and queries to the appropriate handlers.
-    -   `Providers`: Service providers specific to the application layer, registering application-specific services and dependencies.
-    -   `User`: Contains all user-related business logic, divided into:
-        -   `CommandHandlers`: Handles commands related to user actions.
-        -   `Commands`: CQRS commands for user-related operations.
-        -   `Contracts`: Interface definitions for services and repositories dealing with user data.
-        -   `Data`: Data transfer objects (DTOs) that carry data between processes we are using Spatie Laravel Data Package.
-        -   `Queries`: CQRS queries for retrieving user data.
-        -   `Services`: Services that execute business logic and use cases related to users.
+### Cách 1: Chạy Môi Trường Local Với PHP & SQLite/MySQL
 
--   **Domain**: The heart of the business logic, defining entities, value objects, and domain events.
+```bash
+# 1. Clone repository
+git clone https://github.com/nguyenminhhoan03-png/techhub.git
+cd techhub
 
-    -   `Providers`: Domain-level service providers that bind interfaces to implementations within the domain scope.
-    -   `Common`: Shared utilities and components that span across multiple domains:
-        -   `Enums`: Cross-domain enumerations defining shared constants and states.
-        -   `Traits`: Reusable traits that provide common functionality across various domains.
-    -   `User`: Domain logic and entities specific to user management, including:
-        -   `Entities`: Domain models representing users.
-        -   `Enums`: User-specific enumerations that define states or types relevant to user management.
-        -   `Events`: Events that are domain-specific and might trigger domain actions.
-        -   `Exceptions`: Custom exceptions for domain-specific error handling.
-        -   `Observers`: Observers for watching changes in domain entities.
-        -   `Policies`: Security policies related to user entities.
-        -   `Repositories`: Interfaces for user repository implementations.
+# 2. Cài đặt các thư viện PHP
+composer install --optimize-autoloader
 
--   **Infrastructure**: Implements the interfaces defined by the domain layer, dealing with data persistence and external systems.
+# 3. Tạo file cấu hình môi trường
+cp .env.example .env
 
-    -   `Providers`: Infrastructure-level service providers that register infrastructure-specific services and dependencies.
-    -   `User`: Infrastructure logic specific to user management, including:
-        -   `Jobs`: Background jobs for asynchronous user tasks.
-        -   `Notifications`: Notification services to handle alerts and communications.
-        -   `Persistence`: Persistence mechanisms for user data, including:
-            -   `Repositories`: Concrete implementations of user repository interfaces.
+# 4. Sinh Application Key
+php artisan key:generate
 
--   **Presentation**: Manages the delivery mechanisms, dealing with how the application is presented to the end user (APIs, web UI, etc.).
+# 5. Chạy Migration và nạp dữ liệu mẫu ban đầu
+php artisan migrate --seed
 
-    -   `UserManagement`: Presentation logic specifically for managing users, including:
-        -   `Controllers`: Controllers to handle incoming API requests and deliver appropriate responses.
-        -   `Middlewares`: Middleware to handle request filtering and pre/post processing.
-        -   `Requests`: Form requests for validating user-related data.
-        -   `Resources`: Resources and transformers that format domain data into user-friendly formats.
-        -   `routes`: Routing configurations that direct incoming requests to the appropriate controllers.
+# 6. Tạo link thư mục lưu trữ
+php artisan storage:link
 
--   **Shared**: Contains elements that are used across multiple layers, providing cross-cutting functionality.
-    -   `Contracts`: Shared interface definitions that might be used by many components.
-    -   `Enums`: Enumerations that provide a set of constants for use throughout the application.
-    -   `Traits`: Reusable traits that provide utility functions or methods to multiple classes.
+# 7. Khởi động Web Server
+php artisan serve --port=9022
+```
 
-This architecture not only segregates the responsibilities into clear, well-defined areas but also promotes a high degree of modularity and replaceability of components.
+* 🌐 **Trang chủ**: [http://127.0.0.1:9022](http://127.0.0.1:9022)
+* 🛡️ **Trang Admin**: [http://127.0.0.1:9022/admin](http://127.0.0.1:9022/admin)
+  * Tài khoản: `admin@techhub.local`
+  * Mật khẩu: `Admin@123456`
 
-## Contributing
+---
 
-Contributions are welcome! Please fork the repository and submit pull requests to contribute.
+### Cách 2: Triển Khai Bằng Docker Compose (Khuyên Dùng)
+
+```bash
+# 1. Tạo file cấu hình cho Docker
+cp .env.docker.example .env
+
+# 2. Khởi động toàn bộ stack (Nginx, PHP 8.3 FPM, MySQL 8.0, Redis 7, phpMyAdmin)
+docker compose up -d --build
+
+# 3. Chạy Migration và nạp dữ liệu
+docker compose exec app php artisan migrate --seed
+
+# 4. Import kho game mẫu
+docker compose exec app php artisan games:import --amount=50
+```
+
+* 🔗 **Website**: [http://localhost:8088](http://localhost:8088)
+* 🗄️ **phpMyAdmin**: [http://localhost:8081](http://localhost:8081)
+
+---
+
+## 📚 Kho Tài Liệu Kỹ Thuật Chuyên Sâu (`docs/`)
+
+Hệ thống tài liệu đầy đủ được lưu trữ tại thư mục [**`docs/`**](docs/README.md):
+
+| Nhóm Tài Liệu | Tệp Chi Tiết | Trọng Tâm |
+| :--- | :--- | :--- |
+| **01. Khởi Động** | 🚀 [**Onboarding & Setup Môi Trường**](docs/01-getting-started/onboarding-and-environment-setup.md) | Thiết lập môi trường từ A-Z, biến `.env`, xử lý sự cố. |
+| **02. Kiến Trúc** | 🏛️ [**Clean Architecture, DDD & CQRS**](docs/02-architecture/clean-architecture-ddd-cqrs.md) | Giải phẫu 5 tầng, Command/Query Bus, Dependency Rule. |
+| **02. Kiến Trúc** | 🧭 [**Vòng Đời Thực Thi & Mổ Xẻ `/src`**](docs/02-architecture/src-execution-lifecycle-deep-dive.md) | Luồng chạy chi tiết của Request, cơ chế 18 Tool Engines. |
+| **03. Cơ Sở Dữ Liệu** | 🗄️ [**Thiết Kế CSDL Toàn Diện (Schema & ERD)**](docs/03-database/database-architecture-and-schema.md) | Thiết kế 24 bảng CSDL, ERD, Indexing & Partitioning. |
+| **04. API & Bảo Mật** | 🌐 [**Chuẩn REST API & Xử Lý Lỗi**](docs/04-api-and-security/api-standards-and-error-handling.md) | Chuẩn RESTful, JSON Envelope, Mã lỗi chuẩn hóa, Phân trang. |
+| **04. API & Bảo Mật** | 🛡️ [**Bảo Mật & Hardening Hệ Thống**](docs/04-api-and-security/security-and-hardening.md) | Rate Limiting, Eloquent Strict Mode, Security Headers, Request ID. |
+| **05. Hiệu Năng & Code**| ⚡ [**Tối Ưu Hiệu Năng & Cache Strategy**](docs/05-performance-and-quality/performance-and-optimization.md) | Chặn N+1, OPcache JIT, Redis Cache, Hàng đợi Queue Worker. |
+| **05. Hiệu Năng & Code**| 📏 [**Tiêu Chuẩn Code & Đảm Bảo Chất Lượng**](docs/05-performance-and-quality/coding-standards-and-quality.md) | Strict Types, Laravel Pint, PHPStan Level 5+, Pest Architecture. |
+| **06. Giao Diện** | 🎨 [**Kiến Trúc Frontend & Workspaces**](docs/06-frontend/blade-design-system-and-workspaces.md) | Design Tokens Vanilla CSS, Swiper, Kéo thả Base64. |
+| **07. Phân Hệ AI** | 🤖 [**AI Engine & Hardware Pipeline**](docs/07-ai-content-engine-and-crawling/ai-engine-and-hardware-pipeline.md) | Real-time LLM Gateway (Gemini/OpenAI), Web Scraper, Auto-Upsert. |
+| **08. Tối Ưu SEO** | 🛠️ [**Kiến Trúc Bộ Công Cụ SEO Onpage**](docs/08-seo-tools-architecture/seo-tools-suite.md) | Kiến trúc 7 công cụ SEO Onpage, Thuật toán SERP Pixel Snippet. |
+| **08. Tối Ưu SEO** | 🚀 [**Google Indexing & IndexNow Suite**](docs/08-seo-tools-architecture/search-engine-indexing-suite.md) | Đẩy chỉ mục Google Indexing API Batch & IndexNow Protocol. |
+| **08. Tối Ưu SEO** | 📈 [**Topical Authority & Chiến Lược SEO**](docs/08-seo-tools-architecture/topical-authority-and-seo-strategy.md) | Chiến lược 2 tầng Technical vs Ranking Signals, Topic Clusters. |
+| **Vận Hành & Triển Khai**| 🐳 [**Cẩm Nang Triển Khai Docker**](docs/DOCKER-GUIDE.md) | Hướng dẫn triển khai Docker Compose chỉ với một dòng lệnh. |
+| **Vận Hành & Triển Khai**| 🚀 [**Hướng Dẫn Đưa Lên VPS & Cài Đặt SSL**](docs/VPS-DEPLOYMENT-GUIDE.md) | Deploy VPS Ubuntu, Nginx Reverse Proxy, Certbot HTTPS, SCP Proxy. |
+| **Vận Hành & Triển Khai**| 📝 [**Development Notes & Bài Học Kinh Nghiệm**](docs/DEVELOPMENT_NOTES.md) | Tổng hợp lỗi đã fix, quy tắc tránh lỗi màn đen game, tối ưu Lighthouse. |
+
+---
+
+## 🧪 Kiểm Thử Tự Động & Đảm Bảo Chất Lượng
+
+```bash
+# Chạy toàn bộ Pest test suite và Architecture Tests
+vendor/bin/pest
+
+# Kiểm tra định dạng code chuẩn PSR-12 / Pint
+vendor/bin/pint --test
+
+# Phân tích tĩnh phát hiện lỗi tiềm ẩn (PHPStan)
+vendor/bin/phpstan analyse
+```
+
+---
+
+## 📄 Bản Quyền & Giấy Phép
+
+Dự án phát triển bởi đội ngũ kỹ thuật **TechHub Team** dưới giấy phép [MIT License](LICENSE).

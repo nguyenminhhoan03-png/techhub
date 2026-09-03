@@ -55,17 +55,26 @@ resources/views/
 │   └── app.blade.php              # Layout chính của người dùng (SEO Meta, Header, Footer, Swiper CDN)
 ├── pages/
 │   ├── home.blade.php             # Trang chủ (Hero, Swiper danh mục, Live filter, FAQ, Why choose us)
-│   └── tools/
-│       ├── index.blade.php        # Kho thư viện toàn bộ công cụ & bộ lọc
-│       └── show.blade.php         # Không gian làm việc (Workspace) chuyên dụng cho từng công cụ
+│   ├── tools/
+│   │   ├── index.blade.php        # Kho thư viện 18 công cụ & bộ lọc đa năng
+│   │   └── show.blade.php         # Không gian làm việc (Workspace) chuyên dụng cho từng công cụ
+│   ├── articles/
+│   │   ├── index.blade.php        # Thư viện bài viết kiến thức & cẩm nang công nghệ
+│   │   └── show.blade.php         # Giao diện đọc bài viết chuẩn SEO, Schema FAQPage JSON-LD
+│   └── games/
+│       ├── index.blade.php        # Cổng trò chơi Web HTML5 & bảng lọc thể loại
+│       └── show.blade.php         # Màn hình chơi game Sandbox Iframe chống Black Screen
 ├── admin/                         # Giao diện Quản trị viên (/admin)
 │   ├── layouts/app.blade.php      # Layout Sidebar & Navbar Admin
 │   ├── auth/login.blade.php       # Trang đăng nhập bảo mật Admin
 │   ├── dashboard/index.blade.php  # Dashboard thống kê KPI & Lịch sử Real-time
+│   ├── ai_studio/index.blade.php  # AI Studio sinh bài viết & phân tích đối đầu phần cứng (Gemini/OpenAI)
+│   ├── articles/index.blade.php   # Quản lý bài viết, duyệt bài crawler và xuất bản
+│   ├── hardware/index.blade.php   # Quản lý danh mục linh kiện, CPU, GPU và điểm Benchmark
 │   ├── users/index.blade.php      # Quản lý người dùng, phân quyền, khóa tài khoản
 │   ├── tools/index.blade.php      # Quản lý bật/tắt công cụ, chỉnh sửa thông số
 │   ├── ads/index.blade.php        # Quản lý Banner tài trợ & Google AdSense
-│   └── settings/index.blade.php   # Quản lý Text động & Cấu hình hệ thống
+│   └── settings/index.blade.php   # Quản lý Text động & Cấu hình API Keys (Gemini, OpenAI, IndexNow)
 └── components/                    # Các Blade Components tái sử dụng
 ```
 

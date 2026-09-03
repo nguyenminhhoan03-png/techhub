@@ -21,14 +21,20 @@ class SetLocaleMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         $queryLocale = $request->query('lang');
+        $headerLocale = $request->header('X-Locale');
 
         if (is_string($queryLocale) && in_array($queryLocale, self::SUPPORTED_LOCALES, true)) {
             $locale = $queryLocale;
-            $request->session()->put('locale', $locale);
+            if ($request->hasSession()) {
+                $request->session()->put('locale', $locale);
+            }
             cookie()->queue(cookie()->forever('locale', $locale));
+        } elseif (is_string($headerLocale) && in_array($headerLocale, self::SUPPORTED_LOCALES, true)) {
+            $locale = $headerLocale;
         } else {
-            /** @var string $locale */
-            $locale = $request->session()->get('locale', $request->cookie('locale', config('app.locale', 'vi')));
+            /** @var string|null $sessionLocale */
+            $sessionLocale = $request->hasSession() ? $request->session()->get('locale') : null;
+            $locale = $sessionLocale ?? $request->cookie('locale', config('app.locale', 'vi'));
         }
 
         if (! is_string($locale) || ! in_array($locale, self::SUPPORTED_LOCALES, true)) {

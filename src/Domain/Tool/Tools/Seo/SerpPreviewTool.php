@@ -97,25 +97,29 @@ class SerpPreviewTool implements ToolContract
         $isDescTruncated = $descPixelEst > $maxDescPixels || $descCharCount > 160;
         $truncatedDesc = $isDescTruncated ? mb_substr($description, 0, 155) . '...' : $description;
 
+        $isEn = (class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication())
+            ? \Illuminate\Support\Facades\App::getLocale() === 'en'
+            : false;
+
         // SEO Health Checks
         $titleStatus = 'optimal';
-        $titleMessage = 'Độ dài tiêu đề hoàn hảo cho kết quả tìm kiếm.';
+        $titleMessage = $isEn ? 'Perfect title length for Google search results.' : 'Độ dài tiêu đề hoàn hảo cho kết quả tìm kiếm.';
         if ($titleCharCount < 30) {
             $titleStatus = 'too_short';
-            $titleMessage = 'Tiêu đề quá ngắn (< 30 ký tự), chưa tận dụng hết không gian hiển thị.';
+            $titleMessage = $isEn ? 'Title is too short (< 30 characters), underutilizing display space.' : 'Tiêu đề quá ngắn (< 30 ký tự), chưa tận dụng hết không gian hiển thị.';
         } elseif ($isTitleTruncated) {
             $titleStatus = 'too_long';
-            $titleMessage = 'Tiêu đề vượt quá giới hạn hiển thị, có thể bị cắt bớt dấu "..." trên Google.';
+            $titleMessage = $isEn ? 'Title exceeds display limit and may be truncated with "..." on Google.' : 'Tiêu đề vượt quá giới hạn hiển thị, có thể bị cắt bớt dấu "..." trên Google.';
         }
 
         $descStatus = 'optimal';
-        $descMessage = 'Độ dài mô tả chuẩn SEO, cung cấp đầy đủ thông tin thu hút click.';
+        $descMessage = $isEn ? 'Optimal description length, providing enough information to drive clicks.' : 'Độ dài mô tả chuẩn SEO, cung cấp đầy đủ thông tin thu hút click.';
         if ($descCharCount < 70) {
             $descStatus = 'too_short';
-            $descMessage = 'Mô tả quá ngắn (< 70 ký tự), khó kích thích người dùng nhấp vào kết quả.';
+            $descMessage = $isEn ? 'Description is too short (< 70 characters), unlikely to entice user clicks.' : 'Mô tả quá ngắn (< 70 ký tự), khó kích thích người dùng nhấp vào kết quả.';
         } elseif ($isDescTruncated) {
             $descStatus = 'too_long';
-            $descMessage = 'Mô tả vượt quá giới hạn hiển thị (~160 ký tự), phần cuối sẽ bị ẩn.';
+            $descMessage = $isEn ? 'Description exceeds display limit (~160 characters), trailing portion will be truncated.' : 'Mô tả vượt quá giới hạn hiển thị (~160 ký tự), phần cuối sẽ bị ẩn.';
         }
 
         $overallScore = 100;

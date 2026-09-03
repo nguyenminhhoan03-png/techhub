@@ -63,28 +63,35 @@ class BmiCalculatorTool implements ToolContract
 
         $bmi = round($bmi, 1);
 
-        // WHO Classification
-        $category = 'Normal weight';
-        $healthRisk = 'Minimal';
+        $isVi = (class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication())
+            ? \Illuminate\Support\Facades\App::getLocale() === 'vi'
+            : true;
 
+        // WHO Classification
         if ($bmi < 18.5) {
             $category = 'Underweight';
-            $healthRisk = 'Increased risk for nutritional deficiency and osteoporosis';
+            $categoryVi = 'Thiếu cân (Gầy)';
+            $healthRisk = $isVi ? 'Nguy cơ thiếu hụt dinh dưỡng và loãng xương' : 'Increased risk for nutritional deficiency and osteoporosis';
         } elseif ($bmi <= 24.9) {
             $category = 'Normal weight (Healthy)';
-            $healthRisk = 'Lowest risk of health complications';
+            $categoryVi = 'Bình thường (Lý tưởng)';
+            $healthRisk = $isVi ? 'Nguy cơ biến chứng sức khỏe ở mức thấp nhất' : 'Lowest risk of health complications';
         } elseif ($bmi <= 29.9) {
             $category = 'Overweight';
-            $healthRisk = 'Increased risk for cardiovascular conditions';
+            $categoryVi = 'Thừa cân (Tiền béo phì)';
+            $healthRisk = $isVi ? 'Gia tăng nguy cơ mắc bệnh tim mạch và huyết áp' : 'Increased risk for cardiovascular conditions';
         } elseif ($bmi <= 34.9) {
             $category = 'Obesity Class I';
-            $healthRisk = 'Moderate risk for type 2 diabetes & hypertension';
+            $categoryVi = 'Béo phì độ I';
+            $healthRisk = $isVi ? 'Nguy cơ trung bình đối với tiểu đường type 2 và tăng huyết áp' : 'Moderate risk for type 2 diabetes & hypertension';
         } elseif ($bmi <= 39.9) {
             $category = 'Obesity Class II';
-            $healthRisk = 'Severe health risk';
+            $categoryVi = 'Béo phì độ II';
+            $healthRisk = $isVi ? 'Nguy cơ sức khỏe nghiêm trọng' : 'Severe health risk';
         } else {
             $category = 'Obesity Class III (Severe)';
-            $healthRisk = 'Very high health risk';
+            $categoryVi = 'Béo phì độ III (Nguy hiểm)';
+            $healthRisk = $isVi ? 'Nguy cơ sức khỏe rất cao' : 'Very high health risk';
         }
 
         // Calculate healthy weight range (BMI 18.5 - 24.9)
@@ -96,6 +103,7 @@ class BmiCalculatorTool implements ToolContract
         return ToolResult::success([
             'bmi_score' => $bmi,
             'category' => $category,
+            'category_vi' => $categoryVi,
             'health_risk' => $healthRisk,
             'healthy_weight_range' => [
                 'min_kg' => $minHealthyKg,

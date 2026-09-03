@@ -133,13 +133,17 @@ class RobotsTxtGeneratorTool implements ToolContract
 
         $robotsTxtContent = implode("\n", $lines);
 
+        $isEn = (class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication())
+            ? \Illuminate\Support\Facades\App::getLocale() === 'en'
+            : false;
+
         // Validation Analysis
         $warnings = [];
         if (str_contains($robotsTxtContent, 'Disallow: /') && !str_contains($robotsTxtContent, 'User-agent: GPTBot') && ('block_all' === $preset)) {
-            $warnings[] = 'CẢNH BÁO: Bạn đang chặn toàn bộ website khỏi mọi công cụ tìm kiếm (Disallow: /).';
+            $warnings[] = $isEn ? 'WARNING: You are blocking the entire website from all search engines (Disallow: /).' : 'CẢNH BÁO: Bạn đang chặn toàn bộ website khỏi mọi công cụ tìm kiếm (Disallow: /).';
         }
         if (empty($sitemapUrl)) {
-            $warnings[] = 'Khuyến nghị: Nên khai báo đường dẫn Sitemap XML ở cuối tệp để Bot index nhanh hơn.';
+            $warnings[] = $isEn ? 'Recommendation: You should declare your XML Sitemap URL at the end of the file for faster indexing.' : 'Khuyến nghị: Nên khai báo đường dẫn Sitemap XML ở cuối tệp để Bot index nhanh hơn.';
         }
 
         $executionTimeMs = (int) round((hrtime(true) - $startTime) / 1e+6);

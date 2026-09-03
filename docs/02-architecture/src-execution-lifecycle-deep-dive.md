@@ -15,10 +15,11 @@ src/
 │   │   ├── Contracts/              # ToolContract, ToolRepositoryContract
 │   │   ├── Entities/               # Tool, ToolCategory, ToolExecution (Eloquent Domain Models)
 │   │   ├── Enums/                  # ToolEngineType, ExecutionStatus
-│   │   ├── Tools/                  # 11 Engine xử lý nghiệp vụ toán học, code, ảnh
-│   │   │   ├── Developer/          # JsonFormatter, Base64, Hash, Jwt, Regex, Url
-│   │   │   ├── Calculators/        # Loan, Percentage, Bmi
-│   │   │   └── Image/              # ImageColorExtractor, ImageMetadata
+│   │   ├── Tools/                  # 19 Engine xử lý nghiệp vụ toán học, code, ảnh, SEO Onpage
+│   │   │   ├── Developer/          # JsonFormatter, Base64, Hash, Jwt, Regex, Url, ProxyChecker (7 tools)
+│   │   │   ├── Calculators/        # Loan, Percentage, Bmi (3 tools)
+│   │   │   ├── Image/              # ImageColorExtractor, ImageMetadata (2 tools)
+│   │   │   └── Seo/                # SerpPreview, MetaTag, Schema, OpenGraph, Robots, Sitemap, Slug (7 tools)
 │   │   └── ValueObjects/           # ToolResult, CategorySlug
 │   ├── User/                       # Bounded Context: Người dùng & Phân quyền
 │   ├── Setting/                    # Bounded Context: Cấu hình động & Text hệ thống
@@ -32,13 +33,13 @@ src/
 │
 ├── Infrastructure/                 # 🟡 [Adapters] Hiện thực hóa Repository & Tích hợp ngoài
 │   ├── Tool/
-│   │   ├── Providers/              # ToolServiceProvider (Đăng ký 11 Tool Engine vào Container)
+│   │   ├── Providers/              # ToolServiceProvider (Đăng ký 19 Tool Engine vào Container)
 │   │   └── Repositories/           # EloquentToolRepository (Hiện thực ToolRepositoryContract)
 │   └── Persistence/                # Database Migrations & Schemas
 │
 ├── Presentation/                   # 🔴 [Delivery Mechanism] Tầng giao tiếp người dùng
 │   ├── Tool/
-│   │   ├── Controllers/            # ToolApiController (REST API), ToolWebController (Blade SSR)
+│   │   ├── Controllers/            # ToolController (REST API), ToolWebController (Blade SSR)
 │   │   ├── Requests/               # ExecuteToolRequest (Validate đầu vào)
 │   │   ├── Resources/              # ToolResource, ToolCategoryResource (Chuẩn JSON Envelope)
 │   │   └── routes/                 # api.php, web.php của Module Tool
@@ -68,24 +69,24 @@ sequenceDiagram
     actor User as User / Client
     participant HTTP as Kernel / Global Middleware
     participant Route as Presentation (Router)
-    participant Ctrl as ToolApiController
+    participant Ctrl as ToolController (API)
     participant Req as ExecuteToolRequest
     participant Bus as CommandBus
     participant Handler as ExecuteToolCommandHandler
-    participant Engine as ToolEngine (Json/Loan/Image/...)
+    participant Engine as ToolEngine (Json/Loan/Image/Seo/...)
     participant Repo as ToolRepository & DB
     participant Res as ToolResource / JSON
 
     User->>HTTP: Gửi POST /api/tools/{slug}/execute
     HTTP->>HTTP: Gắn Correlation ID, Set Locale (vi/en), Security Headers
     HTTP->>Route: Khớp Route: src/Presentation/Tool/routes/api.php
-    Route->>Ctrl: Gọi ToolApiController@execute
+    Route->>Ctrl: Gọi ToolController@execute
     Ctrl->>Req: Tự động Validate dữ liệu qua FormRequest
     Ctrl->>Bus: Dispatch ExecuteToolCommand(slug, inputPayload, ip, userId)
     Bus->>Handler: Tìm và gọi ExecuteToolCommandHandler
     Handler->>Repo: Lấy thông tin Tool & Engine từ Service Container
     Handler->>Engine: Gọi $toolEngine->execute($input)
-    Engine->>Engine: Xử lý nghiệp vụ thuần túy (Toán học / Regex / EXIF / Hash)
+    Engine->>Engine: Xử lý nghiệp vụ thuần túy (Toán học / Regex / EXIF / Hash / SEO)
     Engine-->>Handler: Trả về ToolResult (Value Object)
     Handler->>Repo: Bắn Event & Log lịch sử vào bảng tool_executions
     Handler-->>Ctrl: Trả về ToolResult DTO
@@ -107,9 +108,9 @@ sequenceDiagram
 2. **Tầng Presentation**:
    * Route được định nghĩa tại [`src/Presentation/Tool/routes/api.php`](file:///e:/Project_ItWebDev/PHP/techhub/src/Presentation/Tool/routes/api.php).
    * Request đi qua [`ExecuteToolRequest.php`](file:///e:/Project_ItWebDev/PHP/techhub/src/Presentation/Tool/Requests/ExecuteToolRequest.php) để kiểm tra tính hợp lệ cơ bản.
-   * [`ToolApiController.php`](file:///e:/Project_ItWebDev/PHP/techhub/src/Presentation/Tool/Controllers/ToolApiController.php) nhận request và đóng gói thành [`ExecuteToolCommand`](file:///e:/Project_ItWebDev/PHP/techhub/src/Application/Tool/Commands/ExecuteToolCommand.php).
+   * [`ToolController.php`](file:///e:/Project_ItWebDev/PHP/techhub/src/Presentation/Tool/Controllers/ToolController.php) nhận request và đóng gói thành [`ExecuteToolCommand`](file:///e:/Project_ItWebDev/PHP/techhub/src/Application/Tool/Commands/ExecuteToolCommand.php).
 3. **Tầng Application (CQRS Command Bus)**:
-   * [`IlluminateCommandBus`](file:///e:/Project_ItWebDev/PHP/techhub/src/Application/Bus/IlluminateCommandBus.php) điều phối Command đến [`ExecuteToolCommandHandler`](file:///e:/Project_ItWebDev/PHP/techhub/src/Application/Tool/Commands/ExecuteToolCommandHandler.php).
+   * [`IlluminateCommandBus`](file:///e:/Project_ItWebDev/PHP/techhub/src/Application/Bus/IlluminateCommandBus.php) điều phối Command đến [`ExecuteToolCommandHandler`](file:///e:/Project_ItWebDev/PHP/techhub/src/Application/Tool/CommandHandlers/ExecuteToolCommandHandler.php).
    * Handler kiểm tra cờ `is_active` của công cụ.
 4. **Tầng Domain (Nghiệp Vụ Thuần)**:
    * Handler lấy Engine tương ứng đã được đăng ký trong [`ToolServiceProvider.php`](file:///e:/Project_ItWebDev/PHP/techhub/src/Infrastructure/Tool/Providers/ToolServiceProvider.php) (Ví dụ: `LoanCalculatorTool`).

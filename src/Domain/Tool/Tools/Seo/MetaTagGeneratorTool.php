@@ -139,7 +139,7 @@ class MetaTagGeneratorTool implements ToolContract
             'summary_data' => [
                 'title' => $title,
                 'description' => $description,
-                'canonical' => $canonicalUrl ?: 'Chưa cấu hình (Khuyên dùng)',
+                'canonical' => $canonicalUrl ?: (((class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication()) && \Illuminate\Support\Facades\App::getLocale() === 'en') ? 'Not configured (Recommended)' : 'Chưa cấu hình (Khuyên dùng)'),
                 'robots' => $robotsContent,
             ],
         ], executionTimeMs: $executionTimeMs);

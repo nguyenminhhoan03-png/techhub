@@ -91,6 +91,34 @@
       }
     }
     </script>
+
+    {{-- Client-Side Multi-Language Bridge --}}
+    @php
+        $i18nData = [
+            'processing' => __('processing'),
+            'copied' => __('copied'),
+            'copy_result' => __('copy_result'),
+            'copy_failed' => app()->getLocale() === 'en' ? 'Copy failed' : 'Sao chép thất bại',
+            'copy_empty' => app()->getLocale() === 'en' ? 'No content to copy!' : 'Không có nội dung để sao chép!',
+            'copied_clipboard' => app()->getLocale() === 'en' ? 'Copied to clipboard!' : 'Đã sao chép vào bộ nhớ tạm (Clipboard)!',
+            'image_invalid' => app()->getLocale() === 'en' ? 'Please select a valid image file (PNG, JPG, WEBP, GIF)' : 'Vui lòng chọn tệp hình ảnh hợp lệ (PNG, JPG, WEBP, GIF)',
+            'image_loaded' => app()->getLocale() === 'en' ? 'Loaded image: ' : 'Đã tải ảnh: ',
+            'sample_loaded' => app()->getLocale() === 'en' ? 'Sample data loaded!' : 'Đã nạp dữ liệu mẫu!',
+            'exec_success' => app()->getLocale() === 'en' ? 'Executed successfully in :ms ms!' : 'Thực thi thành công trong :ms ms!',
+            'network_error' => app()->getLocale() === 'en' ? 'Network error: ' : 'Lỗi kết nối mạng: ',
+            'error_generic' => app()->getLocale() === 'en' ? 'An error occurred during processing.' : 'Lỗi trong quá trình xử lý.',
+            'copy' => __('copy'),
+            'copy_all' => __('copy_all'),
+            'copy_code' => __('copy_code'),
+            'copy_script' => __('copy_script'),
+            'download' => __('download'),
+            'downloaded' => app()->getLocale() === 'en' ? 'File downloaded: ' : 'Đã tải xuống tệp ',
+        ];
+    @endphp
+    <script>
+        window.__locale = "{{ app()->getLocale() }}";
+        window.__i18n = {!! json_encode($i18nData, JSON_UNESCAPED_UNICODE) !!};
+    </script>
     @stack('head')
     @stack('schema')
     @stack('schemas')

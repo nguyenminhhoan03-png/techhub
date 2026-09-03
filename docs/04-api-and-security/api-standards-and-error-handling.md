@@ -1,4 +1,4 @@
-# 🌐 06. Chuẩn Thiết Kế REST API & Xử Lý Lỗi (API Standards)
+# 🌐 04. Chuẩn Thiết Kế REST API & Xử Lý Lỗi (API Standards)
 
 Tài liệu này quy định cấu trúc thiết kế các Endpoint API, chuẩn định dạng JSON Response, xử lý ngoại lệ tập trung và phân trang tại **TechHub**.
 

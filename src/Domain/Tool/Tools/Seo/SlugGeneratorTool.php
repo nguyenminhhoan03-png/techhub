@@ -126,21 +126,25 @@ class SlugGeneratorTool implements ToolContract
         $seoScore = 100;
         $recommendations = [];
 
+        $isEn = (class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication())
+            ? \Illuminate\Support\Facades\App::getLocale() === 'en'
+            : false;
+
         if ($slugLen > 75) {
             $seoScore -= 20;
-            $recommendations[] = 'Slug hơi dài (> 75 ký tự), nên rút gọn để Bot dễ hiểu và thân thiện khi chia sẻ.';
+            $recommendations[] = $isEn ? 'Slug is a bit long (> 75 chars), consider shortening for bot readability and easy sharing.' : 'Slug hơi dài (> 75 ký tự), nên rút gọn để Bot dễ hiểu và thân thiện khi chia sẻ.';
         } elseif ($slugLen < 10) {
             $seoScore -= 15;
-            $recommendations[] = 'Slug quá ngắn, có thể chưa chứa đầy đủ từ khóa chính.';
+            $recommendations[] = $isEn ? 'Slug is very short, it might not contain complete target keywords.' : 'Slug quá ngắn, có thể chưa chứa đầy đủ từ khóa chính.';
         }
 
         if ($wordCount > 8) {
             $seoScore -= 15;
-            $recommendations[] = 'Số từ trong URL (> 8 từ) có thể làm loãng mật độ từ khóa SEO.';
+            $recommendations[] = $isEn ? 'Number of words in URL (> 8 words) may dilute SEO keyword density.' : 'Số từ trong URL (> 8 từ) có thể làm loãng mật độ từ khóa SEO.';
         }
 
         if (empty($recommendations)) {
-            $recommendations[] = 'Độ dài hoàn hảo, cấu trúc URL thân thiện với thuật toán tìm kiếm của Google.';
+            $recommendations[] = $isEn ? 'Perfect length and friendly URL structure for search engine crawlers.' : 'Độ dài hoàn hảo, cấu trúc URL thân thiện với thuật toán tìm kiếm của Google.';
         }
 
         $executionTimeMs = (int) round((hrtime(true) - $startTime) / 1e+6);

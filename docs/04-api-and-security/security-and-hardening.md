@@ -1,4 +1,4 @@
-# 🛡️ 03. Bảo Mật & Hardening Hệ Thống (Security Guide)
+# 🛡️ 04. Bảo Mật & Hardening Hệ Thống (Security Guide)
 
 Bảo mật là ưu tiên hàng đầu tại **TechHub**. Dự án áp dụng mô hình bảo vệ nhiều lớp (Defense-in-Depth) từ tầng ứng dụng, cơ sở dữ liệu, mạng cho đến HTTP response.
 

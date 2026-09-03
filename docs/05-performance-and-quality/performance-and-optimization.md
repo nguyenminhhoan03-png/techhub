@@ -1,4 +1,4 @@
-# ⚡ 04. Tối Ưu Hiệu Năng & Cache Strategy (Performance Guide)
+# ⚡ 05. Tối Ưu Hiệu Năng & Cache Strategy (Performance Guide)
 
 Để đáp ứng hàng triệu lượt truy vấn mỗi ngày với độ trễ (latency) thấp nhất, **TechHub** áp dụng các giải pháp tối ưu hóa hiệu năng toàn diện từ tầng PHP Engine, Database đến Caching.
 

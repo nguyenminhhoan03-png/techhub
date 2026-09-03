@@ -130,7 +130,9 @@ class OpenGraphGeneratorTool implements ToolContract
             ],
             'audit' => [
                 'has_og_image' => !empty($imageUrl),
-                'og_image_recommendation' => 'Kích thước khuyên dùng: 1200 x 630 px (Tỷ lệ 1.91:1) để hiển thị sắc nét nhất.',
+                'og_image_recommendation' => ((class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication()) && \Illuminate\Support\Facades\App::getLocale() === 'en')
+                    ? 'Recommended size: 1200 x 630 px (1.91:1 ratio) for crisp display on all social feeds.'
+                    : 'Kích thước khuyên dùng: 1200 x 630 px (Tỷ lệ 1.91:1) để hiển thị sắc nét nhất.',
                 'title_length' => mb_strlen($title),
                 'description_length' => mb_strlen($description),
             ],

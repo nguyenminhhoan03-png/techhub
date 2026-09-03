@@ -44,6 +44,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->api(append: [
+            Shared\Infrastructure\Http\Middleware\SetLocaleMiddleware::class,
             'throttle:api',
         ]);
     })

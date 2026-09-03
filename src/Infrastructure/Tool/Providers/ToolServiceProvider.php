@@ -25,6 +25,7 @@ use Domain\Tool\Tools\Developer\Base64Tool;
 use Domain\Tool\Tools\Developer\HashGeneratorTool;
 use Domain\Tool\Tools\Developer\JsonFormatterTool;
 use Domain\Tool\Tools\Developer\JwtDebuggerTool;
+use Domain\Tool\Tools\Developer\ProxyCheckerTool;
 use Domain\Tool\Tools\Developer\RegexTesterTool;
 use Domain\Tool\Tools\Developer\UrlEncoderDecoderTool;
 use Domain\Tool\Tools\Image\ImageColorExtractorTool;
@@ -62,6 +63,7 @@ class ToolServiceProvider extends ServiceProvider
             $registry->register(new JwtDebuggerTool());
             $registry->register(new RegexTesterTool());
             $registry->register(new UrlEncoderDecoderTool());
+            $registry->register(new ProxyCheckerTool());
 
             // Register Calculator Tools
             $registry->register(new LoanCalculatorTool());

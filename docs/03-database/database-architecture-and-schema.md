@@ -1,4 +1,4 @@
-# 🗄️ 07. Thiết Kế Cơ Sở Dữ Liệu Toàn Diện (Senior Database Architecture & Schema)
+# 🗄️ 03. Thiết Kế Cơ Sở Dữ Liệu Toàn Diện (Senior Database Architecture & Schema)
 
 Tài liệu này định nghĩa toàn bộ cấu trúc Cơ sở dữ liệu (Database Schema) cho nền tảng **TechHub**. Thiết kế được tối ưu hóa cho hệ thống **Modular Monolith** kết hợp **Clean Architecture & DDD**, sẵn sàng mở rộng cho hàng triệu bản ghi và xử lý lưu lượng truy cập lớn (Read-Heavy).
 
@@ -22,7 +22,7 @@ Tài liệu này định nghĩa toàn bộ cấu trúc Cơ sở dữ liệu (Dat
    * `products` liên kết với `deals` (giá bán từ các sàn thương mại).
 5. **Hiệu năng & Indexing**:
    * Tất cả Foreign Keys đều được tạo Composite Index tương ứng cho các câu lệnh `WHERE` và `ORDER BY`.
-   * Sử dụng `deleted_at` (SoftDeletes) cho các bảng dữ liệu cốt lõi (`users`, `posts`, `products`, `tools`).
+   * Sử dụng `deleted_at` (SoftDeletes) cho các bảng dữ liệu cốt lõi (`users`, `posts`, `products`, `tools`, `games`).
 
 ---
 
@@ -61,6 +61,8 @@ erDiagram
     STORES ||--o{ AFFILIATE_CLICKS : tracks
 
     COMPARISONS ||--o{ COMPARISON_ITEMS : details
+
+    GAME_CATEGORIES ||--o{ GAMES : contains
 ```
 
 ---
@@ -543,6 +545,54 @@ CREATE TABLE affiliate_clicks (
     FOREIGN KEY (deal_id) REFERENCES deals(id) ON DELETE CASCADE,
     FOREIGN KEY (store_id) REFERENCES stores(id) ON DELETE CASCADE,
     INDEX idx_affiliate_clicks_store_date (store_id, clicked_at DESC)
+);
+```
+
+---
+
+### Module 7: Cổng Trò Chơi Web HTML5 (Web Games Portal)
+
+#### 23. Bảng `game_categories` (Danh mục trò chơi)
+```sql
+CREATE TABLE game_categories (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    slug VARCHAR(100) UNIQUE NOT NULL,
+    name VARCHAR(150) NOT NULL,
+    description VARCHAR(400) NULL,
+    icon VARCHAR(100) NULL,
+    color VARCHAR(30) DEFAULT '#4f46e5' NOT NULL,
+    sort_order INT DEFAULT 0 NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE NOT NULL,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL
+);
+```
+
+#### 24. Bảng `games` (Kho trò chơi HTML5 & Cấu hình Iframe)
+```sql
+CREATE TABLE games (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    category_id BIGINT UNSIGNED NOT NULL,
+    slug VARCHAR(150) UNIQUE NOT NULL,
+    name VARCHAR(200) NOT NULL,
+    summary VARCHAR(350) NOT NULL,
+    description_markdown TEXT NULL,
+    thumbnail_url VARCHAR(500) NULL,
+    engine_path VARCHAR(300) NOT NULL, -- Đường dẫn iframe HTML5 (ví dụ: https://gamemonetize.com/... hoặc file cục bộ)
+    difficulty VARCHAR(20) DEFAULT 'easy' NOT NULL, -- easy, medium, hard
+    controls_hint VARCHAR(300) NULL, -- Hướng dẫn phím (ví dụ: "Phím mũi tên / WASD")
+    play_count BIGINT UNSIGNED DEFAULT 0 NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE NOT NULL,
+    is_featured BOOLEAN DEFAULT FALSE NOT NULL,
+    meta_title VARCHAR(255) NULL,
+    meta_description VARCHAR(500) NULL,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+    deleted_at TIMESTAMP NULL,
+    FOREIGN KEY (category_id) REFERENCES game_categories(id) ON DELETE CASCADE,
+    INDEX idx_games_category_active (category_id, is_active),
+    INDEX idx_games_is_featured (is_featured),
+    INDEX idx_games_play_count (play_count DESC)
 );
 ```
 

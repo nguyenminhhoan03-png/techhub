@@ -53,9 +53,13 @@ class SchemaGeneratorTool implements ToolContract
             '@type' => $type,
         ];
 
+        $isEn = (class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication())
+            ? \Illuminate\Support\Facades\App::getLocale() === 'en'
+            : false;
+
         switch ($type) {
             case 'Article':
-                $schema['headline'] = (string) ($input['headline'] ?? $input['title'] ?? 'Tiêu đề bài viết chuẩn SEO');
+                $schema['headline'] = (string) ($input['headline'] ?? $input['title'] ?? ($isEn ? 'SEO-Friendly Article Headline' : 'Tiêu đề bài viết chuẩn SEO'));
                 $schema['description'] = (string) ($input['description'] ?? '');
                 $schema['image'] = (string) ($input['image_url'] ?? 'https://example.com/banner.jpg');
                 $schema['author'] = [
@@ -75,7 +79,7 @@ class SchemaGeneratorTool implements ToolContract
                 $schema['dateModified'] = (string) ($input['date_modified'] ?? date('Y-m-d\TH:i:s\Z'));
                 $schema['mainEntityOfPage'] = [
                     '@type' => 'WebPage',
-                    '@id' => (string) ($input['url'] ?? 'https://example.com/bai-viet'),
+                    '@id' => (string) ($input['url'] ?? ($isEn ? 'https://example.com/article' : 'https://example.com/bai-viet')),
                 ];
                 break;
 
@@ -94,19 +98,19 @@ class SchemaGeneratorTool implements ToolContract
                 break;
 
             case 'Product':
-                $schema['name'] = (string) ($input['name'] ?? 'Tên sản phẩm mẫu');
+                $schema['name'] = (string) ($input['name'] ?? ($isEn ? 'Sample Product Name' : 'Tên sản phẩm mẫu'));
                 $schema['image'] = (string) ($input['image_url'] ?? 'https://example.com/product.jpg');
                 $schema['description'] = (string) ($input['description'] ?? '');
                 $schema['sku'] = (string) ($input['sku'] ?? 'SKU-10001');
                 $schema['brand'] = [
                     '@type' => 'Brand',
-                    'name' => (string) ($input['brand'] ?? 'Thương hiệu'),
+                    'name' => (string) ($input['brand'] ?? ($isEn ? 'BrandName' : 'Thương hiệu')),
                 ];
                 $schema['offers'] = [
                     '@type' => 'Offer',
-                    'url' => (string) ($input['url'] ?? 'https://example.com/san-pham'),
-                    'priceCurrency' => (string) ($input['price_currency'] ?? 'VND'),
-                    'price' => (string) ($input['price'] ?? '500000'),
+                    'url' => (string) ($input['url'] ?? ($isEn ? 'https://example.com/product' : 'https://example.com/san-pham')),
+                    'priceCurrency' => (string) ($input['price_currency'] ?? ($isEn ? 'USD' : 'VND')),
+                    'price' => (string) ($input['price'] ?? ($isEn ? '49.99' : '500000')),
                     'priceValidUntil' => date('Y-12-31'),
                     'itemCondition' => 'https://schema.org/NewCondition',
                     'availability' => 'https://schema.org/' . (string) ($input['availability'] ?? 'InStock'),
@@ -122,19 +126,19 @@ class SchemaGeneratorTool implements ToolContract
 
             case 'LocalBusiness':
             case 'Organization':
-                $schema['name'] = (string) ($input['name'] ?? 'Công ty / Cửa hàng TechHub');
+                $schema['name'] = (string) ($input['name'] ?? ($isEn ? 'TechHub Corp / Store' : 'Công ty / Cửa hàng TechHub'));
                 $schema['url'] = (string) ($input['url'] ?? 'https://example.com');
                 $schema['logo'] = (string) ($input['logo_url'] ?? 'https://example.com/logo.png');
                 $schema['image'] = (string) ($input['image_url'] ?? 'https://example.com/storefront.jpg');
-                $schema['telephone'] = (string) ($input['telephone'] ?? '+84 901 234 567');
+                $schema['telephone'] = (string) ($input['telephone'] ?? ($isEn ? '+1 800 555 0199' : '+84 901 234 567'));
                 $schema['email'] = (string) ($input['email'] ?? 'contact@example.com');
                 $schema['address'] = [
                     '@type' => 'PostalAddress',
-                    'streetAddress' => (string) ($input['address_street'] ?? '123 Đường Công Nghệ'),
-                    'addressLocality' => (string) ($input['address_locality'] ?? 'Hà Nội'),
-                    'addressRegion' => (string) ($input['address_region'] ?? 'HN'),
-                    'postalCode' => (string) ($input['postal_code'] ?? '100000'),
-                    'addressCountry' => (string) ($input['address_country'] ?? 'VN'),
+                    'streetAddress' => (string) ($input['address_street'] ?? ($isEn ? '123 Tech Street' : '123 Đường Công Nghệ')),
+                    'addressLocality' => (string) ($input['address_locality'] ?? ($isEn ? 'San Francisco' : 'Hà Nội')),
+                    'addressRegion' => (string) ($input['address_region'] ?? ($isEn ? 'CA' : 'HN')),
+                    'postalCode' => (string) ($input['postal_code'] ?? ($isEn ? '94105' : '100000')),
+                    'addressCountry' => (string) ($input['address_country'] ?? ($isEn ? 'US' : 'VN')),
                 ];
                 if ('LocalBusiness' === $type && !empty($input['price_range'])) {
                     $schema['priceRange'] = (string) $input['price_range'];
@@ -237,8 +241,21 @@ class SchemaGeneratorTool implements ToolContract
             }
         }
 
+        $isEn = (class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication())
+            ? \Illuminate\Support\Facades\App::getLocale() === 'en'
+            : false;
+
         // Fallback default sample FAQs
-        return [
+        return $isEn ? [
+            [
+                'question' => 'What is Onpage SEO and why is it important?',
+                'answer' => 'Onpage SEO is the practice of optimizing web page content and HTML structure to improve search rankings and deliver the best user experience.',
+            ],
+            [
+                'question' => 'Does JSON-LD Schema improve Google rankings?',
+                'answer' => 'Yes, structured data helps Google understand page context and enables Rich Results (star ratings, pricing, FAQ snippets) which dramatically increases click-through rates (CTR).',
+            ],
+        ] : [
             [
                 'question' => 'SEO Onpage là gì và tại sao lại quan trọng?',
                 'answer' => 'SEO Onpage là tập hợp các kỹ thuật tối ưu hóa trực tiếp trên trang web nhằm nâng cao thứ hạng trên công cụ tìm kiếm và mang lại trải nghiệm tốt nhất cho người dùng.',
@@ -261,7 +278,15 @@ class SchemaGeneratorTool implements ToolContract
             return $input['breadcrumbs'];
         }
 
-        return [
+        $isEn = (class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication())
+            ? \Illuminate\Support\Facades\App::getLocale() === 'en'
+            : false;
+
+        return $isEn ? [
+            ['name' => 'Home', 'url' => 'https://example.com'],
+            ['name' => 'SEO Tools', 'url' => 'https://example.com/tools/seo'],
+            ['name' => 'Schema Generator', 'url' => 'https://example.com/tools/schema-generator'],
+        ] : [
             ['name' => 'Trang Chủ', 'url' => 'https://example.com'],
             ['name' => 'Công Cụ SEO', 'url' => 'https://example.com/tools/seo'],
             ['name' => 'Schema Generator', 'url' => 'https://example.com/tools/schema-generator'],

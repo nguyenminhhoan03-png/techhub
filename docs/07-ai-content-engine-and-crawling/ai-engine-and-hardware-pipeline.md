@@ -63,7 +63,7 @@ flowchart TD
 ## 3. Các Thành Phần Cốt Lõi (Core Components)
 
 ### 3.1. LLM Gateway (`GeminiContentGenerator.php`)
-* **Vị trí**: [`src/Infrastructure/Ai/Services/GeminiContentGenerator.php`](file:///e:/Project_ItWebDev/PHP/techhub/src/Infrastructure/Ai/Services/GeminiContentGenerator.php)
+* **Vị trí**: [`src/Application/Ai/Services/GeminiContentGenerator.php`](file:///e:/Project_ItWebDev/PHP/techhub/src/Application/Ai/Services/GeminiContentGenerator.php)
 * **Chức năng**:
   * Đọc động `gemini_api_key`, `openai_api_key`, `ai_model_name` từ CSDL thông qua `SettingService` (có Cache 3600s).
   * Gọi trực tiếp Google Gemini REST API (`https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={key}`) với `responseMimeType = application/json`.
@@ -72,7 +72,7 @@ flowchart TD
   * **Cơ chế Fallback thông minh**: Khi chưa có API key hoặc gặp sự cố mạng, hệ thống tự động kích hoạt bộ tổng hợp thuật toán để không làm gián đoạn trải nghiệm người dùng.
 
 ### 3.2. Universal Web Crawler (`WebArticleCrawler.php`)
-* **Vị trí**: [`src/Infrastructure/Crawler/Services/WebArticleCrawler.php`](file:///e:/Project_ItWebDev/PHP/techhub/src/Infrastructure/Crawler/Services/WebArticleCrawler.php)
+* **Vị trí**: [`src/Application/Crawler/Services/WebArticleCrawler.php`](file:///e:/Project_ItWebDev/PHP/techhub/src/Application/Crawler/Services/WebArticleCrawler.php)
 * **Chức năng**:
   * Giả lập trình duyệt hiện đại với User-Agent chuẩn và Timeout an toàn.
   * Bóc tách cây DOM HTML, loại bỏ quảng cáo, scripts, styles, iframes, navigation.
