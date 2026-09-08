@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('meta_title', 'Cửa Hàng Tài Khoản AI & Bản Quyền Phần Mềm Giá Rẻ | TechHub Deals')
-@section('meta_description', 'Mua tài khoản Google AI Pro (Gemini Advanced 5TB), ChatGPT Plus, Claude 3.5 Sonnet chính chủ giá rẻ chỉ từ 50k. Kích hoạt trực tiếp trên email khách, bảo hành full 12 tháng 1-đổi-1.')
+@section('meta_description', 'Mua tài khoản Google AI Pro (Gemini Advanced 5TB + Antigravity) chính chủ giá rẻ chỉ từ 50k. Kích hoạt trực tiếp trên email khách, bảo mật tuyệt đối, bảo hành full 12 tháng 1-đổi-1.')
 @section('canonical_url', route('deals.index'))
-@section('meta_keywords', 'tài khoản google ai pro giá rẻ, mua gemini pro 5tb, chatgpt plus giá rẻ, claude pro sonnet, tài khoản ai chính chủ, techhub deals')
+@section('meta_keywords', 'tài khoản google ai pro giá rẻ, mua gemini pro 5tb, antigravity pro, gemini advanced, tài khoản ai chính chủ, techhub deals')
 @section('og_type', 'website')
 @section('og_image', asset('images/deals/gemini-pro-5tb.png'))
 
@@ -26,13 +26,13 @@
 
             <div style="position: relative; z-index: 2; max-width: 780px;">
                 <div style="display: inline-flex; align-items: center; gap: 0.45rem; background: rgba(99,102,241,0.2); border: 1px solid rgba(99,102,241,0.4); padding: 0.35rem 0.85rem; border-radius: 999px; font-size: 0.8rem; font-weight: 700; color: #a5b4fc; margin-bottom: 1rem;">
-                    <span>✨</span> <span>TIẾT KIỆM ĐẾN 88% — BẢN QUYỀN CHÍNH CHỦ CHO DEVELOPER</span>
+                    <span>✨</span> <span>TIẾT KIỆM ĐẾN 90% — BẢN QUYỀN CHÍNH CHỦ CHO DEVELOPER</span>
                 </div>
                 <h1 style="font-size: 2.2rem; font-weight: 900; color: #ffffff; line-height: 1.25; margin-bottom: 0.85rem; letter-spacing: -0.02em;">
-                    Cửa Hàng Tài Khoản AI &amp; Công Cụ Lập Trình Giá Rẻ
+                    Cửa Hàng Tài Khoản Google AI Pro &amp; Cloud 5TB
                 </h1>
                 <p style="color: #cbd5e1; font-size: 1rem; line-height: 1.7; margin-bottom: 1.5rem;">
-                    Nâng cấp tài khoản <strong>Google AI Pro (Gemini 5TB + Antigravity)</strong>, <strong>ChatGPT Plus</strong>, <strong>Claude 3.5 Sonnet</strong> trực tiếp trên email của bạn. Bảo mật riêng tư 100%, bảo hành suốt thời hạn.
+                    Nâng cấp tài khoản <strong>Google AI Pro (Gemini Advanced + 5TB Cloud + Antigravity)</strong> trực tiếp trên email chính chủ của bạn. Bảo mật riêng tư 100%, bảo hành suốt thời hạn 12 tháng.
                 </p>
 
                 {{-- Fast Contact Badges --}}
