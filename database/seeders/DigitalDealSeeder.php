@@ -69,105 +69,13 @@ class DigitalDealSeeder extends Seeder
                 'meta_title'          => 'Mua Tài Khoản Google AI Pro (Gemini Advanced 5TB) Giá Rẻ | TechHub Deals',
                 'meta_description'    => 'Nâng cấp tài khoản Google AI Pro, Gemini Advanced + 5TB Cloud Storage giá rẻ chỉ từ 50.000đ/năm. Chính chủ, bảo mật 100%, bảo hành full 12 tháng.',
             ],
-            [
-                'slug'                => 'chatgpt-plus-team-chinh-chu',
-                'name'                => 'Tài Khoản ChatGPT Plus / Team GPT-4o & Canvas — Hạn 1 Tháng / 1 Năm Chính Chủ',
-                'category'            => 'ChatGPT & OpenAI',
-                'badge_text'          => 'HOT DEAL',
-                'sub_badge'           => 'OPENAI',
-                'tags'                => ['chatgpt plus', 'gpt-4o', 'dall-e 3', 'canvas'],
-                'price'               => 99000,
-                'original_price'      => 490000,
-                'discount_percentage' => 80,
-                'rating'              => 4.9,
-                'rating_count'        => 215,
-                'sold_count'          => 4300,
-                'stock_status'        => 'in_stock',
-                'thumbnail_url'       => '/images/deals/chatgpt-plus.png',
-                'variants'            => [
-                    [
-                        'name'       => 'ChatGPT Plus Slot Riêng Tư 1 Tháng',
-                        'price'      => 99000,
-                        'is_default' => true,
-                    ],
-                    [
-                        'name'       => 'ChatGPT Team Chính Chủ Email Khách 1 Năm',
-                        'price'      => 690000,
-                        'is_default' => false,
-                    ],
-                ],
-                'commitments' => [
-                    [
-                        'icon'  => '🛡️',
-                        'title' => 'Bảo vệ bởi Escrow',
-                        'desc'  => 'An tâm trải nghiệm, bảo hành suốt thời hạn',
-                    ],
-                    [
-                        'icon'  => '⚡',
-                        'title' => 'Giao hàng 5 phút',
-                        'desc'  => 'Đăng nhập dùng ngay không cần chờ đợi',
-                    ],
-                ],
-                'summary' => 'Tài khoản ChatGPT Plus trải nghiệm GPT-4o không giới hạn, tạo ảnh DALL-E 3, viết code Canvas và Voice Mode tiên tiến.',
-                'description_markdown' => "## 🔥 Trải Nghiệm ChatGPT Plus Đỉnh Cao\n\n- Tốc độ phản hồi GPT-4o siêu tốc, không bị nghẽn giờ cao điểm.\n- Tạo ảnh nghệ thuật bằng DALL-E 3 sắc nét.\n- Công cụ Canvas chỉnh sửa code và văn bản trực tiếp.",
-                'zalo_contact'        => '0866655803',
-                'telegram_contact'    => 'https://t.me/hoannm',
-                'is_featured'         => true,
-                'is_active'           => true,
-                'sort_order'          => 2,
-                'meta_title'          => 'Mua Tài Khoản ChatGPT Plus Giá Rẻ | TechHub Deals',
-                'meta_description'    => 'Tài khoản ChatGPT Plus GPT-4o chính chủ giá rẻ chỉ từ 99k. Bảo hành 1-đổi-1, kích hoạt ngay lập tức.',
-            ],
-            [
-                'slug'                => 'claude-pro-sonnet-chinh-chu',
-                'name'                => 'Tài Khoản Claude Pro (Sonnet 3.5 & Opus) — Hạn 1 Tháng / 6 Tháng Viết Code Đỉnh Cao',
-                'category'            => 'Claude AI',
-                'badge_text'          => 'DEV CHOICE',
-                'sub_badge'           => 'ANTHROPIC',
-                'tags'                => ['claude pro', 'sonnet 3.5', 'artifacts', 'coder ai'],
-                'price'               => 119000,
-                'original_price'      => 550000,
-                'discount_percentage' => 78,
-                'rating'              => 5.0,
-                'rating_count'        => 189,
-                'sold_count'          => 3100,
-                'stock_status'        => 'in_stock',
-                'thumbnail_url'       => '/images/deals/claude-pro.png',
-                'variants'            => [
-                    [
-                        'name'       => 'Claude Pro 1 Tháng — Dùng Riêng Tư',
-                        'price'      => 119000,
-                        'is_default' => true,
-                    ],
-                    [
-                        'name'       => 'Claude Pro 6 Tháng — Tiết Kiệm Tối Đa',
-                        'price'      => 590000,
-                        'is_default' => false,
-                    ],
-                ],
-                'commitments' => [
-                    [
-                        'icon'  => '🛡️',
-                        'title' => 'Bảo vệ bởi Escrow',
-                        'desc'  => 'Cam kết tài khoản sạch, không bị khóa giữa chừng',
-                    ],
-                    [
-                        'icon'  => '⚡',
-                        'title' => 'Kích hoạt tức thì',
-                        'desc'  => 'Hỗ trợ kỹ thuật 24/7 qua Zalo & Telegram',
-                    ],
-                ],
-                'summary' => 'Claude Pro hỗ trợ Sonnet 3.5 đỉnh cao lập trình, tính năng Artifacts trực quan, tư duy phân tích sâu sắc.',
-                'description_markdown' => "## 🧠 Claude 3.5 Sonnet — Vũ Khí Cho Lập Trình Viên\n\nClaude 3.5 Sonnet hiện là mô hình AI lập trình mạnh nhất, viết code sạch, chuẩn kiến trúc và giải quyết các bài toán phức tạp mượt mà hơn bất kỳ mô hình nào khác.",
-                'zalo_contact'        => '0866655803',
-                'telegram_contact'    => 'https://t.me/hoannm',
-                'is_featured'         => true,
-                'is_active'           => true,
-                'sort_order'          => 3,
-                'meta_title'          => 'Mua Tài Khoản Claude Pro Sonnet 3.5 Giá Rẻ | TechHub Deals',
-                'meta_description'    => 'Tài khoản Claude Pro chính chủ giá rẻ cho Developer. Viết code đỉnh cao với Claude 3.5 Sonnet & Artifacts.',
-            ],
         ];
+
+        // Xóa 2 sản phẩm mẫu cũ nếu có trong DB
+        DigitalDeal::whereIn('slug', [
+            'chatgpt-plus-team-chinh-chu',
+            'claude-pro-sonnet-chinh-chu',
+        ])->delete();
 
         foreach ($deals as $dealData) {
             DigitalDeal::updateOrCreate(
