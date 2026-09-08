@@ -203,6 +203,7 @@
         <div class="grid-cards">
             @foreach($tools as $tool)
                 <div class="tool-card" 
+                     onclick="window.location='{{ url('/tools/' . $tool->slug) }}'"
                      data-tool-name="{{ $tool->display_name }}" 
                      data-tool-summary="{{ $tool->display_summary }}" 
                      data-tool-category="{{ $tool->category?->slug ?? '' }}">
@@ -213,29 +214,34 @@
                             @elseif($tool->category?->slug === 'calculators') tool-icon-calc
                             @elseif($tool->category?->slug === 'image') tool-icon-img
                             @elseif($tool->category?->slug === 'seo') tool-icon-seo
+                            @elseif($tool->category?->slug === 'pdf') tool-icon-pdf
                             @else tool-icon-dev
                             @endif">
-                            @if($tool->category?->slug === 'developer') <x-heroicon-o-code-bracket style="width: 1.2em; height: 1.2em;" />
-                            @elseif($tool->category?->slug === 'calculators') <x-heroicon-o-calculator style="width: 1.2em; height: 1.2em;" />
-                            @elseif($tool->category?->slug === 'image') <x-heroicon-o-photo style="width: 1.2em; height: 1.2em;" />
-                            @elseif($tool->category?->slug === 'seo') <x-heroicon-o-globe-alt style="width: 1.2em; height: 1.2em;" />
-                            @else <x-heroicon-s-bolt style="width: 1.2em; height: 1.2em;" />
+                            @if($tool->category?->slug === 'developer') <x-heroicon-o-code-bracket style="width: 1.3em; height: 1.3em;" />
+                            @elseif($tool->category?->slug === 'calculators') <x-heroicon-o-calculator style="width: 1.3em; height: 1.3em;" />
+                            @elseif($tool->category?->slug === 'image') <x-heroicon-o-photo style="width: 1.3em; height: 1.3em;" />
+                            @elseif($tool->category?->slug === 'seo') <x-heroicon-o-globe-alt style="width: 1.3em; height: 1.3em;" />
+                            @elseif($tool->category?->slug === 'pdf') <x-heroicon-o-document-text style="width: 1.3em; height: 1.3em;" />
+                            @else <x-heroicon-s-bolt style="width: 1.3em; height: 1.3em;" />
                             @endif
                         </div>
-                        <span class="badge">{{ $tool->category?->display_name ?? 'Utility' }}</span>
+                        <span class="badge badge-cat-{{ $tool->category?->slug ?? 'developer' }}">
+                            <span class="badge-dot"></span>
+                            {{ $tool->category?->display_name ?? 'Utility' }}
+                        </span>
                     </div>
 
                     <h3 class="card-title">{{ $tool->display_name }}</h3>
                     <p class="card-desc">{{ $tool->display_summary }}</p>
 
                     <div class="card-footer">
-                        <span style="display: flex; align-items: center; gap: 0.35rem;">
-                            <span style="color: var(--accent-amber);">★</span>
-                            <strong style="color: var(--text-main);">{{ number_format((float)$tool->rating_avg, 2) }}</strong>
-                            <span style="color: var(--text-muted);">({{ $tool->rating_count }})</span>
-                        </span>
-                        <a href="{{ url('/tools/' . $tool->slug) }}" class="btn btn-primary btn-sm">
-                            {{ __('open_tool') }}
+                        <div class="card-rating-badge">
+                            <span class="star">★</span>
+                            <span class="rating-num">{{ number_format((float)$tool->rating_avg, 2) }}</span>
+                            <span class="rating-count">({{ $tool->rating_count }})</span>
+                        </div>
+                        <a href="{{ url('/tools/' . $tool->slug) }}" class="tool-card-btn" onclick="event.stopPropagation();">
+                            <span>{{ __('open_tool') }}</span>
                         </a>
                     </div>
                 </div>

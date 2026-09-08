@@ -7,6 +7,20 @@
 @section('og_type', 'website')
 @section('og_image', $game->thumbnail_url ?? asset('images/techhub-og.png'))
 
+@push('head')
+{{-- Game Engine Preconnect & DNS-Prefetch for low-latency loading --}}
+<link rel="preconnect" href="https://play.gamepix.com" crossorigin>
+<link rel="dns-prefetch" href="https://play.gamepix.com">
+<link rel="preconnect" href="https://games.assets.gamepix.com" crossorigin>
+<link rel="dns-prefetch" href="https://games.assets.gamepix.com">
+<link rel="preconnect" href="https://api.gamepix.com" crossorigin>
+<link rel="dns-prefetch" href="https://api.gamepix.com">
+<link rel="preconnect" href="https://cs.iubenda.com" crossorigin>
+<link rel="dns-prefetch" href="https://cs.iubenda.com">
+<link rel="preconnect" href="https://html5.gamemonetize.com" crossorigin>
+<link rel="dns-prefetch" href="https://html5.gamemonetize.com">
+@endpush
+
 @push('schemas')
 {{-- Schema.org VideoGame Rich Snippet --}}
 <script type="application/ld+json">
@@ -134,28 +148,32 @@
                 {{-- Iframe Game Container with Cinema Ambient Lighting --}}
                 <div class="gs-iframe-wrap">
                     <div class="cinema-ambient-glow" style="--ambient-color: {{ $game->category->color }}66;"></div>
-                    <div id="game-container" onclick="focusGameFrame()">
+                    <div id="game-container" onclick="focusGameFrame()" style="width: 100%; aspect-ratio: 16 / 10; min-height: 540px; position: relative;">
 
                         {{-- Loading Spinner --}}
                         <div id="game-loader" class="gs-game-loader">
                             <div class="gs-loader-spinner"></div>
-                            <div class="gs-loader-text">Đang khởi chạy {{ $game->name }}...</div>
-                            <div class="gs-loader-hint">Vui lòng chờ trong giây lát...</div>
+                            <div class="gs-loader-text">{{ app()->getLocale() === 'en' ? 'Launching ' . $game->name . '...' : 'Đang khởi chạy ' . $game->name . '...' }}</div>
+                            <div class="gs-loader-hint">{{ app()->getLocale() === 'en' ? 'Connecting to game server...' : 'Đang kết nối máy chủ trò chơi...' }}</div>
                         </div>
 
-                        {{-- Black Screen Fallback Banner --}}
+                        {{-- Fallback Banner if slow --}}
                         <div id="game-fallback-banner" class="gs-fallback-banner">
-                            <span class="gs-fallback-text">⚡ Game chưa hiển thị? </span>
-                            <button onclick="reloadGameFrame()" class="gs-fallback-btn">🔄 Nhấn để tải lại ngay</button>
-                            <button onclick="document.getElementById('game-fallback-banner').style.display='none'" class="gs-fallback-close">✕ Đóng</button>
+                            <span class="gs-fallback-text">⚡ {{ app()->getLocale() === 'en' ? 'Game loading slowly? ' : 'Trò chơi tải chậm do đường truyền? ' }}</span>
+                            <button type="button" onclick="reloadGameFrame()" class="gs-fallback-btn">🔄 {{ app()->getLocale() === 'en' ? 'Reload Game' : 'Tải lại ngay' }}</button>
+                            <a href="{{ $game->engine_path }}" target="_blank" rel="noopener noreferrer" class="gs-fallback-btn" style="background: var(--accent-indigo, #6366f1); color: #fff; text-decoration: none; display: inline-flex; align-items: center; margin-left: 0.5rem;">
+                                🚀 {{ app()->getLocale() === 'en' ? 'Open in New Tab' : 'Mở tab riêng' }}
+                            </a>
+                            <button type="button" onclick="document.getElementById('game-fallback-banner').style.display='none'" class="gs-fallback-close">✕ {{ app()->getLocale() === 'en' ? 'Close' : 'Đóng' }}</button>
                         </div>
 
                         <iframe
                             id="game-frame"
                             src="{{ $game->engine_path }}"
+                            data-src="{{ $game->engine_path }}"
                             loading="eager"
                             frameborder="0"
-                            scrolling="auto"
+                            scrolling="no"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen; monetization; camera; gamepad; keyboard-map; pointer-lock"
                             allowfullscreen="true"
                             webkitallowfullscreen="true"
@@ -311,53 +329,85 @@
 </div>
 
 <script>
-    // --- Game State Flags ---
+    // --- Game State Flags & Watchdog ---
     let _gameLoaded = false;
     let _fallbackTimer = null;
 
     /**
-     * Gọi bởi onload của iframe.
-     * Delay 800ms để engine HTML5 Canvas bên trong có đủ thời gian init và paint lần đầu.
-     * Đây là fix chính cho lỗi màn hình đen: onload bắn quá sớm, canvas chưa render.
+     * Bắt đầu watchdog timer để hiện gợi ý tải lại / mở tab riêng nếu CDN máy chủ game quốc tế bị chậm.
+     */
+    function _startFallbackTimer(delayMs = 7500) {
+        if (_fallbackTimer) clearTimeout(_fallbackTimer);
+        _fallbackTimer = setTimeout(() => {
+            if (!_gameLoaded) {
+                const banner = document.getElementById('game-fallback-banner');
+                if (banner) banner.style.display = 'block';
+            }
+        }, delayMs);
+    }
+
+    /**
+     * Gọi bởi onload của iframe khi game hoàn tất tải mã nguồn.
+     * Chặn triệt để sự kiện onload giả từ 'about:blank'.
      */
     function handleGameLoaded() {
-        // Xóa fallback timer vì game đã phản hồi
+        const frame = document.getElementById('game-frame');
+        // Bỏ qua nếu iframe chưa có src hoặc đang ở about:blank
+        if (!frame || !frame.src || frame.src === 'about:blank' || frame.src.endsWith('about:blank')) {
+            return;
+        }
+
+        // Hủy watchdog timer vì game đã phản hồi thành công
         if (_fallbackTimer) {
             clearTimeout(_fallbackTimer);
             _fallbackTimer = null;
         }
 
-        // Delay 800ms để Canvas engine bên trong iframe có thời gian paint frame đầu tiên
+        _gameLoaded = true;
+
+        // Delay 500ms để Engine HTML5 Canvas bên trong iframe vẽ frame đầu tiên
         setTimeout(() => {
-            _gameLoaded = true;
             const loader = document.getElementById('game-loader');
             const banner = document.getElementById('game-fallback-banner');
             if (loader) {
                 loader.style.opacity = '0';
-                setTimeout(() => { loader.style.display = 'none'; }, 500);
+                setTimeout(() => { loader.style.display = 'none'; }, 400);
             }
             if (banner) banner.style.display = 'none';
-        }, 800);
+
+            // Kích hoạt resize event để engine game điều chỉnh canvas theo tỉ lệ chính xác
+            try {
+                window.dispatchEvent(new Event('resize'));
+            } catch (e) {}
+        }, 500);
     }
 
+    /**
+     * Tải lại game an toàn mà không hủy đứt kết nối mạng hay gây race condition.
+     */
     function reloadGameFrame() {
         const frame = document.getElementById('game-frame');
         const loader = document.getElementById('game-loader');
         const banner = document.getElementById('game-fallback-banner');
+        if (!frame) return;
+
         _gameLoaded = false;
         if (banner) banner.style.display = 'none';
+
         if (loader) {
+            const text = loader.querySelector('.gs-loader-text');
+            if (text) text.textContent = '{{ app()->getLocale() === "en" ? "Reloading " . $game->name . "..." : "Đang tải lại " . $game->name . "..." }}';
             loader.style.display = 'flex';
             loader.style.opacity = '1';
         }
-        if (frame) {
-            const currentSrc = frame.src;
-            frame.src = 'about:blank';
-            // 200ms gap để browser flush layout trước khi load lại
-            setTimeout(() => { frame.src = currentSrc; }, 200);
-        }
-        // Reset fallback timer sau reload
-        _startFallbackTimer();
+
+        // Nạp lại src kèm timestamp để bypass cache lỗi hoặc load lại sạch
+        const rawSrc = frame.getAttribute('data-src') || frame.src;
+        const cleanUrl = rawSrc.replace(/([?&])_t=\d+/, '');
+        const separator = cleanUrl.includes('?') ? '&' : '?';
+        frame.src = cleanUrl + separator + '_t=' + Date.now();
+
+        _startFallbackTimer(8500);
     }
 
     function focusGameFrame() {
@@ -370,48 +420,30 @@
 
     function toggleFullscreen() {
         const container = document.getElementById('game-container') || document.getElementById('game-frame');
-        if (container.requestFullscreen) {
-            container.requestFullscreen();
-        } else if (container.webkitRequestFullscreen) {
-            container.webkitRequestFullscreen();
-        } else if (container.mozRequestFullScreen) {
-            container.mozRequestFullScreen();
+        if (!container) return;
+
+        if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement) {
+            if (container.requestFullscreen) {
+                container.requestFullscreen().catch(() => {});
+            } else if (container.webkitRequestFullscreen) {
+                container.webkitRequestFullscreen();
+            } else if (container.mozRequestFullScreen) {
+                container.mozRequestFullScreen();
+            }
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen().catch(() => {});
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            }
         }
     }
 
-    /**
-     * Hiện banner gợi ý tải lại sau 6 giây nếu game vẫn chưa load xong.
-     */
-    function _startFallbackTimer() {
-        if (_fallbackTimer) clearTimeout(_fallbackTimer);
-        _fallbackTimer = setTimeout(() => {
-            if (!_gameLoaded) {
-                const banner = document.getElementById('game-fallback-banner');
-                if (banner) banner.style.display = 'block';
-            }
-        }, 6000);
-    }
-
-    /**
-     * FIX CHÍNH CHO CANVAS 0x0:
-     * Thay vì spam window.resize (không đi vào iframe cross-origin được),
-     * ta reload lại src của iframe sau 350ms — đúng lúc container đã settle kích thước CSS.
-     * Lần load thứ 2 này, game engine sẽ thấy kích thước thực và init canvas đúng.
-     */
+    // Khởi động watchdog timer khi DOM sẵn sàng
     document.addEventListener('DOMContentLoaded', () => {
-        const frame = document.getElementById('game-frame');
-        if (!frame) return;
-
-        const originalSrc = '{{ $game->engine_path }}';
-
-        // Bước 1: Set src về blank ngay lập tức để tránh load sớm khi layout chưa sẵn
-        frame.src = 'about:blank';
-
-        // Bước 2: Sau 350ms (layout đã paint xong), mới thực sự load game
-        setTimeout(() => {
-            frame.src = originalSrc;
-            _startFallbackTimer();
-        }, 350);
+        _startFallbackTimer(7500);
     });
 </script>
 @endsection

@@ -166,33 +166,46 @@
             {{-- ── RIGHT MAIN CONTENT ── --}}
             <main class="games-main-content" style="min-width: 0;">
 
-                {{-- Quick Topic Filter Chips Carousel Bar --}}
-                <div class="game-quick-chips" style="display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.75rem; margin-bottom: 1.5rem; scrollbar-width: thin;">
-                    <a href="{{ route('games.index') }}"
-                       style="white-space: nowrap; padding: 0.45rem 0.9rem; border-radius: 999px; font-size: 0.82rem; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 0.35rem; transition: all 0.2s; {{ !$categorySlug && !$search ? 'background: linear-gradient(135deg, var(--accent-indigo), var(--accent-purple)); color: #fff; box-shadow: 0 4px 12px rgba(99,102,241,0.35);' : 'background: var(--bg-card); color: var(--text-sub); border: 1px solid var(--border-subtle);' }}">
-                        <span>🎮</span> <span>Tất Cả</span>
-                    </a>
-                    @php
-                        $quickTags = [
-                            ['icon' => '👥', 'label' => 'Game 2 Người', 'q' => '2 người'],
-                            ['icon' => '🏎️', 'label' => 'Đua Xe', 'q' => 'đua xe'],
-                            ['icon' => '🔫', 'label' => 'Bắn Súng', 'q' => 'bắn súng'],
-                            ['icon' => '🧩', 'label' => 'Trí Tuệ & Puzzle', 'q' => 'trí tuệ'],
-                            ['icon' => '🧟', 'label' => 'Zombie & Sinh Tồn', 'q' => 'zombie'],
-                            ['icon' => '⚽', 'label' => 'Bóng Đá & Thể Thao', 'q' => 'bóng đá'],
-                            ['icon' => '🍳', 'label' => 'Nấu Ăn', 'q' => 'nấu ăn'],
-                            ['icon' => '👑', 'label' => 'Thời Trang', 'q' => 'thời trang'],
-                            ['icon' => '🏰', 'label' => 'Chiến Thuật', 'q' => 'chiến thuật'],
-                            ['icon' => '🥋', 'label' => 'Hành Động', 'q' => 'hành động'],
-                        ];
-                    @endphp
-                    @foreach($quickTags as $tag)
-                        @php $isActive = mb_strtolower((string)$search) === mb_strtolower($tag['q']); @endphp
-                        <a href="{{ route('games.index', ['q' => $tag['q']]) }}"
-                           style="white-space: nowrap; padding: 0.45rem 0.9rem; border-radius: 999px; font-size: 0.82rem; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 0.35rem; transition: all 0.2s; {{ $isActive ? 'background: linear-gradient(135deg, var(--accent-indigo), var(--accent-purple)); color: #fff; box-shadow: 0 4px 12px rgba(99,102,241,0.35);' : 'background: var(--bg-card); color: var(--text-sub); border: 1px solid var(--border-subtle);' }}">
-                            <span>{{ $tag['icon'] }}</span> <span>{{ $tag['label'] }}</span>
+                {{-- Quick Topic Filter Chips Carousel Bar (Sleek Glassmorphism Carousel) --}}
+                <div class="quick-chips-container">
+                    <button type="button" class="chips-nav-btn chips-nav-prev" onclick="scrollQuickChips(-260)" aria-label="Cuộn sang trái" title="Cuộn sang trái">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    </button>
+                    <div class="chips-edge-fade chips-fade-left"></div>
+
+                    <div id="game-quick-chips" class="game-quick-chips">
+                        <a href="{{ route('games.index') }}"
+                           class="chip-pill {{ !$categorySlug && !$search ? 'active' : '' }}">
+                            <span class="chip-icon">🎮</span> <span class="chip-text">Tất Cả</span>
                         </a>
-                    @endforeach
+                        @php
+                            $quickTags = [
+                                ['icon' => '👥', 'label' => 'Game 2 Người', 'q' => '2 người'],
+                                ['icon' => '🏎️', 'label' => 'Đua Xe', 'q' => 'đua xe'],
+                                ['icon' => '🔫', 'label' => 'Bắn Súng', 'q' => 'bắn súng'],
+                                ['icon' => '🧩', 'label' => 'Trí Tuệ & Puzzle', 'q' => 'trí tuệ'],
+                                ['icon' => '🧟', 'label' => 'Zombie & Sinh Tồn', 'q' => 'zombie'],
+                                ['icon' => '⚽', 'label' => 'Bóng Đá & Thể Thao', 'q' => 'bóng đá'],
+                                ['icon' => '🍳', 'label' => 'Nấu Ăn', 'q' => 'nấu ăn'],
+                                ['icon' => '👑', 'label' => 'Thời Trang', 'q' => 'thời trang'],
+                                ['icon' => '🏰', 'label' => 'Chiến Thuật', 'q' => 'chiến thuật'],
+                                ['icon' => '🥋', 'label' => 'Hành Động', 'q' => 'hành động'],
+                            ];
+                        @endphp
+                        @foreach($quickTags as $tag)
+                            @php $isActive = mb_strtolower((string)$search) === mb_strtolower($tag['q']); @endphp
+                            <a href="{{ route('games.index', ['q' => $tag['q']]) }}"
+                               class="chip-pill {{ $isActive ? 'active' : '' }}"
+                               @if($isActive) id="active-quick-chip" @endif>
+                                <span class="chip-icon">{{ $tag['icon'] }}</span> <span class="chip-text">{{ $tag['label'] }}</span>
+                            </a>
+                        @endforeach
+                    </div>
+
+                    <div class="chips-edge-fade chips-fade-right"></div>
+                    <button type="button" class="chips-nav-btn chips-nav-next" onclick="scrollQuickChips(260)" aria-label="Cuộn sang phải" title="Cuộn sang phải">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
                 </div>
 
                 {{-- SEARCH OR CATEGORY FILTER ACTIVE VIEW --}}
@@ -439,4 +452,121 @@
 
     </div>
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const chipsContainer = document.getElementById('game-quick-chips');
+    if (!chipsContainer) return;
+
+    const btnPrev = document.querySelector('.chips-nav-prev');
+    const btnNext = document.querySelector('.chips-nav-next');
+    const fadeLeft = document.querySelector('.chips-fade-left');
+    const fadeRight = document.querySelector('.chips-fade-right');
+
+    function updateNavVisibility() {
+        const sl = chipsContainer.scrollLeft;
+        const sw = chipsContainer.scrollWidth;
+        const cw = chipsContainer.clientWidth;
+        const maxScroll = sw - cw;
+
+        if (maxScroll <= 4) {
+            btnPrev?.classList.remove('visible');
+            btnNext?.classList.remove('visible');
+            fadeLeft?.classList.remove('visible');
+            fadeRight?.classList.remove('visible');
+            return;
+        }
+
+        // Left button & fade
+        if (sl > 10) {
+            btnPrev?.classList.add('visible');
+            fadeLeft?.classList.add('visible');
+        } else {
+            btnPrev?.classList.remove('visible');
+            fadeLeft?.classList.remove('visible');
+        }
+
+        // Right button & fade
+        if (sl < maxScroll - 10) {
+            btnNext?.classList.add('visible');
+            fadeRight?.classList.add('visible');
+        } else {
+            btnNext?.classList.remove('visible');
+            fadeRight?.classList.remove('visible');
+        }
+    }
+
+    // Smooth scroll button helper
+    window.scrollQuickChips = function(amount) {
+        chipsContainer.scrollBy({ left: amount, behavior: 'smooth' });
+    };
+
+    // Auto-scroll active chip into view on page load
+    const activeChip = document.getElementById('active-quick-chip');
+    if (activeChip) {
+        setTimeout(() => {
+            const containerRect = chipsContainer.getBoundingClientRect();
+            const chipRect = activeChip.getBoundingClientRect();
+            const targetScroll = chipsContainer.scrollLeft + (chipRect.left - containerRect.left) - (containerRect.width / 2) + (chipRect.width / 2);
+            chipsContainer.scrollTo({ left: Math.max(0, targetScroll), behavior: 'smooth' });
+        }, 150);
+    }
+
+    // Mouse wheel horizontal scroll
+    chipsContainer.addEventListener('wheel', (e) => {
+        if (Math.abs(e.deltaX) < Math.abs(e.deltaY)) {
+            e.preventDefault();
+            chipsContainer.scrollLeft += e.deltaY;
+        }
+    }, { passive: false });
+
+    // Drag-to-scroll interaction
+    let isDown = false;
+    let startX = 0;
+    let scrollStart = 0;
+    let hasDragged = false;
+
+    chipsContainer.addEventListener('mousedown', (e) => {
+        isDown = true;
+        hasDragged = false;
+        startX = e.pageX - chipsContainer.offsetLeft;
+        scrollStart = chipsContainer.scrollLeft;
+        chipsContainer.style.cursor = 'grabbing';
+    });
+
+    chipsContainer.addEventListener('mouseleave', () => {
+        isDown = false;
+        chipsContainer.style.cursor = 'grab';
+    });
+
+    chipsContainer.addEventListener('mouseup', (e) => {
+        isDown = false;
+        chipsContainer.style.cursor = 'grab';
+    });
+
+    chipsContainer.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - chipsContainer.offsetLeft;
+        const walk = (x - startX) * 1.5;
+        if (Math.abs(walk) > 5) hasDragged = true;
+        chipsContainer.scrollLeft = scrollStart - walk;
+    });
+
+    // Prevent accidental link click if dragging
+    chipsContainer.addEventListener('click', (e) => {
+        if (hasDragged) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    }, true);
+
+    // Event listeners for scroll and resize
+    chipsContainer.addEventListener('scroll', updateNavVisibility, { passive: true });
+    window.addEventListener('resize', updateNavVisibility, { passive: true });
+
+    // Initial check
+    setTimeout(updateNavVisibility, 50);
+});
+</script>
 @endsection
