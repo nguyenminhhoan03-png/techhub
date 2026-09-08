@@ -7,6 +7,7 @@ use Domain\Tool\Tools\Developer\CronGeneratorTool;
 use Domain\Tool\Tools\Developer\CssMinifierTool;
 use Domain\Tool\Tools\Developer\CsvToJsonTool;
 use Domain\Tool\Tools\Developer\HtmlFormatterTool;
+use Domain\Tool\Tools\Developer\HttpStatusCheckerTool;
 use Domain\Tool\Tools\Developer\JsonToPhpTool;
 use Domain\Tool\Tools\Developer\JsonToTypescriptTool;
 use Domain\Tool\Tools\Developer\LaravelCrudGeneratorTool;
@@ -302,4 +303,15 @@ test('image compressor compresses valid gd image dataurl', function (): void {
         ->and($result->data['width'])->toBe(100)
         ->and($result->data['height'])->toBe(100)
         ->and($result->data['compressed_base64'])->toContain('data:image/webp;base64,');
+});
+
+test('http status checker blocks private and loopback networks for ssrf safety', function (): void {
+    $tool = new HttpStatusCheckerTool();
+
+    $result = $tool->execute([
+        'url' => 'http://127.0.0.1:8080/metrics',
+    ]);
+
+    expect($result->isSuccess)->toBeFalse()
+        ->and($result->errorMessage)->toContain('Cannot inspect internal');
 });

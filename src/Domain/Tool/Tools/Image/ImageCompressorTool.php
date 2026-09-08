@@ -55,12 +55,12 @@ class ImageCompressorTool implements ToolContract
 
         // Clean Base64 Data URL prefix if present
         if (preg_match('/^data:image\/(\w+);base64,/', $base64)) {
-            $binary = base64_decode((string) preg_replace('/^data:image\/\w+;base64,/', '', $base64));
+            $binary = base64_decode((string) preg_replace('/^data:image\/\w+;base64,/', '', $base64), true);
         } else {
-            $binary = base64_decode($base64);
+            $binary = base64_decode($base64, true);
         }
 
-        if (false === $binary || empty($binary)) {
+        if (false === $binary || '' === $binary) {
             $executionTimeMs = (int) round((hrtime(true) - $startTime) / 1e+6);
 
             return ToolResult::failure('Invalid image binary or base64 data.', $executionTimeMs);
@@ -120,9 +120,7 @@ class ImageCompressorTool implements ToolContract
         imagedestroy($img);
 
         $compressedSizeBytes = mb_strlen($compressedBinary);
-        $savedPct = $originalSizeBytes > 0
-            ? round((($originalSizeBytes - $compressedSizeBytes) / $originalSizeBytes) * 100, 2)
-            : 0;
+        $savedPct = round((($originalSizeBytes - $compressedSizeBytes) / $originalSizeBytes) * 100, 2);
 
         $compressedDataUrl = "data:{$mimeType};base64," . base64_encode($compressedBinary);
         $executionTimeMs = (int) round((hrtime(true) - $startTime) / 1e+6);

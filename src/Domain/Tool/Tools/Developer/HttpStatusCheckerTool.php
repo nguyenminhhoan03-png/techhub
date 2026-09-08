@@ -114,7 +114,7 @@ class HttpStatusCheckerTool implements ToolContract
         }
 
         $lastHop = end($hops);
-        $finalStatus = $lastHop['status_code'] ?? 0;
+        $finalStatus = $lastHop['status_code'];
 
         $executionTimeMs = (int) round((hrtime(true) - $startTime) / 1e+6);
 

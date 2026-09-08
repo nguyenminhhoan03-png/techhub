@@ -2,12 +2,14 @@
 
 declare(strict_types=1);
 
+use Database\Seeders\DeveloperSuiteToolsSeeder;
 use Database\Seeders\ToolSeeder;
 
 beforeEach(function (): void {
     app()->setLocale('vi');
     session(['locale' => 'vi']);
     $this->seed(ToolSeeder::class);
+    $this->seed(DeveloperSuiteToolsSeeder::class);
 });
 
 it('renders home page in Vietnamese default with SEO tags and tools', function (): void {
@@ -68,4 +70,36 @@ it('generates dynamic xml sitemap', function (): void {
         ->assertSee('<urlset', false)
         ->assertSee('/tools/json-formatter', false)
         ->assertSee('/tools/loan-calculator', false);
+});
+
+it('renders interactive tool workspace for json-to-typescript', function (): void {
+    $response = $this->get('/tools/json-to-typescript');
+
+    $response->assertStatus(200)
+        ->assertSee('TypeScript')
+        ->assertSee('Thực Thi Ngay');
+});
+
+it('renders interactive tool workspace for sql-formatter', function (): void {
+    $response = $this->get('/tools/sql-formatter');
+
+    $response->assertStatus(200)
+        ->assertSee('Câu Lệnh SQL')
+        ->assertSee('Thực Thi Ngay');
+});
+
+it('renders interactive tool workspace for cron-generator', function (): void {
+    $response = $this->get('/tools/cron-generator');
+
+    $response->assertStatus(200)
+        ->assertSee('Biểu Thức Cron')
+        ->assertSee('Calculate Schedule');
+});
+
+it('renders interactive tool workspace for password-generator', function (): void {
+    $response = $this->get('/tools/password-generator');
+
+    $response->assertStatus(200)
+        ->assertSee('Tạo Mật Khẩu Ngẫu Nhiên An Toàn')
+        ->assertSee('Generate Secure Passwords');
 });

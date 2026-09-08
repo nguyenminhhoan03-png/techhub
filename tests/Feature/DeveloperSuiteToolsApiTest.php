@@ -114,3 +114,100 @@ it('executes password-generator via api endpoint', function (): void {
 
     expect($response->json('data.result_data.passwords'))->toHaveCount(2);
 });
+
+it('executes cron-generator via api endpoint', function (): void {
+    $response = $this->postJson('/api/tools/cron-generator/execute', [
+        'input' => ['expression' => '0 * * * *'],
+    ]);
+
+    $response->assertStatus(200)
+        ->assertJson([
+            'success' => true,
+        ]);
+    expect($response->json('data.result_data.laravel_code'))->toContain('hourly()');
+});
+
+it('executes csv-to-json via api endpoint', function (): void {
+    $response = $this->postJson('/api/tools/csv-to-json/execute', [
+        'input' => [
+            'csv' => "name,role\nAlice,Admin",
+            'delimiter' => 'comma',
+            'has_headers' => true,
+        ],
+    ]);
+
+    $response->assertStatus(200)->assertJson(['success' => true]);
+    expect($response->json('data.result_data.rows_count'))->toBe(1);
+});
+
+it('executes html-formatter via api endpoint', function (): void {
+    $response = $this->postJson('/api/tools/html-formatter/execute', [
+        'input' => [
+            'html' => '<div><span>Hi</span></div>',
+            'action' => 'beautify',
+        ],
+    ]);
+
+    $response->assertStatus(200)->assertJson(['success' => true]);
+});
+
+it('executes css-minifier via api endpoint', function (): void {
+    $response = $this->postJson('/api/tools/css-minifier/execute', [
+        'input' => [
+            'css' => 'body { color: red; }',
+            'action' => 'minify',
+        ],
+    ]);
+
+    $response->assertStatus(200)->assertJson(['success' => true]);
+    expect($response->json('data.result_data.result'))->toBe('body{color:red}');
+});
+
+it('executes xml-to-json via api endpoint', function (): void {
+    $response = $this->postJson('/api/tools/xml-to-json/execute', [
+        'input' => ['xml' => '<root><title>Test</title></root>'],
+    ]);
+
+    $response->assertStatus(200)->assertJson(['success' => true]);
+});
+
+it('executes json-to-php via api endpoint', function (): void {
+    $response = $this->postJson('/api/tools/json-to-php/execute', [
+        'input' => ['json' => '{"foo": "bar"}', 'mode' => 'array'],
+    ]);
+
+    $response->assertStatus(200)->assertJson(['success' => true]);
+});
+
+it('executes sql-to-laravel-migration via api endpoint', function (): void {
+    $response = $this->postJson('/api/tools/sql-to-laravel-migration/execute', [
+        'input' => ['sql' => 'CREATE TABLE articles (id INT);'],
+    ]);
+
+    $response->assertStatus(200)->assertJson(['success' => true]);
+});
+
+it('executes sql-to-laravel-model via api endpoint', function (): void {
+    $response = $this->postJson('/api/tools/sql-to-laravel-model/execute', [
+        'input' => ['sql' => 'CREATE TABLE articles (id INT);'],
+    ]);
+
+    $response->assertStatus(200)->assertJson(['success' => true]);
+});
+
+it('executes laravel-crud-generator via api endpoint', function (): void {
+    $response = $this->postJson('/api/tools/laravel-crud-generator/execute', [
+        'input' => ['model_name' => 'Project', 'fields' => 'title:string'],
+    ]);
+
+    $response->assertStatus(200)->assertJson(['success' => true]);
+});
+
+it('executes pdf-to-excel via api endpoint', function (): void {
+    $response = $this->postJson('/api/tools/pdf-to-excel/execute', [
+        'input' => ['raw_text' => "ColA\tColB\nValA\tValB"],
+    ]);
+
+    $response->assertStatus(200)->assertJson(['success' => true]);
+    expect($response->json('data.result_data.rows_count'))->toBe(2);
+});

@@ -170,7 +170,7 @@ class SitemapGeneratorTool implements ToolContract
             $urlEntries = [];
 
             foreach ($lines as $line) {
-                if (empty($line) || str_starts_with($line, '#')) {
+                if (str_starts_with($line, '#')) {
                     continue;
                 }
 

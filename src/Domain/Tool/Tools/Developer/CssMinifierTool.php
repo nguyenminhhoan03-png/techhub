@@ -75,7 +75,7 @@ class CssMinifierTool implements ToolContract
         // Minify CSS
         $minified = $this->minifyCss($rawCss);
         $minLen = mb_strlen($minified);
-        $savedPct = $origLen > 0 ? round((($origLen - $minLen) / $origLen) * 100, 2) : 0;
+        $savedPct = round((($origLen - $minLen) / $origLen) * 100, 2);
 
         $executionTimeMs = (int) round((hrtime(true) - $startTime) / 1e+6);
 

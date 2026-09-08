@@ -66,7 +66,7 @@ class HtmlFormatterTool implements ToolContract
             $executionTimeMs = (int) round((hrtime(true) - $startTime) / 1e+6);
             $origLen = mb_strlen($rawHtml);
             $minLen = mb_strlen(trim((string) $minified));
-            $savedPct = $origLen > 0 ? round((($origLen - $minLen) / $origLen) * 100, 2) : 0;
+            $savedPct = round((($origLen - $minLen) / $origLen) * 100, 2);
 
             return ToolResult::success([
                 'result' => trim((string) $minified),
