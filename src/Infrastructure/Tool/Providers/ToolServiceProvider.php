@@ -21,15 +21,33 @@ use Domain\Tool\Repositories\ToolRepositoryContract;
 use Domain\Tool\Tools\Calculators\BmiCalculatorTool;
 use Domain\Tool\Tools\Calculators\LoanCalculatorTool;
 use Domain\Tool\Tools\Calculators\PercentageCalculatorTool;
+use Domain\Tool\Tools\Developer\ApiTesterTool;
 use Domain\Tool\Tools\Developer\Base64Tool;
+use Domain\Tool\Tools\Developer\CronGeneratorTool;
+use Domain\Tool\Tools\Developer\CssMinifierTool;
+use Domain\Tool\Tools\Developer\CsvToJsonTool;
 use Domain\Tool\Tools\Developer\HashGeneratorTool;
+use Domain\Tool\Tools\Developer\HtmlFormatterTool;
+use Domain\Tool\Tools\Developer\HttpStatusCheckerTool;
 use Domain\Tool\Tools\Developer\JsonFormatterTool;
+use Domain\Tool\Tools\Developer\JsonToPhpTool;
+use Domain\Tool\Tools\Developer\JsonToTypescriptTool;
 use Domain\Tool\Tools\Developer\JwtDebuggerTool;
+use Domain\Tool\Tools\Developer\LaravelCrudGeneratorTool;
+use Domain\Tool\Tools\Developer\PasswordGeneratorTool;
 use Domain\Tool\Tools\Developer\ProxyCheckerTool;
 use Domain\Tool\Tools\Developer\RegexTesterTool;
+use Domain\Tool\Tools\Developer\SqlFormatterTool;
+use Domain\Tool\Tools\Developer\SqlToLaravelMigrationTool;
+use Domain\Tool\Tools\Developer\SqlToLaravelModelTool;
+use Domain\Tool\Tools\Developer\TimestampConverterTool;
 use Domain\Tool\Tools\Developer\UrlEncoderDecoderTool;
+use Domain\Tool\Tools\Developer\UuidGeneratorTool;
+use Domain\Tool\Tools\Developer\XmlToJsonTool;
 use Domain\Tool\Tools\Image\ImageColorExtractorTool;
+use Domain\Tool\Tools\Image\ImageCompressorTool;
 use Domain\Tool\Tools\Image\ImageMetadataTool;
+use Domain\Tool\Tools\Pdf\PdfToExcelTool;
 use Domain\Tool\Tools\Seo\MetaTagGeneratorTool;
 use Domain\Tool\Tools\Seo\OpenGraphGeneratorTool;
 use Domain\Tool\Tools\Seo\RobotsTxtGeneratorTool;
@@ -58,11 +76,27 @@ class ToolServiceProvider extends ServiceProvider
 
             // Register Developer Tools
             $registry->register(new JsonFormatterTool());
+            $registry->register(new JsonToTypescriptTool());
+            $registry->register(new JsonToPhpTool());
+            $registry->register(new SqlFormatterTool());
+            $registry->register(new SqlToLaravelMigrationTool());
+            $registry->register(new SqlToLaravelModelTool());
+            $registry->register(new LaravelCrudGeneratorTool());
             $registry->register(new Base64Tool());
             $registry->register(new HashGeneratorTool());
             $registry->register(new JwtDebuggerTool());
+            $registry->register(new UuidGeneratorTool());
+            $registry->register(new CronGeneratorTool());
             $registry->register(new RegexTesterTool());
             $registry->register(new UrlEncoderDecoderTool());
+            $registry->register(new HtmlFormatterTool());
+            $registry->register(new CssMinifierTool());
+            $registry->register(new CsvToJsonTool());
+            $registry->register(new XmlToJsonTool());
+            $registry->register(new ApiTesterTool());
+            $registry->register(new HttpStatusCheckerTool());
+            $registry->register(new PasswordGeneratorTool());
+            $registry->register(new TimestampConverterTool());
             $registry->register(new ProxyCheckerTool());
 
             // Register Calculator Tools
@@ -73,6 +107,10 @@ class ToolServiceProvider extends ServiceProvider
             // Register Image Tools
             $registry->register(new ImageMetadataTool());
             $registry->register(new ImageColorExtractorTool());
+            $registry->register(new ImageCompressorTool());
+
+            // Register PDF Tools
+            $registry->register(new PdfToExcelTool());
 
             // Register SEO Tools
             $registry->register(new SerpPreviewTool());

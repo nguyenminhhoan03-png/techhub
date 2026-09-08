@@ -55,7 +55,7 @@ class PercentageCalculatorTool implements ToolContract
         $description = '';
 
         $isVi = (class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication())
-            ? \Illuminate\Support\Facades\App::getLocale() === 'vi'
+            ? 'vi' === \Illuminate\Support\Facades\App::getLocale()
             : true;
 
         if ('percent_of' === $mode) {

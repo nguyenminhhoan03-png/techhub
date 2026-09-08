@@ -54,7 +54,7 @@ class SchemaGeneratorTool implements ToolContract
         ];
 
         $isEn = (class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication())
-            ? \Illuminate\Support\Facades\App::getLocale() === 'en'
+            ? 'en' === \Illuminate\Support\Facades\App::getLocale()
             : false;
 
         switch ($type) {
@@ -85,16 +85,14 @@ class SchemaGeneratorTool implements ToolContract
 
             case 'FAQPage':
                 $faqs = $this->parseFaqs($input);
-                $schema['mainEntity'] = array_map(function ($faq) {
-                    return [
-                        '@type' => 'Question',
-                        'name' => $faq['question'],
-                        'acceptedAnswer' => [
-                            '@type' => 'Answer',
-                            'text' => $faq['answer'],
-                        ],
-                    ];
-                }, $faqs);
+                $schema['mainEntity'] = array_map(fn($faq) => [
+                    '@type' => 'Question',
+                    'name' => $faq['question'],
+                    'acceptedAnswer' => [
+                        '@type' => 'Answer',
+                        'text' => $faq['answer'],
+                    ],
+                ], $faqs);
                 break;
 
             case 'Product':
@@ -115,7 +113,7 @@ class SchemaGeneratorTool implements ToolContract
                     'itemCondition' => 'https://schema.org/NewCondition',
                     'availability' => 'https://schema.org/' . (string) ($input['availability'] ?? 'InStock'),
                 ];
-                if (!empty($input['rating_value'])) {
+                if ( ! empty($input['rating_value'])) {
                     $schema['aggregateRating'] = [
                         '@type' => 'AggregateRating',
                         'ratingValue' => (string) $input['rating_value'],
@@ -140,7 +138,7 @@ class SchemaGeneratorTool implements ToolContract
                     'postalCode' => (string) ($input['postal_code'] ?? ($isEn ? '94105' : '100000')),
                     'addressCountry' => (string) ($input['address_country'] ?? ($isEn ? 'US' : 'VN')),
                 ];
-                if ('LocalBusiness' === $type && !empty($input['price_range'])) {
+                if ('LocalBusiness' === $type && ! empty($input['price_range'])) {
                     $schema['priceRange'] = (string) $input['price_range'];
                 }
                 break;
@@ -169,7 +167,7 @@ class SchemaGeneratorTool implements ToolContract
                     'price' => (string) ($input['price'] ?? '0'),
                     'priceCurrency' => (string) ($input['price_currency'] ?? 'USD'),
                 ];
-                if (!empty($input['rating_value'])) {
+                if ( ! empty($input['rating_value'])) {
                     $schema['aggregateRating'] = [
                         '@type' => 'AggregateRating',
                         'ratingValue' => (string) $input['rating_value'],
@@ -204,12 +202,12 @@ class SchemaGeneratorTool implements ToolContract
      */
     private function parseFaqs(array $input): array
     {
-        if (!empty($input['faqs']) && is_array($input['faqs'])) {
+        if ( ! empty($input['faqs']) && is_array($input['faqs'])) {
             return $input['faqs'];
         }
 
         $rawText = (string) ($input['faq_text'] ?? '');
-        if (!empty($rawText)) {
+        if ( ! empty($rawText)) {
             $lines = explode("\n", $rawText);
             $faqs = [];
             $currentQ = '';
@@ -217,10 +215,12 @@ class SchemaGeneratorTool implements ToolContract
 
             foreach ($lines as $line) {
                 $line = trim($line);
-                if (empty($line)) continue;
+                if (empty($line)) {
+                    continue;
+                }
 
                 if (preg_match('/^(Q:|Hỏi:|\d+\.)\s*(.+)$/i', $line, $m)) {
-                    if (!empty($currentQ) && !empty($currentA)) {
+                    if ( ! empty($currentQ) && ! empty($currentA)) {
                         $faqs[] = ['question' => $currentQ, 'answer' => trim($currentA)];
                     }
                     $currentQ = $m[2];
@@ -232,17 +232,17 @@ class SchemaGeneratorTool implements ToolContract
                 }
             }
 
-            if (!empty($currentQ) && !empty($currentA)) {
+            if ( ! empty($currentQ) && ! empty($currentA)) {
                 $faqs[] = ['question' => $currentQ, 'answer' => trim($currentA)];
             }
 
-            if (!empty($faqs)) {
+            if ( ! empty($faqs)) {
                 return $faqs;
             }
         }
 
         $isEn = (class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication())
-            ? \Illuminate\Support\Facades\App::getLocale() === 'en'
+            ? 'en' === \Illuminate\Support\Facades\App::getLocale()
             : false;
 
         // Fallback default sample FAQs
@@ -274,12 +274,12 @@ class SchemaGeneratorTool implements ToolContract
      */
     private function parseBreadcrumbs(array $input): array
     {
-        if (!empty($input['breadcrumbs']) && is_array($input['breadcrumbs'])) {
+        if ( ! empty($input['breadcrumbs']) && is_array($input['breadcrumbs'])) {
             return $input['breadcrumbs'];
         }
 
         $isEn = (class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication())
-            ? \Illuminate\Support\Facades\App::getLocale() === 'en'
+            ? 'en' === \Illuminate\Support\Facades\App::getLocale()
             : false;
 
         return $isEn ? [

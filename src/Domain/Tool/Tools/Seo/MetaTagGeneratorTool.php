@@ -66,17 +66,23 @@ class MetaTagGeneratorTool implements ToolContract
         $language = trim((string) ($input['language'] ?? 'vi'));
         $robotsIndex = (string) ($input['robots_index'] ?? 'index');
         $robotsFollow = (string) ($input['robots_follow'] ?? 'follow');
-        $robotsNoArchive = !empty($input['robots_noarchive']);
-        $robotsNoSnippet = !empty($input['robots_nosnippet']);
-        $robotsNoImageIndex = !empty($input['robots_noimageindex']);
+        $robotsNoArchive = ! empty($input['robots_noarchive']);
+        $robotsNoSnippet = ! empty($input['robots_nosnippet']);
+        $robotsNoImageIndex = ! empty($input['robots_noimageindex']);
         $charset = (string) ($input['charset'] ?? 'UTF-8');
         $viewport = (string) ($input['viewport'] ?? 'width=device-width, initial-scale=1.0');
 
         // Compile Robots Directive
         $robotsParts = [$robotsIndex, $robotsFollow];
-        if ($robotsNoArchive) $robotsParts[] = 'noarchive';
-        if ($robotsNoSnippet) $robotsParts[] = 'nosnippet';
-        if ($robotsNoImageIndex) $robotsParts[] = 'noimageindex';
+        if ($robotsNoArchive) {
+            $robotsParts[] = 'noarchive';
+        }
+        if ($robotsNoSnippet) {
+            $robotsParts[] = 'nosnippet';
+        }
+        if ($robotsNoImageIndex) {
+            $robotsParts[] = 'noimageindex';
+        }
         $robotsContent = implode(', ', $robotsParts);
 
         // Generate HTML Tag Lines
@@ -90,23 +96,23 @@ class MetaTagGeneratorTool implements ToolContract
         $lines[] = '<title>' . htmlspecialchars($title, ENT_QUOTES, 'UTF-8') . '</title>';
         $lines[] = '<meta name="title" content="' . htmlspecialchars($title, ENT_QUOTES, 'UTF-8') . '">';
         $lines[] = '<meta name="description" content="' . htmlspecialchars($description, ENT_QUOTES, 'UTF-8') . '">';
-        
-        if (!empty($keywords)) {
+
+        if ( ! empty($keywords)) {
             $lines[] = '<meta name="keywords" content="' . htmlspecialchars($keywords, ENT_QUOTES, 'UTF-8') . '">';
         }
 
-        if (!empty($author)) {
+        if ( ! empty($author)) {
             $lines[] = '<meta name="author" content="' . htmlspecialchars($author, ENT_QUOTES, 'UTF-8') . '">';
         }
 
         $lines[] = '<meta name="robots" content="' . htmlspecialchars($robotsContent, ENT_QUOTES, 'UTF-8') . '">';
         $lines[] = '<meta name="googlebot" content="' . htmlspecialchars($robotsContent, ENT_QUOTES, 'UTF-8') . '">';
-        
-        if (!empty($language)) {
+
+        if ( ! empty($language)) {
             $lines[] = '<meta name="language" content="' . htmlspecialchars($language, ENT_QUOTES, 'UTF-8') . '">';
         }
 
-        if (!empty($canonicalUrl)) {
+        if ( ! empty($canonicalUrl)) {
             $lines[] = '';
             $lines[] = '<!-- Canonical URL -->';
             $lines[] = '<link rel="canonical" href="' . htmlspecialchars($canonicalUrl, ENT_QUOTES, 'UTF-8') . '">';
@@ -116,13 +122,13 @@ class MetaTagGeneratorTool implements ToolContract
 
         // SEO Audit Checks
         $audit = [
-            'has_title' => !empty($title),
+            'has_title' => ! empty($title),
             'title_length' => mb_strlen($title),
             'title_length_status' => (mb_strlen($title) >= 30 && mb_strlen($title) <= 60) ? 'good' : 'warning',
-            'has_description' => !empty($description),
+            'has_description' => ! empty($description),
             'description_length' => mb_strlen($description),
             'description_length_status' => (mb_strlen($description) >= 70 && mb_strlen($description) <= 160) ? 'good' : 'warning',
-            'has_canonical' => !empty($canonicalUrl),
+            'has_canonical' => ! empty($canonicalUrl),
             'is_indexable' => 'index' === $robotsIndex,
             'is_followable' => 'follow' === $robotsFollow,
             'has_charset' => true,
@@ -134,12 +140,12 @@ class MetaTagGeneratorTool implements ToolContract
         return ToolResult::success([
             'result' => $metaHtml,
             'meta_html' => $metaHtml,
-            'tag_count' => count(array_filter($lines, fn ($l) => str_starts_with($l, '<'))),
+            'tag_count' => count(array_filter($lines, fn($l) => str_starts_with($l, '<'))),
             'audit' => $audit,
             'summary_data' => [
                 'title' => $title,
                 'description' => $description,
-                'canonical' => $canonicalUrl ?: (((class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication()) && \Illuminate\Support\Facades\App::getLocale() === 'en') ? 'Not configured (Recommended)' : 'Chưa cấu hình (Khuyên dùng)'),
+                'canonical' => $canonicalUrl ?: (((class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication()) && 'en' === \Illuminate\Support\Facades\App::getLocale()) ? 'Not configured (Recommended)' : 'Chưa cấu hình (Khuyên dùng)'),
                 'robots' => $robotsContent,
             ],
         ], executionTimeMs: $executionTimeMs);

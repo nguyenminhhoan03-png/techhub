@@ -16,6 +16,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AdminAndSettingsSeeder::class,
             ToolSeeder::class,
+            DeveloperSuiteToolsSeeder::class,
+            ProxyCheckerToolSeeder::class,
             GameSeeder::class,
             HardwareAndArticleSeeder::class,
         ]);

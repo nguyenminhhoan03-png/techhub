@@ -924,6 +924,504 @@
                                 <span>{{ __('tools.proxy-checker.ui.btn_submit') }}</span>
                             </button>
                         </div>
+                    {{-- 20. JSON TO TYPESCRIPT --}}
+                    @elseif($tool->slug === 'json-to-typescript')
+                        <div class="form-group">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <label for="json-ts-input" class="form-label" style="margin-bottom: 0;">JSON Input</label>
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-load-sample-json-ts"><x-heroicon-o-clipboard-document style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> {{ __('tools.json-formatter.ui.btn_load_sample') }}</button>
+                            </div>
+                            <textarea id="json-ts-input" name="json" class="form-control" style="min-height: 140px; font-family: var(--font-mono);" placeholder='{"id": 101, "title": "TechHub", "user": {"name": "Minh Hoan", "email": "dev@techhub.vn"}, "tags": ["laravel", "clean-architecture"]}' required></textarea>
+                        </div>
+
+                        <div class="form-grid-2" style="margin-bottom: 1.5rem;">
+                            <div>
+                                <label for="json-ts-root" class="form-label">Root Interface / Type Name</label>
+                                <input type="text" id="json-ts-root" name="root_name" class="form-control" value="RootObject">
+                            </div>
+                            <div>
+                                <label for="json-ts-type" class="form-label">Declaration Kind</label>
+                                <select id="json-ts-type" name="declaration_type" class="form-control">
+                                    <option value="interface" selected>interface</option>
+                                    <option value="type">type alias</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="margin-bottom: 1.5rem;"><x-heroicon-s-bolt style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> {{ __('run_tool') }}</button>
+
+                    {{-- 21. JSON TO PHP --}}
+                    @elseif($tool->slug === 'json-to-php')
+                        <div class="form-group">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <label for="json-php-input" class="form-label" style="margin-bottom: 0;">JSON Input</label>
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-load-sample-json-php"><x-heroicon-o-clipboard-document style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> {{ __('tools.json-formatter.ui.btn_load_sample') }}</button>
+                            </div>
+                            <textarea id="json-php-input" name="json" class="form-control" style="min-height: 140px; font-family: var(--font-mono);" placeholder='{"product_id": 99, "name": "GeForce RTX 5080", "price": 999.99, "in_stock": true}' required></textarea>
+                        </div>
+
+                        <div class="form-grid-2" style="margin-bottom: 1.5rem;">
+                            <div>
+                                <label for="json-php-mode" class="form-label">Output Target</label>
+                                <select id="json-php-mode" name="mode" class="form-control">
+                                    <option value="dto" selected>PHP 8.2+ DTO Class (Readonly + Properties)</option>
+                                    <option value="array">Modern PHP Array ([...])</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="json-php-class" class="form-label">DTO Class Name</label>
+                                <input type="text" id="json-php-class" name="class_name" class="form-control" value="ProductData">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="margin-bottom: 1.5rem;"><x-heroicon-s-bolt style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> {{ __('run_tool') }}</button>
+
+                    {{-- 22. SQL FORMATTER --}}
+                    @elseif($tool->slug === 'sql-formatter')
+                        <div class="form-group">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <label for="sql-fmt-input" class="form-label" style="margin-bottom: 0;">SQL Query</label>
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-load-sample-sql"><x-heroicon-o-clipboard-document style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Load Sample SQL</button>
+                            </div>
+                            <textarea id="sql-fmt-input" name="sql" class="form-control" style="min-height: 140px; font-family: var(--font-mono);" placeholder="select u.id, u.name, count(o.id) as orders_count from users u left join orders o on u.id = o.user_id where u.role = 'admin' and u.is_active = 1 group by u.id order by orders_count desc limit 20;" required></textarea>
+                        </div>
+
+                        <div style="display: flex; gap: 1.25rem; align-items: center; flex-wrap: wrap; margin-bottom: 1.5rem;">
+                            <div>
+                                <label for="sql-fmt-action" class="form-label">Action</label>
+                                <select id="sql-fmt-action" name="action" class="form-control" style="width: 170px;">
+                                    <option value="beautify" selected>Beautify (Định dạng đẹp)</option>
+                                    <option value="minify">Minify (Gom 1 dòng)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="sql-fmt-indent" class="form-label">Indent</label>
+                                <select id="sql-fmt-indent" name="indent_size" class="form-control" style="width: 130px;">
+                                    <option value="2" selected>2 Spaces</option>
+                                    <option value="4">4 Spaces</option>
+                                </select>
+                            </div>
+                            <div style="margin-top: 1.75rem;">
+                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                    <input type="checkbox" name="uppercase" value="1" checked>
+                                    <span>Uppercase Keywords (SELECT, FROM, WHERE)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="margin-bottom: 1.5rem;"><x-heroicon-s-bolt style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> {{ __('run_tool') }}</button>
+
+                    {{-- 23. SQL TO LARAVEL MIGRATION --}}
+                    @elseif($tool->slug === 'sql-to-laravel-migration')
+                        <div class="form-group">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <label for="sql-mig-input" class="form-label" style="margin-bottom: 0;">SQL CREATE TABLE Statement</label>
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-load-sample-sql-mig"><x-heroicon-o-clipboard-document style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Load Sample Table</button>
+                            </div>
+                            <textarea id="sql-mig-input" name="sql" class="form-control" style="min-height: 160px; font-family: var(--font-mono);" placeholder="CREATE TABLE `invoices` (&#10;  `id` bigint unsigned NOT NULL AUTO_INCREMENT,&#10;  `customer_id` bigint unsigned NOT NULL,&#10;  `invoice_number` varchar(50) NOT NULL,&#10;  `amount` decimal(12,2) NOT NULL DEFAULT '0.00',&#10;  `is_paid` tinyint(1) NOT NULL DEFAULT '0',&#10;  `created_at` timestamp NULL DEFAULT NULL,&#10;  PRIMARY KEY (`id`)&#10;);" required></textarea>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label for="sql-mig-table" class="form-label">Table Name (Optional override)</label>
+                            <input type="text" id="sql-mig-table" name="table_name" class="form-control" placeholder="invoices (Leave blank to auto-detect)">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="margin-bottom: 1.5rem;"><x-heroicon-s-bolt style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Generate Migration</button>
+
+                    {{-- 24. SQL TO LARAVEL MODEL --}}
+                    @elseif($tool->slug === 'sql-to-laravel-model')
+                        <div class="form-group">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <label for="sql-mod-input" class="form-label" style="margin-bottom: 0;">SQL CREATE TABLE Statement</label>
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-load-sample-sql-mod"><x-heroicon-o-clipboard-document style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Load Sample Table</button>
+                            </div>
+                            <textarea id="sql-mod-input" name="sql" class="form-control" style="min-height: 160px; font-family: var(--font-mono);" placeholder="CREATE TABLE `posts` (&#10;  `id` bigint unsigned NOT NULL AUTO_INCREMENT,&#10;  `author_id` bigint unsigned NOT NULL,&#10;  `title` varchar(255) NOT NULL,&#10;  `slug` varchar(255) NOT NULL,&#10;  `content` longtext NOT NULL,&#10;  `is_published` tinyint(1) NOT NULL DEFAULT '0',&#10;  `views` int unsigned NOT NULL DEFAULT '0',&#10;  `meta` json DEFAULT NULL,&#10;  `created_at` timestamp NULL DEFAULT NULL,&#10;  PRIMARY KEY (`id`)&#10;);" required></textarea>
+                        </div>
+
+                        <div class="form-grid-2" style="margin-bottom: 1.5rem;">
+                            <div>
+                                <label for="sql-mod-name" class="form-label">Model Class Name</label>
+                                <input type="text" id="sql-mod-name" name="model_name" class="form-control" placeholder="Post (Auto-detected if blank)">
+                            </div>
+                            <div>
+                                <label for="sql-mod-ns" class="form-label">Namespace</label>
+                                <input type="text" id="sql-mod-ns" name="namespace" class="form-control" value="App\Models">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="margin-bottom: 1.5rem;"><x-heroicon-s-bolt style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Generate Eloquent Model</button>
+
+                    {{-- 25. LARAVEL CRUD GENERATOR --}}
+                    @elseif($tool->slug === 'laravel-crud-generator')
+                        <div class="form-group">
+                            <label for="crud-model" class="form-label">Model Name (Singular PascalCase)</label>
+                            <input type="text" id="crud-model" name="model_name" class="form-control" value="Article" required>
+                        </div>
+
+                        <div class="form-group">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <label for="crud-fields" class="form-label" style="margin-bottom: 0;">Field Definitions (field_name:type)</label>
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-load-sample-crud"><x-heroicon-o-clipboard-document style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Load Sample Fields</button>
+                            </div>
+                            <textarea id="crud-fields" name="fields" class="form-control" style="min-height: 100px; font-family: var(--font-mono);" placeholder="title:string, slug:string, content:text, price:decimal:10,2, is_active:boolean, author_id:foreignId" required>title:string, slug:string, summary:text, view_count:integer, is_published:boolean, category_id:foreignId</textarea>
+                            <small style="color: var(--text-muted); display: block; margin-top: 0.35rem;">
+                                Supported types: string, text, integer, decimal, boolean, json, foreignId.
+                            </small>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="margin-bottom: 1.5rem;"><x-heroicon-s-bolt style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Generate Full CRUD Bundle</button>
+
+                    {{-- 26. UUID GENERATOR --}}
+                    @elseif($tool->slug === 'uuid-generator')
+                        <div class="form-grid-2" style="margin-bottom: 1.5rem;">
+                            <div>
+                                <label for="uuid-version" class="form-label">Algorithm / Version</label>
+                                <select id="uuid-version" name="version" class="form-control">
+                                    <option value="v4" selected>UUID v4 (Pure Cryptographic Random)</option>
+                                    <option value="v7">UUID v7 (Time-Ordered Unix Epoch - Best for DB)</option>
+                                    <option value="ulid">ULID (26-Char Lexicographically Sortable)</option>
+                                    <option value="v1">UUID v1 (Timestamp & Node)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="uuid-count" class="form-label">Batch Quantity (1 - 50)</label>
+                                <input type="number" id="uuid-count" name="count" class="form-control" value="5" min="1" max="50">
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 1.5rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" name="hyphens" value="1" checked>
+                                <span>Include Hyphens (-)</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" name="uppercase" value="1">
+                                <span>UPPERCASE Output</span>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="margin-bottom: 1.5rem;"><x-heroicon-s-bolt style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Generate UUIDs</button>
+
+                    {{-- 27. CRON GENERATOR --}}
+                    @elseif($tool->slug === 'cron-generator')
+                        <div class="form-group">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <label for="cron-expr-input" class="form-label" style="margin-bottom: 0;">Cron Expression (5 Parts: Minute Hour Day Month Weekday)</label>
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-load-sample-cron"><x-heroicon-o-clipboard-document style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Load Preset</button>
+                            </div>
+                            <input type="text" id="cron-expr-input" name="expression" class="form-control" style="font-family: var(--font-mono); font-size: 1.2rem; font-weight: 700; color: var(--accent-indigo);" value="0 4 * * 1-5" required>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label for="cron-preset-select" class="form-label">Quick Presets</label>
+                            <select id="cron-preset-select" class="form-control" onchange="document.getElementById('cron-expr-input').value = this.value;">
+                                <option value="* * * * *">Every Minute (* * * * *)</option>
+                                <option value="*/5 * * * *">Every 5 Minutes (*/5 * * * *)</option>
+                                <option value="*/15 * * * *">Every 15 Minutes (*/15 * * * *)</option>
+                                <option value="0 * * * *">Every Hour (0 * * * *)</option>
+                                <option value="0 0 * * *">Daily at Midnight (0 0 * * *)</option>
+                                <option value="0 4 * * *" selected>Daily at 04:00 AM (0 4 * * *)</option>
+                                <option value="0 9 * * 1-5">Weekdays at 09:00 AM (0 9 * * 1-5)</option>
+                                <option value="0 0 * * 0">Every Sunday at Midnight (0 0 * * 0)</option>
+                                <option value="0 0 1 * *">First Day of Every Month (0 0 1 * *)</option>
+                            </select>
+                        </div>
+
+                        <input type="hidden" name="mode" value="explain">
+                        <button type="submit" class="btn btn-primary" style="margin-bottom: 1.5rem;"><x-heroicon-s-bolt style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Explain & Calculate Schedule</button>
+
+                    {{-- 28. HTML FORMATTER --}}
+                    @elseif($tool->slug === 'html-formatter')
+                        <div class="form-group">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <label for="html-fmt-input" class="form-label" style="margin-bottom: 0;">HTML Code</label>
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-load-sample-html"><x-heroicon-o-clipboard-document style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Load Sample HTML</button>
+                            </div>
+                            <textarea id="html-fmt-input" name="html" class="form-control" style="min-height: 150px; font-family: var(--font-mono);" placeholder="<div class='card'><div class='card-header'><h3>TechHub</h3></div><div class='card-body'><p>Clean Architecture & DDD</p><a href='/tools' class='btn'>Explore</a></div></div>" required></textarea>
+                        </div>
+
+                        <div style="display: flex; gap: 1.5rem; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                            <div>
+                                <label for="html-fmt-action" class="form-label">Action</label>
+                                <select id="html-fmt-action" name="action" class="form-control" style="width: 180px;">
+                                    <option value="beautify" selected>Beautify (Làm đẹp)</option>
+                                    <option value="minify">Minify (Nén gọn HTML)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="html-fmt-indent" class="form-label">Indent</label>
+                                <select id="html-fmt-indent" name="indent_size" class="form-control" style="width: 130px;">
+                                    <option value="2" selected>2 Spaces</option>
+                                    <option value="4">4 Spaces</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="margin-bottom: 1.5rem;"><x-heroicon-s-bolt style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Process HTML</button>
+
+                    {{-- 29. CSS MINIFIER --}}
+                    @elseif($tool->slug === 'css-minifier')
+                        <div class="form-group">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <label for="css-fmt-input" class="form-label" style="margin-bottom: 0;">CSS Stylesheet</label>
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-load-sample-css"><x-heroicon-o-clipboard-document style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Load Sample CSS</button>
+                            </div>
+                            <textarea id="css-fmt-input" name="css" class="form-control" style="min-height: 150px; font-family: var(--font-mono);" placeholder="/* TechHub Theme */&#10;.btn-primary {&#10;    background-color: #4f46e5;&#10;    color: #ffffff;&#10;    padding: 10px 20px;&#10;    border-radius: 6px;&#10;    margin: 0px;&#10;}" required></textarea>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label for="css-fmt-action" class="form-label">Action</label>
+                            <select id="css-fmt-action" name="action" class="form-control" style="width: 200px;">
+                                <option value="minify" selected>Minify (Nén & Tối ưu)</option>
+                                <option value="beautify">Beautify (Giải nén & Thụt lề)</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="margin-bottom: 1.5rem;"><x-heroicon-s-bolt style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Process CSS</button>
+
+                    {{-- 30. IMAGE COMPRESSOR --}}
+                    @elseif($tool->slug === 'image-compressor')
+                        <div class="form-group">
+                            <label class="form-label">Upload Image to Compress</label>
+                            <input type="file" id="file-input" accept="image/png,image/jpeg,image/webp,image/gif" style="display: none;">
+                            <input type="hidden" id="image-base64-input" name="image_base64">
+
+                            <div id="file-dropzone" class="dropzone" style="cursor: pointer; padding: 2rem; border: 2px dashed var(--border-subtle); border-radius: var(--radius-md); text-align: center; background: var(--bg-surface-elevated);">
+                                <span style="font-size: 2.2rem; display: block; margin-bottom: 0.5rem;">🖼️</span>
+                                <strong style="color: var(--text-main); font-size: 1.05rem;">Click or Drag & Drop image here</strong>
+                                <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.35rem;">Supports PNG, JPEG, WebP, GIF</p>
+                            </div>
+
+                            <div id="file-preview-wrap" style="display: none; align-items: center; gap: 1rem; margin-top: 1rem; padding: 0.75rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md);">
+                                <img id="file-preview-thumb" src="" alt="Thumbnail" style="width: 64px; height: 64px; object-fit: cover; border-radius: 6px;">
+                                <div>
+                                    <strong id="file-preview-name" style="color: var(--text-main); font-size: 0.95rem; display: block;"></strong>
+                                    <span id="file-preview-size" style="font-size: 0.82rem; color: var(--text-muted);"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-grid-2" style="margin-bottom: 1.5rem;">
+                            <div>
+                                <label for="img-comp-format" class="form-label">Target Format</label>
+                                <select id="img-comp-format" name="format" class="form-control">
+                                    <option value="webp" selected>WebP (Recommended - Highest Compression)</option>
+                                    <option value="jpeg">JPEG</option>
+                                    <option value="png">PNG</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="img-comp-quality" class="form-label">Quality Percentage (10 - 100%): <span id="comp-quality-val" style="font-weight: 700; color: var(--accent-indigo);">80%</span></label>
+                                <input type="range" id="img-comp-quality" name="quality" class="form-control" min="10" max="100" value="80" oninput="document.getElementById('comp-quality-val').innerText = this.value + '%';">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="margin-bottom: 1.5rem;"><x-heroicon-s-bolt style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Compress Image Now</button>
+
+                    {{-- 31. PDF TO EXCEL --}}
+                    @elseif($tool->slug === 'pdf-to-excel')
+                        <div class="form-group">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <label for="pdf-excel-input" class="form-label" style="margin-bottom: 0;">Tabular Text Copied from PDF / Document</label>
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-load-sample-pdf"><x-heroicon-o-clipboard-document style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Load Sample Invoice</button>
+                            </div>
+                            <textarea id="pdf-excel-input" name="raw_text" class="form-control" style="min-height: 150px; font-family: var(--font-mono); font-size: 0.88rem;" placeholder="Order ID&#9;Product Name&#9;Quantity&#9;Price&#9;Total&#10;#1001&#9;Intel Core i9-14900K&#9;2&#9;589.00&#9;1178.00&#10;#1002&#9;NVIDIA GeForce RTX 4090&#9;1&#9;1599.00&#9;1599.00" required></textarea>
+                            <small style="color: var(--text-muted); display: block; margin-top: 0.35rem;">
+                                Select and copy table rows from your PDF document and paste here.
+                            </small>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label for="pdf-delimiter" class="form-label">Column Delimiter Detection</label>
+                            <select id="pdf-delimiter" name="delimiter" class="form-control" style="width: 220px;">
+                                <option value="auto" selected>Auto-Detect (Tabs / Spaces / Pipes)</option>
+                                <option value="tab">Tabs Only</option>
+                                <option value="pipe">Pipes (|)</option>
+                                <option value="comma">Commas (,)</option>
+                                <option value="spaces">Multiple Spaces</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="margin-bottom: 1.5rem;"><x-heroicon-s-bolt style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Convert to Excel Spreadsheet</button>
+
+                    {{-- 32. CSV TO JSON --}}
+                    @elseif($tool->slug === 'csv-to-json')
+                        <div class="form-group">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <label for="csv-json-input" class="form-label" style="margin-bottom: 0;">CSV Data</label>
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-load-sample-csv"><x-heroicon-o-clipboard-document style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Load Sample CSV</button>
+                            </div>
+                            <textarea id="csv-json-input" name="csv" class="form-control" style="min-height: 150px; font-family: var(--font-mono);" placeholder="id,product,price,in_stock&#10;1,AMD Ryzen 7 7800X3D,449.00,true&#10;2,Intel Core i7-14700K,409.00,true" required></textarea>
+                        </div>
+
+                        <div style="display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; margin-bottom: 1.5rem;">
+                            <div>
+                                <label for="csv-del" class="form-label">Delimiter</label>
+                                <select id="csv-del" name="delimiter" class="form-control" style="width: 160px;">
+                                    <option value="auto" selected>Auto-Detect</option>
+                                    <option value="comma">Comma (,)</option>
+                                    <option value="semicolon">Semicolon (;)</option>
+                                    <option value="tab">Tab (\t)</option>
+                                    <option value="pipe">Pipe (|)</option>
+                                </select>
+                            </div>
+                            <div style="margin-top: 1.75rem;">
+                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                    <input type="checkbox" name="has_headers" value="1" checked>
+                                    <span>First Row as Headers (Keys)</span>
+                                </label>
+                            </div>
+                            <div style="margin-top: 1.75rem;">
+                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                    <input type="checkbox" name="parse_numbers" value="1" checked>
+                                    <span>Auto-Cast Numbers & Booleans</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="margin-bottom: 1.5rem;"><x-heroicon-s-bolt style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Convert CSV to JSON</button>
+
+                    {{-- 33. XML TO JSON --}}
+                    @elseif($tool->slug === 'xml-to-json')
+                        <div class="form-group">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <label for="xml-json-input" class="form-label" style="margin-bottom: 0;">XML Document / RSS Feed</label>
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-load-sample-xml"><x-heroicon-o-clipboard-document style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Load Sample XML</button>
+                            </div>
+                            <textarea id="xml-json-input" name="xml" class="form-control" style="min-height: 150px; font-family: var(--font-mono);" placeholder="<catalog>&#10;  <book id='bk101'>&#10;    <author>Gambardella, Matthew</author>&#10;    <title>XML Developer's Guide</title>&#10;    <price>44.95</price>&#10;  </book>&#10;</catalog>" required></textarea>
+                        </div>
+
+                        <div style="margin-bottom: 1.5rem;">
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" name="minify" value="1">
+                                <span>Minify Output (Single Line)</span>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="margin-bottom: 1.5rem;"><x-heroicon-s-bolt style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Convert XML to JSON</button>
+
+                    {{-- 34. API TESTER --}}
+                    @elseif($tool->slug === 'api-tester')
+                        <div class="form-grid-2" style="margin-bottom: 1rem;">
+                            <div style="max-width: 130px;">
+                                <label for="api-method" class="form-label">HTTP Method</label>
+                                <select id="api-method" name="method" class="form-control" style="font-weight: 700; color: var(--accent-indigo);">
+                                    <option value="GET" selected>GET</option>
+                                    <option value="POST">POST</option>
+                                    <option value="PUT">PUT</option>
+                                    <option value="PATCH">PATCH</option>
+                                    <option value="DELETE">DELETE</option>
+                                    <option value="HEAD">HEAD</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="api-url" class="form-label">Endpoint URL</label>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <input type="url" id="api-url" name="url" class="form-control" placeholder="https://api.github.com/zen" value="https://api.github.com/zen" required>
+                                    <button type="button" class="btn btn-secondary btn-sm" id="btn-load-sample-api">Sample</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="api-headers" class="form-label">Request Headers (Key: Value per line)</label>
+                            <textarea id="api-headers" name="headers" class="form-control" style="min-height: 70px; font-family: var(--font-mono); font-size: 0.85rem;" placeholder="Accept: application/json&#10;User-Agent: TechHub-Client">Accept: application/json</textarea>
+                        </div>
+
+                        <div class="form-group" id="api-body-wrap">
+                            <label for="api-body" class="form-label">Request Body (JSON / Payload)</label>
+                            <textarea id="api-body" name="body" class="form-control" style="min-height: 90px; font-family: var(--font-mono); font-size: 0.85rem;" placeholder='{"title": "Test Post", "body": "Content"}'></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="margin-bottom: 1.5rem;"><x-heroicon-s-bolt style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Send HTTP Request</button>
+
+                    {{-- 35. HTTP STATUS CHECKER --}}
+                    @elseif($tool->slug === 'http-status-checker')
+                        <div class="form-group">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <label for="http-status-url" class="form-label" style="margin-bottom: 0;">Target URL to Trace</label>
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-load-sample-http"><x-heroicon-o-clipboard-document style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Load Redirect Sample</button>
+                            </div>
+                            <input type="url" id="http-status-url" name="url" class="form-control" placeholder="http://github.com (Traces http -> https -> target)" value="http://github.com" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="margin-bottom: 1.5rem;"><x-heroicon-s-bolt style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Inspect Status & Redirects</button>
+
+                    {{-- 36. PASSWORD GENERATOR --}}
+                    @elseif($tool->slug === 'password-generator')
+                        <div class="form-grid-2" style="margin-bottom: 1.5rem;">
+                            <div>
+                                <label for="pw-length" class="form-label">Password Length: <span id="pw-len-val" style="font-weight: 700; color: var(--accent-indigo);">16</span> chars</label>
+                                <input type="range" id="pw-length" name="length" class="form-control" min="6" max="64" value="16" oninput="document.getElementById('pw-len-val').innerText = this.value;">
+                            </div>
+                            <div>
+                                <label for="pw-count" class="form-label">Quantity</label>
+                                <input type="number" id="pw-count" name="count" class="form-control" value="3" min="1" max="10">
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; margin-bottom: 1.5rem;">
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" name="include_uppercase" value="1" checked>
+                                <span>Uppercase (A-Z)</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" name="include_lowercase" value="1" checked>
+                                <span>Lowercase (a-z)</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" name="include_numbers" value="1" checked>
+                                <span>Numbers (0-9)</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" name="include_symbols" value="1" checked>
+                                <span>Symbols (!@#$%)</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" name="exclude_ambiguous" value="1">
+                                <span>Exclude Ambiguous (0, O, l, 1, I)</span>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="margin-bottom: 1.5rem;"><x-heroicon-s-bolt style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Generate Secure Passwords</button>
+
+                    {{-- 37. TIMESTAMP CONVERTER --}}
+                    @elseif($tool->slug === 'timestamp-converter')
+                        <div class="form-grid-2" style="margin-bottom: 1.5rem;">
+                            <div>
+                                <label for="ts-mode" class="form-label">Conversion Direction</label>
+                                <select id="ts-mode" name="mode" class="form-control" onchange="toggleTimestampInputs(this.value);">
+                                    <option value="epoch_to_date" selected>Epoch Timestamp → Human Date</option>
+                                    <option value="date_to_epoch">Human Date → Epoch Timestamp</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="ts-tz" class="form-label">Timezone</label>
+                                <select id="ts-tz" name="timezone" class="form-control">
+                                    <option value="Asia/Ho_Chi_Minh" selected>Asia/Ho_Chi_Minh (GMT+7)</option>
+                                    <option value="UTC">UTC (GMT+0)</option>
+                                    <option value="America/New_York">America/New_York (EST)</option>
+                                    <option value="Europe/London">Europe/London (GMT/BST)</option>
+                                    <option value="Asia/Tokyo">Asia/Tokyo (JST)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="ts-epoch-wrap">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <label for="ts-val" class="form-label" style="margin-bottom: 0;">Unix Epoch Timestamp (Seconds or Milliseconds)</label>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('ts-val').value = Math.floor(Date.now() / 1000);">Now</button>
+                            </div>
+                            <input type="text" id="ts-val" name="timestamp" class="form-control" style="font-family: var(--font-mono); font-size: 1.15rem;" value="{{ time() }}">
+                        </div>
+
+                        <div class="form-group" id="ts-date-wrap" style="display: none;">
+                            <label for="ts-date-val" class="form-label">Date String (YYYY-MM-DD HH:MM:SS)</label>
+                            <input type="text" id="ts-date-val" name="datetime_string" class="form-control" style="font-family: var(--font-mono);" placeholder="2026-09-08 12:00:00">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="margin-bottom: 1.5rem;"><x-heroicon-s-bolt style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Convert Timestamp</button>
+
                     @else
                         {{-- Generic Fallback Form --}}
                         <div class="form-group">

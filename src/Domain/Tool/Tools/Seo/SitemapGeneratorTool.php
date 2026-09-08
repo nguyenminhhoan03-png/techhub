@@ -8,7 +8,7 @@ use Domain\Tool\Contracts\ToolContract;
 use Domain\Tool\Enums\ToolEngineType;
 use Domain\Tool\ValueObjects\ToolResult;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
+use Throwable;
 
 class SitemapGeneratorTool implements ToolContract
 {
@@ -54,7 +54,7 @@ class SitemapGeneratorTool implements ToolContract
         $startTime = hrtime(true);
 
         $rawBaseUrl = trim((string) ($input['base_url'] ?? 'https://example.com'));
-        if (! str_starts_with($rawBaseUrl, 'http://') && ! str_starts_with($rawBaseUrl, 'https://')) {
+        if ( ! str_starts_with($rawBaseUrl, 'http://') && ! str_starts_with($rawBaseUrl, 'https://')) {
             $rawBaseUrl = 'https://' . $rawBaseUrl;
         }
 
@@ -89,7 +89,7 @@ class SitemapGeneratorTool implements ToolContract
 
                 if ($response->successful()) {
                     $html = $response->body();
-                    
+
                     // Extract all <a href="...">
                     if (preg_match_all('/<a\s+[^>]*href=["\']([^"\']+)["\']/i', $html, $matches)) {
                         foreach ($matches[1] as $href) {
@@ -145,12 +145,12 @@ class SitemapGeneratorTool implements ToolContract
                         }
                     }
                 }
-            } catch (\Throwable) {
+            } catch (Throwable) {
                 // If remote fetch fails (e.g. offline or private network), provide default structure
             }
 
             // If only root found, add common standard website routes
-            if (count($discoveredUrls) === 1) {
+            if (1 === count($discoveredUrls)) {
                 $commonPaths = ['/tools', '/articles', '/games', '/about', '/contact', '/privacy-policy'];
                 foreach ($commonPaths as $p) {
                     $u = $rootDomainUrl . $p;

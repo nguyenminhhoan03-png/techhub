@@ -67,10 +67,10 @@ class OpenGraphGeneratorTool implements ToolContract
         $fbAppId = trim((string) ($input['fb_app_id'] ?? ''));
 
         // Format Twitter Handles with @ if missing
-        if (!empty($twitterSite) && !str_starts_with($twitterSite, '@')) {
+        if ( ! empty($twitterSite) && ! str_starts_with($twitterSite, '@')) {
             $twitterSite = '@' . $twitterSite;
         }
-        if (!empty($twitterCreator) && !str_starts_with($twitterCreator, '@')) {
+        if ( ! empty($twitterCreator) && ! str_starts_with($twitterCreator, '@')) {
             $twitterCreator = '@' . $twitterCreator;
         }
 
@@ -84,11 +84,11 @@ class OpenGraphGeneratorTool implements ToolContract
         $lines[] = '<meta property="og:image:width" content="1200">';
         $lines[] = '<meta property="og:image:height" content="630">';
 
-        if (!empty($siteName)) {
+        if ( ! empty($siteName)) {
             $lines[] = '<meta property="og:site_name" content="' . htmlspecialchars($siteName, ENT_QUOTES, 'UTF-8') . '">';
         }
 
-        if (!empty($fbAppId)) {
+        if ( ! empty($fbAppId)) {
             $lines[] = '<meta property="fb:app_id" content="' . htmlspecialchars($fbAppId, ENT_QUOTES, 'UTF-8') . '">';
         }
 
@@ -100,11 +100,11 @@ class OpenGraphGeneratorTool implements ToolContract
         $lines[] = '<meta name="twitter:description" content="' . htmlspecialchars($description, ENT_QUOTES, 'UTF-8') . '">';
         $lines[] = '<meta name="twitter:image" content="' . htmlspecialchars($imageUrl, ENT_QUOTES, 'UTF-8') . '">';
 
-        if (!empty($twitterSite)) {
+        if ( ! empty($twitterSite)) {
             $lines[] = '<meta name="twitter:site" content="' . htmlspecialchars($twitterSite, ENT_QUOTES, 'UTF-8') . '">';
         }
 
-        if (!empty($twitterCreator)) {
+        if ( ! empty($twitterCreator)) {
             $lines[] = '<meta name="twitter:creator" content="' . htmlspecialchars($twitterCreator, ENT_QUOTES, 'UTF-8') . '">';
         }
 
@@ -129,8 +129,8 @@ class OpenGraphGeneratorTool implements ToolContract
                 'twitter_site' => $twitterSite,
             ],
             'audit' => [
-                'has_og_image' => !empty($imageUrl),
-                'og_image_recommendation' => ((class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication()) && \Illuminate\Support\Facades\App::getLocale() === 'en')
+                'has_og_image' => ! empty($imageUrl),
+                'og_image_recommendation' => ((class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication()) && 'en' === \Illuminate\Support\Facades\App::getLocale())
                     ? 'Recommended size: 1200 x 630 px (1.91:1 ratio) for crisp display on all social feeds.'
                     : 'Kích thước khuyên dùng: 1200 x 630 px (Tỷ lệ 1.91:1) để hiển thị sắc nét nhất.',
                 'title_length' => mb_strlen($title),

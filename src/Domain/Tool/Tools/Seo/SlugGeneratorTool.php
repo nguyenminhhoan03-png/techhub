@@ -52,7 +52,7 @@ class SlugGeneratorTool implements ToolContract
 
         $text = trim((string) ($input['text'] ?? ''));
         $separator = (string) ($input['separator'] ?? '-');
-        $removeStopWords = !empty($input['remove_stop_words']);
+        $removeStopWords = ! empty($input['remove_stop_words']);
         $maxLength = (int) ($input['max_length'] ?? 80);
         $caseFormat = (string) ($input['case_format'] ?? 'lowercase');
 
@@ -64,7 +64,7 @@ class SlugGeneratorTool implements ToolContract
         $clean = (string) preg_replace('/\s+/', ' ', (string) $clean);
 
         // 3. Extract words
-        $words = array_filter(explode(' ', strtolower($clean)));
+        $words = array_filter(explode(' ', mb_strtolower($clean)));
 
         // 4. Filter Stop Words (Vietnamese & English)
         $removedWords = [];
@@ -73,7 +73,7 @@ class SlugGeneratorTool implements ToolContract
                 'va', 'la', 'cho', 'cua', 'o', 'tai', 'trong', 'voi', 'cac', 'nhung',
                 'mot', 've', 'khi', 'duoc', 'nay', 'do', 'nhu', 'de', 'co', 'ra',
                 'theo', 'tu', 'den', 'se', 'da', 'dang', 'tren', 'duoi',
-                'a', 'an', 'the', 'and', 'or', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'is', 'are', 'it', 'this', 'that'
+                'a', 'an', 'the', 'and', 'or', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'is', 'are', 'it', 'this', 'that',
             ];
 
             $filteredWords = [];
@@ -84,7 +84,7 @@ class SlugGeneratorTool implements ToolContract
                     $filteredWords[] = $w;
                 }
             }
-            if (!empty($filteredWords)) {
+            if ( ! empty($filteredWords)) {
                 $words = $filteredWords;
             }
         }
@@ -98,7 +98,7 @@ class SlugGeneratorTool implements ToolContract
         } elseif ('snake' === $caseFormat) {
             $slug = implode('_', $words);
         } elseif ('uppercase' === $caseFormat) {
-            $slug = strtoupper(implode($separator, $words));
+            $slug = mb_strtoupper(implode($separator, $words));
         } else {
             // default kebab / lowercase
             $slug = implode($separator, $words);
@@ -127,7 +127,7 @@ class SlugGeneratorTool implements ToolContract
         $recommendations = [];
 
         $isEn = (class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication())
-            ? \Illuminate\Support\Facades\App::getLocale() === 'en'
+            ? 'en' === \Illuminate\Support\Facades\App::getLocale()
             : false;
 
         if ($slugLen > 75) {
@@ -190,7 +190,7 @@ class SlugGeneratorTool implements ToolContract
         ];
 
         foreach ($unicodeMap as $plain => $pattern) {
-            $str = (string) preg_replace("/($pattern)/iu", $plain, $str);
+            $str = (string) preg_replace("/({$pattern})/iu", $plain, $str);
         }
 
         return $str;

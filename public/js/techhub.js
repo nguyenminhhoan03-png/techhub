@@ -435,7 +435,223 @@ function initSampleLoaders() {
       }
     });
   }
+
+  // Developer Suite 18 New Tool Sample Loaders
+  const jsonTsBtn = document.getElementById('btn-load-sample-json-ts');
+  if (jsonTsBtn) {
+    jsonTsBtn.addEventListener('click', () => {
+      const el = document.getElementById('json-ts-input');
+      if (el) el.value = JSON.stringify({
+        id: 101,
+        title: "Senior Fullstack Architecture Guide",
+        author: { id: 1, name: "Nguyen Minh Hoan", email: "hoan@techhub.vn", verified: true },
+        tags: ["laravel", "clean-architecture", "typescript"],
+        metrics: { views: 15420, likes: 890, rating: 4.95 },
+        published_at: "2026-09-08T10:00:00Z"
+      }, null, 2);
+      showToast(isEn ? 'Sample JSON loaded for TypeScript conversion!' : 'Đã nạp JSON mẫu để tạo TypeScript Interface!');
+    });
+  }
+
+  const jsonPhpBtn = document.getElementById('btn-load-sample-json-php');
+  if (jsonPhpBtn) {
+    jsonPhpBtn.addEventListener('click', () => {
+      const el = document.getElementById('json-php-input');
+      if (el) el.value = JSON.stringify({
+        product_id: 5080,
+        sku: "GPU-RTX-5080-16GB",
+        name: "NVIDIA GeForce RTX 5080 16GB GDDR7",
+        price: 999.99,
+        in_stock: true,
+        specs: { cores: 10752, boost_clock_mhz: 2620, tdp_watts: 400 }
+      }, null, 2);
+      showToast(isEn ? 'Sample JSON loaded for PHP Array / DTO!' : 'Đã nạp JSON mẫu để tạo PHP Array / DTO!');
+    });
+  }
+
+  const sqlFmtBtn = document.getElementById('btn-load-sample-sql');
+  if (sqlFmtBtn) {
+    sqlFmtBtn.addEventListener('click', () => {
+      const el = document.getElementById('sql-fmt-input');
+      if (el) el.value = `select u.id, u.name, u.email, count(o.id) as total_orders, sum(o.amount) as total_spent from users u inner join orders o on u.id = o.user_id left join user_profiles p on u.id = p.user_id where u.is_active = 1 and o.status = 'completed' and o.created_at >= '2026-01-01' group by u.id, u.name, u.email having total_spent > 1000 order by total_spent desc limit 50;`;
+      showToast(isEn ? 'Sample SQL query loaded!' : 'Đã nạp câu lệnh SQL mẫu!');
+    });
+  }
+
+  const sqlMigBtn = document.getElementById('btn-load-sample-sql-mig');
+  if (sqlMigBtn) {
+    sqlMigBtn.addEventListener('click', () => {
+      const el = document.getElementById('sql-mig-input');
+      if (el) el.value = `CREATE TABLE \`invoices\` (
+  \`id\` bigint unsigned NOT NULL AUTO_INCREMENT,
+  \`customer_id\` bigint unsigned NOT NULL,
+  \`invoice_number\` varchar(50) NOT NULL,
+  \`subtotal\` decimal(12,2) NOT NULL DEFAULT '0.00',
+  \`tax_amount\` decimal(10,2) NOT NULL DEFAULT '0.00',
+  \`total_amount\` decimal(12,2) NOT NULL DEFAULT '0.00',
+  \`status\` varchar(30) NOT NULL DEFAULT 'pending',
+  \`is_paid\` tinyint(1) NOT NULL DEFAULT '0',
+  \`notes\` text,
+  \`paid_at\` timestamp NULL DEFAULT NULL,
+  \`created_at\` timestamp NULL DEFAULT NULL,
+  \`updated_at\` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (\`id\`),
+  UNIQUE KEY \`invoices_invoice_number_unique\` (\`invoice_number\`)
+);`;
+      showToast(isEn ? 'Sample CREATE TABLE loaded!' : 'Đã nạp câu lệnh CREATE TABLE mẫu!');
+    });
+  }
+
+  const sqlModBtn = document.getElementById('btn-load-sample-sql-mod');
+  if (sqlModBtn) {
+    sqlModBtn.addEventListener('click', () => {
+      const el = document.getElementById('sql-mod-input');
+      if (el) el.value = `CREATE TABLE \`posts\` (
+  \`id\` bigint unsigned NOT NULL AUTO_INCREMENT,
+  \`author_id\` bigint unsigned NOT NULL,
+  \`category_id\` bigint unsigned NOT NULL,
+  \`title\` varchar(255) NOT NULL,
+  \`slug\` varchar(255) NOT NULL,
+  \`summary\` text,
+  \`content\` longtext NOT NULL,
+  \`views\` int unsigned NOT NULL DEFAULT '0',
+  \`is_published\` tinyint(1) NOT NULL DEFAULT '0',
+  \`meta\` json DEFAULT NULL,
+  \`published_at\` timestamp NULL DEFAULT NULL,
+  \`created_at\` timestamp NULL DEFAULT NULL,
+  \`updated_at\` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (\`id\`)
+);`;
+      showToast(isEn ? 'Sample CREATE TABLE loaded for Model!' : 'Đã nạp CREATE TABLE mẫu cho Model!');
+    });
+  }
+
+  const crudBtn = document.getElementById('btn-load-sample-crud');
+  if (crudBtn) {
+    crudBtn.addEventListener('click', () => {
+      const model = document.getElementById('crud-model');
+      const fields = document.getElementById('crud-fields');
+      if (model) model.value = 'Article';
+      if (fields) fields.value = 'title:string, slug:string, summary:text, content:longtext, price:decimal:10,2, is_published:boolean, view_count:integer, category_id:foreignId';
+      showToast(isEn ? 'Sample CRUD schema loaded!' : 'Đã nạp định nghĩa trường CRUD mẫu!');
+    });
+  }
+
+  const cronBtn = document.getElementById('btn-load-sample-cron');
+  if (cronBtn) {
+    cronBtn.addEventListener('click', () => {
+      const el = document.getElementById('cron-expr-input');
+      if (el) el.value = '0 4 * * 1-5';
+      showToast(isEn ? 'Preset cron loaded (04:00 AM on weekdays)!' : 'Đã nạp lịch Cron mẫu (04:00 sáng từ T2 đến T6)!');
+    });
+  }
+
+  const htmlBtn = document.getElementById('btn-load-sample-html');
+  if (htmlBtn) {
+    htmlBtn.addEventListener('click', () => {
+      const el = document.getElementById('html-fmt-input');
+      if (el) el.value = `<div class="hero-section"><div class="container"><h1 class="title">TechHub Online Tools</h1><p class="subtitle">Clean Architecture + DDD</p><div class="actions"><a href="/tools" class="btn btn-primary">Khám Phá Công Cụ</a><button type="button" class="btn btn-secondary">Tìm Hiểu Thêm</button></div></div></div>`;
+      showToast(isEn ? 'Sample HTML snippet loaded!' : 'Đã nạp đoạn HTML mẫu!');
+    });
+  }
+
+  const cssBtn = document.getElementById('btn-load-sample-css');
+  if (cssBtn) {
+    cssBtn.addEventListener('click', () => {
+      const el = document.getElementById('css-fmt-input');
+      if (el) el.value = `/* TechHub Primary Styling */
+.header-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px 24px;
+    background-color: #0f172a;
+    border-bottom: 1px solid #1e293b;
 }
+
+.header-navigation .brand-logo {
+    color: #38bdf8;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0px;
+}`;
+      showToast(isEn ? 'Sample CSS stylesheet loaded!' : 'Đã nạp đoạn CSS mẫu!');
+    });
+  }
+
+  const pdfBtn = document.getElementById('btn-load-sample-pdf');
+  if (pdfBtn) {
+    pdfBtn.addEventListener('click', () => {
+      const el = document.getElementById('pdf-excel-input');
+      if (el) el.value = `Order ID\tProduct Name\tQuantity\tUnit Price\tTotal Amount\tStatus\n#1001\tAMD Ryzen 7 7800X3D Processor\t2\t449.00\t898.00\tDelivered\n#1002\tNVIDIA GeForce RTX 4080 Super\t1\t999.99\t999.99\tShipped\n#1003\tCorsair Vengeance 32GB DDR5 RAM\t4\t119.50\t478.00\tProcessing\n#1004\tSamsung 990 Pro 2TB NVMe SSD\t3\t179.99\t539.97\tDelivered`;
+      showToast(isEn ? 'Sample PDF table text loaded!' : 'Đã nạp dữ liệu bảng biểu PDF mẫu!');
+    });
+  }
+
+  const csvBtn = document.getElementById('btn-load-sample-csv');
+  if (csvBtn) {
+    csvBtn.addEventListener('click', () => {
+      const el = document.getElementById('csv-json-input');
+      if (el) el.value = `id,name,role,department,salary,is_active\n101,Nguyen Minh Hoan,Lead Architect,Engineering,3500.50,true\n102,Tran Van Nam,Senior DevOps,Infrastructure,2800.00,true\n103,Le Thi Mai,UI/UX Designer,Product,2200.00,false`;
+      showToast(isEn ? 'Sample CSV data loaded!' : 'Đã nạp dữ liệu CSV mẫu!');
+    });
+  }
+
+  const xmlBtn = document.getElementById('btn-load-sample-xml');
+  if (xmlBtn) {
+    xmlBtn.addEventListener('click', () => {
+      const el = document.getElementById('xml-json-input');
+      if (el) el.value = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>TechHub Developer News</title>
+    <link>https://techhub.vn</link>
+    <description>Clean Architecture &amp; Senior Engineering</description>
+    <item>
+      <title>Laravel 12 Architecture Guide</title>
+      <link>https://techhub.vn/blog/laravel-12-guide</link>
+      <pubDate>Mon, 08 Sep 2026 10:00:00 +0700</pubDate>
+    </item>
+  </channel>
+</rss>`;
+      showToast(isEn ? 'Sample XML RSS feed loaded!' : 'Đã nạp XML RSS Feed mẫu!');
+    });
+  }
+
+  const apiBtn = document.getElementById('btn-load-sample-api');
+  if (apiBtn) {
+    apiBtn.addEventListener('click', () => {
+      const url = document.getElementById('api-url');
+      const headers = document.getElementById('api-headers');
+      const method = document.getElementById('api-method');
+      if (url) url.value = 'https://httpbin.org/get';
+      if (headers) headers.value = 'Accept: application/json\nUser-Agent: TechHub-Client/2.0';
+      if (method) method.value = 'GET';
+      showToast(isEn ? 'Sample API endpoint loaded!' : 'Đã nạp endpoint API mẫu!');
+    });
+  }
+
+  const httpBtn = document.getElementById('btn-load-sample-http');
+  if (httpBtn) {
+    httpBtn.addEventListener('click', () => {
+      const el = document.getElementById('http-status-url');
+      if (el) el.value = 'http://github.com';
+      showToast(isEn ? 'Sample URL with redirect loaded!' : 'Đã nạp URL chuyển hướng mẫu!');
+    });
+  }
+}
+
+window.toggleTimestampInputs = function(mode) {
+  const epochWrap = document.getElementById('ts-epoch-wrap');
+  const dateWrap = document.getElementById('ts-date-wrap');
+  if (mode === 'epoch_to_date') {
+    if (epochWrap) epochWrap.style.display = 'block';
+    if (dateWrap) dateWrap.style.display = 'none';
+  } else {
+    if (epochWrap) epochWrap.style.display = 'none';
+    if (dateWrap) dateWrap.style.display = 'block';
+  }
+};
 
 // 9. Interactive Tool Execution Handler & Rich UI Renderer
 function initToolForm() {
@@ -1351,6 +1567,372 @@ function renderRichOutput(slug, data, richBox, rawTextarea) {
       });
     };
 
+    return;
+  }
+
+  // 20. Image Compressor
+  if (slug === 'image-compressor' && data.compressed_base64) {
+    richBox.style.display = 'block';
+    richBox.innerHTML = `
+      <div class="rich-output-card" style="border-left: 5px solid var(--accent-emerald);">
+        <div class="rich-output-title">
+          <span>🖼️ ${isEn ? 'Image Compression Results' : 'Kết Quả Nén Ảnh Trực Tuyến'}</span>
+          <span class="badge badge-emerald">🎉 ${isEn ? `Saved ${data.saved_percentage}%` : `Tiết kiệm ${data.saved_percentage}%`}</span>
+        </div>
+
+        <div class="kpi-metric-cards" style="margin-bottom: 1.25rem;">
+          <div class="kpi-metric-item">
+            <span class="kpi-metric-label">${isEn ? 'Original Size' : 'Dung lượng gốc'}</span>
+            <span class="kpi-metric-val" style="color: var(--accent-rose);">${data.original_size_kb} KB</span>
+          </div>
+          <div class="kpi-metric-item">
+            <span class="kpi-metric-label">${isEn ? 'Compressed Size' : 'Dung lượng sau nén'}</span>
+            <span class="kpi-metric-val" style="color: var(--accent-emerald);">${data.compressed_size_kb} KB</span>
+          </div>
+          <div class="kpi-metric-item">
+            <span class="kpi-metric-label">${isEn ? 'Space Saved' : 'Dung lượng tiết kiệm'}</span>
+            <span class="kpi-metric-val" style="color: var(--accent-indigo);">${Math.round(data.saved_bytes / 1024)} KB (${data.saved_percentage}%)</span>
+          </div>
+          <div class="kpi-metric-item">
+            <span class="kpi-metric-label">${isEn ? 'Resolution & Format' : 'Độ phân giải & Định dạng'}</span>
+            <span class="kpi-metric-val" style="color: var(--accent-cyan); font-size: 1.1rem;">${data.width} × ${data.height} px • ${data.format.toUpperCase()}</span>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 1rem; align-items: center; justify-content: center; margin-bottom: 1.5rem; flex-wrap: wrap;">
+          <a href="${data.compressed_base64}" download="compressed_techhub.${data.format}" class="btn btn-primary" style="padding: 0.65rem 1.5rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none;">
+            <span>📥</span> <span>${isEn ? 'Download Compressed Image' : 'Tải Ảnh Đã Nén Về Máy'}</span>
+          </a>
+          <button type="button" class="btn btn-secondary" onclick="navigator.clipboard.writeText('${data.compressed_base64}'); showToast('${isEn ? 'Copied DataURL to clipboard!' : 'Đã sao chép DataURL ảnh!'}');">
+            📋 ${isEn ? 'Copy DataURL Base64' : 'Sao Chép DataURL'}
+          </button>
+        </div>
+
+        <div style="text-align: center; background: var(--bg-surface-elevated); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+          <strong style="color: var(--text-muted); font-size: 0.85rem; display: block; margin-bottom: 0.5rem;">${isEn ? 'Live Image Preview:' : 'Hình ảnh sau khi nén:'}</strong>
+          <img src="${data.compressed_base64}" alt="Compressed Preview" style="max-width: 100%; max-height: 380px; object-fit: contain; border-radius: var(--radius-sm); box-shadow: 0 4px 16px rgba(0,0,0,0.1);">
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // 21. HTTP Status & Redirect Tracer
+  if (slug === 'http-status-checker' && data.redirect_chain) {
+    richBox.style.display = 'block';
+    let chainHtml = '';
+    data.redirect_chain.forEach((hop) => {
+      const isSuccess = hop.status_code >= 200 && hop.status_code < 300;
+      const isRedirect = hop.status_code >= 300 && hop.status_code < 400;
+      const badgeClass = isSuccess ? 'badge-emerald' : (isRedirect ? 'badge-amber' : 'badge-rose');
+      chainHtml += `
+        <div style="display: flex; align-items: center; gap: 1rem; padding: 0.85rem 1rem; background: var(--bg-surface-elevated); border-radius: var(--radius-md); border: 1px solid var(--border-subtle); margin-bottom: 0.5rem;">
+          <span class="badge ${badgeClass}" style="font-weight: 800; font-size: 0.88rem; min-width: 75px; text-align: center;">${hop.status_code}</span>
+          <div style="flex: 1; min-width: 0;">
+            <code style="word-break: break-all; color: var(--text-main); font-weight: 600;">${hop.url}</code>
+            ${hop.redirect_url ? `<div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">↳ ${isEn ? 'Redirects to' : 'Chuyển hướng đến'}: <span style="color: var(--accent-cyan);">${hop.redirect_url}</span></div>` : ''}
+          </div>
+          <span style="font-size: 0.82rem; color: var(--text-muted);">${hop.latency_ms} ms</span>
+        </div>
+      `;
+    });
+
+    const finalBadge = data.final_status >= 200 && data.final_status < 300 ? 'badge-emerald' : 'badge-rose';
+    richBox.innerHTML = `
+      <div class="rich-output-card">
+        <div class="rich-output-title">
+          <span>🌐 ${isEn ? `HTTP Status & Redirect Chain (${data.redirect_count} redirects)` : `Trạng Thái HTTP & Chuỗi Chuyển Hướng (${data.redirect_count} lần)`}</span>
+          <span class="badge ${finalBadge}">Status: ${data.final_status}</span>
+        </div>
+
+        <div class="kpi-metric-cards" style="margin-bottom: 1.25rem;">
+          <div class="kpi-metric-item">
+            <span class="kpi-metric-label">${isEn ? 'Final HTTP Code' : 'Mã phản hồi cuối'}</span>
+            <span class="kpi-metric-val" style="color: var(--accent-emerald);">${data.final_status}</span>
+          </div>
+          <div class="kpi-metric-item">
+            <span class="kpi-metric-label">${isEn ? 'Total Latency' : 'Tổng thời gian chờ'}</span>
+            <span class="kpi-metric-val" style="color: var(--accent-indigo);">${data.total_time_ms} ms</span>
+          </div>
+          <div class="kpi-metric-item">
+            <span class="kpi-metric-label">${isEn ? 'Redirect Hops' : 'Số bước chuyển hướng'}</span>
+            <span class="kpi-metric-val" style="color: var(--accent-amber);">${data.redirect_count}</span>
+          </div>
+          <div class="kpi-metric-item">
+            <span class="kpi-metric-label">${isEn ? 'SSL Security' : 'Bảo mật SSL'}</span>
+            <span class="kpi-metric-val" style="color: ${data.ssl_valid ? 'var(--accent-emerald)' : 'var(--accent-rose)'}; font-size: 1.1rem;">
+              ${data.ssl_valid ? '🔒 ' + (isEn ? 'Valid SSL' : 'SSL Hợp Lệ') : '⚠️ ' + (isEn ? 'No SSL / Invalid' : 'Không có SSL')}
+            </span>
+          </div>
+        </div>
+
+        <div style="margin-top: 1rem;">
+          <strong style="color: var(--text-main); font-size: 0.92rem; display: block; margin-bottom: 0.65rem;">📍 ${isEn ? 'Trace Path (Hop by hop):' : 'Chi Tiết Đường Đi (Từng bước):'}</strong>
+          ${chainHtml}
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // 22. Password Generator
+  if (slug === 'password-generator' && data.passwords) {
+    richBox.style.display = 'block';
+    let pwCards = '';
+    data.passwords.forEach((pw) => {
+      pwCards += `
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.85rem 1.25rem; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); margin-bottom: 0.5rem; gap: 1rem;">
+          <code style="font-family: var(--font-mono); font-size: 1.15rem; font-weight: 700; color: var(--accent-indigo); word-break: break-all; letter-spacing: 1px;">${pw}</code>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText('${pw}'); showToast('${isEn ? 'Password copied!' : 'Đã sao chép mật khẩu!'}');">
+            📋 ${isEn ? 'Copy' : 'Chép'}
+          </button>
+        </div>
+      `;
+    });
+
+    const isStrong = data.entropy_bits >= 60;
+    const badgeColor = isStrong ? 'badge-emerald' : 'badge-amber';
+
+    richBox.innerHTML = `
+      <div class="rich-output-card" style="border-left: 5px solid var(--accent-indigo);">
+        <div class="rich-output-title">
+          <span>🔐 ${isEn ? `Generated Secure Passwords (${data.count})` : `Mật Khẩu Ngẫu Nhiên Đã Tạo (${data.count})`}</span>
+          <span class="badge ${badgeColor}">${data.strength} (${data.entropy_bits} bits)</span>
+        </div>
+
+        <div style="margin-bottom: 1.25rem;">
+          ${pwCards}
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); padding: 0.85rem 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); font-size: 0.85rem;">
+          <span>💡 ${isEn ? `Calculated Shannon Entropy: <strong>${data.entropy_bits} bits</strong>. Cryptographically generated with random_int().` : `Độ mạnh Shannon Entropy: <strong>${data.entropy_bits} bits</strong>. Sinh ngẫu nhiên bảo mật với CSPRNG.`}</span>
+          <button type="button" class="btn btn-primary btn-sm" onclick="navigator.clipboard.writeText(document.getElementById('tool-result-output').value); showToast('${isEn ? 'Copied all passwords!' : 'Đã sao chép toàn bộ!'}');">
+            📋 ${isEn ? 'Copy All' : 'Sao Chép Hết'}
+          </button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // 23. Timestamp Converter
+  if (slug === 'timestamp-converter' && data.epoch_seconds) {
+    richBox.style.display = 'block';
+    richBox.innerHTML = `
+      <div class="rich-output-card" style="border-left: 5px solid var(--accent-cyan);">
+        <div class="rich-output-title">
+          <span>⏰ ${isEn ? 'Timestamp Conversion Result' : 'Kết Quả Chuyển Đổi Timestamp'}</span>
+          <span class="badge badge-emerald">${data.relative_time}</span>
+        </div>
+
+        <div class="kpi-metric-cards" style="margin-bottom: 1.25rem;">
+          <div class="kpi-metric-item">
+            <span class="kpi-metric-label">${isEn ? 'Local Time' : 'Giờ địa phương'} (${data.timezone})</span>
+            <span class="kpi-metric-val" style="color: var(--accent-indigo); font-size: 1.15rem;">${data.human_local}</span>
+          </div>
+          <div class="kpi-metric-item">
+            <span class="kpi-metric-label">UTC Time (GMT+0)</span>
+            <span class="kpi-metric-val" style="color: var(--accent-cyan); font-size: 1.15rem;">${data.human_utc}</span>
+          </div>
+          <div class="kpi-metric-item">
+            <span class="kpi-metric-label">Epoch Seconds</span>
+            <span class="kpi-metric-val" style="color: var(--accent-emerald);">${data.epoch_seconds}</span>
+          </div>
+          <div class="kpi-metric-item">
+            <span class="kpi-metric-label">Epoch Milliseconds</span>
+            <span class="kpi-metric-val" style="color: var(--accent-amber); font-size: 1.1rem;">${data.epoch_milliseconds}</span>
+          </div>
+        </div>
+
+        <div style="background: var(--bg-surface-elevated); padding: 1rem 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); font-size: 0.88rem; display: flex; flex-direction: column; gap: 0.5rem;">
+          <div><strong>ISO 8601:</strong> <code>${data.iso8601}</code></div>
+          <div><strong>${isEn ? 'Day of Week:' : 'Thứ trong tuần:'}</strong> ${data.day_of_week} • <strong>${isEn ? 'Day of Year:' : 'Ngày thứ:'}</strong> ${data.day_of_year} • <strong>${isEn ? 'Leap Year:' : 'Năm nhuận:'}</strong> ${data.is_leap_year ? (isEn ? 'Yes' : 'Có') : (isEn ? 'No' : 'Không')}</div>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // 24. UUID Generator
+  if (slug === 'uuid-generator' && data.uuids) {
+    richBox.style.display = 'block';
+    let uuidListHtml = '';
+    data.uuids.forEach((id) => {
+      uuidListHtml += `
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.65rem 1rem; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); margin-bottom: 0.4rem;">
+          <code style="font-family: var(--font-mono); font-size: 1.05rem; font-weight: 700; color: var(--accent-indigo);">${id}</code>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText('${id}'); showToast('${isEn ? 'UUID copied!' : 'Đã sao chép UUID!'}');">📋</button>
+        </div>
+      `;
+    });
+
+    richBox.innerHTML = `
+      <div class="rich-output-card">
+        <div class="rich-output-title">
+          <span>🆔 ${isEn ? `Generated UUIDs (${data.count} items • ${data.version.toUpperCase()})` : `Danh Sách UUID Đã Tạo (${data.count} mã • ${data.version.toUpperCase()})`}</span>
+          <button type="button" class="btn btn-primary btn-sm" onclick="navigator.clipboard.writeText(document.getElementById('tool-result-output').value); showToast('${isEn ? 'Copied all UUIDs!' : 'Đã sao chép toàn bộ UUID!'}');">
+            📋 ${isEn ? 'Copy All' : 'Sao Chép Toàn Bộ'}
+          </button>
+        </div>
+        <div style="max-height: 280px; overflow-y: auto;">
+          ${uuidListHtml}
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // 25. Cron Generator & Explainer
+  if (slug === 'cron-generator' && data.expression) {
+    richBox.style.display = 'block';
+    let runsHtml = '';
+    if (data.next_runs && data.next_runs.length > 0) {
+      data.next_runs.forEach((r, idx) => {
+        runsHtml += `<li><strong>#${idx + 1}:</strong> ${r}</li>`;
+      });
+    }
+
+    richBox.innerHTML = `
+      <div class="rich-output-card" style="border-left: 5px solid var(--accent-indigo);">
+        <div class="rich-output-title">
+          <span>⏱️ ${isEn ? 'Cron Schedule & Next Executions' : 'Ý Nghĩa Lịch Trình Cron & Các Mốc Chạy Kế Tiếp'}</span>
+          <span class="badge badge-indigo">${data.expression}</span>
+        </div>
+
+        <div style="background: var(--bg-surface-elevated); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); margin-bottom: 1rem;">
+          <h4 style="font-size: 1.05rem; color: var(--text-main); margin-bottom: 0.5rem;">📖 ${isEn ? 'Human-Readable Description:' : 'Giải nghĩa chi tiết:'}</h4>
+          <p style="font-size: 1.1rem; color: var(--accent-emerald); font-weight: 600; margin: 0;">${data.human_description}</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+          <div style="background: var(--bg-card); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+            <strong style="color: var(--text-muted); font-size: 0.85rem; display: block; margin-bottom: 0.5rem;">📅 ${isEn ? 'Next 5 Executions (Asia/Ho_Chi_Minh):' : '5 Lần Chạy Tiếp Theo:'}</strong>
+            <ul style="padding-left: 1.25rem; font-size: 0.88rem; color: var(--text-sub); line-height: 1.6; margin: 0;">
+              ${runsHtml}
+            </ul>
+          </div>
+
+          <div style="background: var(--bg-card); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <strong style="color: var(--text-muted); font-size: 0.85rem;">⚡ Laravel Schedule Code:</strong>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText('${data.laravel_code}'); showToast('${isEn ? 'Copied Laravel snippet!' : 'Đã chép code Laravel!'}');">📋 ${isEn ? 'Copy' : 'Chép'}</button>
+            </div>
+            <code style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent-cyan); display: block; background: var(--bg-input); padding: 0.5rem; border-radius: 4px;">${data.laravel_code}</code>
+          </div>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // 26. API Tester & REST Client
+  if (slug === 'api-tester' && data.status_code) {
+    richBox.style.display = 'block';
+    const isOk = data.status_code >= 200 && data.status_code < 300;
+    const badgeClass = isOk ? 'badge-emerald' : (data.status_code < 400 ? 'badge-amber' : 'badge-rose');
+
+    richBox.innerHTML = `
+      <div class="rich-output-card">
+        <div class="rich-output-title">
+          <span>⚡ ${isEn ? 'HTTP Response Result' : 'Kết Quả Phản Hồi API'}</span>
+          <div style="display: flex; gap: 0.5rem;">
+            <span class="badge ${badgeClass}" style="font-size: 0.9rem; font-weight: 800;">${data.status_code}</span>
+            <span class="badge" style="font-weight: 700;">${data.latency_ms} ms</span>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; font-size: 0.85rem; color: var(--text-muted);">
+          <span>Content-Type: <code>${data.content_type || 'text/plain'}</code></span>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText(document.getElementById('tool-result-output').value); showToast('${isEn ? 'Response body copied!' : 'Đã sao chép nội dung response!'}');">📋 ${isEn ? 'Copy Body' : 'Sao Chép Body'}</button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // 27. PDF to Excel / CSV
+  if (slug === 'pdf-to-excel' && data.table_rows) {
+    richBox.style.display = 'block';
+    let tableHtml = '';
+    data.table_rows.slice(0, 10).forEach((row, rIdx) => {
+      tableHtml += '<tr style="border-bottom: 1px solid var(--border-subtle);">';
+      row.forEach((cell) => {
+        if (rIdx === 0) {
+          tableHtml += `<th style="padding: 0.65rem 0.85rem; font-weight: 700; color: var(--text-main); background: var(--bg-surface-elevated);">${cell}</th>`;
+        } else {
+          tableHtml += `<td style="padding: 0.65rem 0.85rem; font-size: 0.85rem;">${cell}</td>`;
+        }
+      });
+      tableHtml += '</tr>';
+    });
+
+    richBox.innerHTML = `
+      <div class="rich-output-card">
+        <div class="rich-output-title">
+          <span>📊 ${isEn ? `Spreadsheet Preview (${data.rows_count} rows • ${data.cols_count} cols)` : `Xem Trước Bảng Tính (${data.rows_count} dòng • ${data.cols_count} cột)`}</span>
+          <div style="display: flex; gap: 0.5rem;">
+            <button type="button" class="btn btn-primary btn-sm" onclick="downloadFile('extracted_table.csv', document.getElementById('tool-result-output').value, 'text/csv');">
+              📥 ${isEn ? 'Download CSV (Excel)' : 'Tải CSV (Excel)'}
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText(document.getElementById('tool-result-output').value); showToast('${isEn ? 'Copied CSV to clipboard!' : 'Đã sao chép CSV!'}');">
+              📋 ${isEn ? 'Copy CSV' : 'Sao Chép CSV'}
+            </button>
+          </div>
+        </div>
+
+        <div style="max-height: 280px; overflow-x: auto; border: 1px solid var(--border-subtle); border-radius: var(--radius-md);">
+          <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            ${tableHtml}
+          </table>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // 28. SQL to Laravel Migration & Model & CRUD Generator
+  if (slug === 'sql-to-laravel-migration' || slug === 'sql-to-laravel-model' || slug === 'laravel-crud-generator') {
+    richBox.style.display = 'block';
+    const label = slug === 'sql-to-laravel-migration' 
+      ? (isEn ? 'Laravel Migration Generated' : 'Mã Nguồn Laravel Migration')
+      : (slug === 'sql-to-laravel-model' ? (isEn ? 'Eloquent Model Generated' : 'Mã Nguồn Eloquent Model') : (isEn ? 'Laravel Full CRUD Scaffolding' : 'Trọn Bộ Laravel CRUD Scaffolding'));
+
+    richBox.innerHTML = `
+      <div class="rich-output-card" style="border-left: 5px solid var(--accent-indigo);">
+        <div class="rich-output-title">
+          <span>🚀 ${label}</span>
+          <div style="display: flex; gap: 0.5rem;">
+            <button type="button" class="btn btn-primary btn-sm" onclick="navigator.clipboard.writeText(document.getElementById('tool-result-output').value); showToast('${isEn ? 'Code copied to clipboard!' : 'Đã sao chép mã nguồn!'}');">
+              📋 ${isEn ? 'Copy Full Code' : 'Sao Chép Toàn Bộ'}
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // 29. Formatters & Minifiers (HTML, CSS, SQL, JSON)
+  if (['html-formatter', 'css-minifier', 'sql-formatter', 'json-to-typescript', 'json-to-php', 'csv-to-json', 'xml-to-json'].includes(slug)) {
+    richBox.style.display = 'block';
+    let savingsHtml = '';
+    if (data.saved_percentage !== undefined) {
+      savingsHtml = `<span class="badge badge-emerald">🎉 ${isEn ? `Saved ${data.saved_percentage}%` : `Tiết kiệm ${data.saved_percentage}%`}</span>`;
+    }
+
+    richBox.innerHTML = `
+      <div class="rich-output-card">
+        <div class="rich-output-title">
+          <span>✨ ${isEn ? 'Processed Output' : 'Kết Quả Đã Xử Lý'}</span>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            ${savingsHtml}
+            <button type="button" class="btn btn-primary btn-sm" onclick="navigator.clipboard.writeText(document.getElementById('tool-result-output').value); showToast('${isEn ? 'Copied to clipboard!' : 'Đã sao chép vào bộ nhớ tạm!'}');">
+              📋 ${isEn ? 'Copy Output' : 'Sao Chép'}
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
     return;
   }
 

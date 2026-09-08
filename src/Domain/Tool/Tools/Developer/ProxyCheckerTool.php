@@ -71,7 +71,7 @@ class ProxyCheckerTool implements ToolContract
         }
 
         $isVi = (class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication())
-            ? \Illuminate\Support\Facades\App::getLocale() === 'vi'
+            ? 'vi' === \Illuminate\Support\Facades\App::getLocale()
             : true;
 
         if (empty($proxyList)) {
@@ -293,7 +293,7 @@ class ProxyCheckerTool implements ToolContract
 
         // Connection failed
         $isVi = (class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication())
-            ? \Illuminate\Support\Facades\App::getLocale() === 'vi'
+            ? 'vi' === \Illuminate\Support\Facades\App::getLocale()
             : true;
         $errorMessage = match ($curlErrno) {
             CURLE_OPERATION_TIMEDOUT => $isVi ? "Hết thời gian chờ (Timeout > {$timeout}s)" : "Operation timed out (> {$timeout}s)",

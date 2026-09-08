@@ -64,7 +64,7 @@ class BmiCalculatorTool implements ToolContract
         $bmi = round($bmi, 1);
 
         $isVi = (class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication())
-            ? \Illuminate\Support\Facades\App::getLocale() === 'vi'
+            ? 'vi' === \Illuminate\Support\Facades\App::getLocale()
             : true;
 
         // WHO Classification

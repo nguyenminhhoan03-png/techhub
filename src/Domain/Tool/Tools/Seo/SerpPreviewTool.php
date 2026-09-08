@@ -66,12 +66,12 @@ class SerpPreviewTool implements ToolContract
         $parsedUrl = parse_url($url);
         $host = $parsedUrl['host'] ?? 'example.com';
         $path = trim($parsedUrl['path'] ?? '', '/');
-        
+
         $breadcrumbParts = [$host];
-        if (!empty($siteName)) {
+        if ( ! empty($siteName)) {
             $breadcrumbDisplay = $siteName . ' › ' . ($path ? str_replace('/', ' › ', $path) : '');
         } else {
-            if (!empty($path)) {
+            if ( ! empty($path)) {
                 $pathSegments = explode('/', $path);
                 $breadcrumbDisplay = $host . ' › ' . implode(' › ', $pathSegments);
             } else {
@@ -98,7 +98,7 @@ class SerpPreviewTool implements ToolContract
         $truncatedDesc = $isDescTruncated ? mb_substr($description, 0, 155) . '...' : $description;
 
         $isEn = (class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication())
-            ? \Illuminate\Support\Facades\App::getLocale() === 'en'
+            ? 'en' === \Illuminate\Support\Facades\App::getLocale()
             : false;
 
         // SEO Health Checks
@@ -123,9 +123,15 @@ class SerpPreviewTool implements ToolContract
         }
 
         $overallScore = 100;
-        if ('optimal' !== $titleStatus) $overallScore -= 20;
-        if ('optimal' !== $descStatus) $overallScore -= 20;
-        if (empty($url) || 'https://example.com' === $url) $overallScore -= 10;
+        if ('optimal' !== $titleStatus) {
+            $overallScore -= 20;
+        }
+        if ('optimal' !== $descStatus) {
+            $overallScore -= 20;
+        }
+        if (empty($url) || 'https://example.com' === $url) {
+            $overallScore -= 10;
+        }
 
         $executionTimeMs = (int) round((hrtime(true) - $startTime) / 1e+6);
 
