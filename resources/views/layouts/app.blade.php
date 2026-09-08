@@ -141,6 +141,7 @@
                     <li><a href="{{ url('/tools') }}" class="nav-item-link {{ request()->is('tools*') && !request('category') ? 'active' : '' }}"><x-heroicon-s-bolt style="width: 14px; height: 14px; flex-shrink: 0;" /> {{ __('tools_hub') }}</a></li>
                     <li><a href="{{ route('articles.index') }}" class="nav-item-link {{ request()->is('articles*') ? 'active' : '' }}"><x-heroicon-o-newspaper style="width: 14px; height: 14px; flex-shrink: 0;" /> {{ __('articles') }}</a></li>
                     <li><a href="{{ route('games.index') }}" class="nav-item-link {{ request()->is('games*') ? 'active' : '' }}"><x-heroicon-o-puzzle-piece style="width: 14px; height: 14px; flex-shrink: 0;" /> {{ __('games') }}</a></li>
+                    <li><a href="{{ route('deals.index') }}" class="nav-item-link {{ request()->is('deals*') ? 'active' : '' }}" style="position: relative; display: flex; align-items: center; gap: 0.35rem;"><span style="font-size: 13px;">🔥</span> <span>{{ app()->getLocale() === 'en' ? 'AI Deals' : 'Tài Khoản AI' }}</span><span style="font-size: 9px; font-weight: 800; background: linear-gradient(135deg, #ef4444, #f97316); color: #fff; padding: 1px 5px; border-radius: 999px;">-88%</span></a></li>
                     <li><a href="{{ url('/tools?category=seo') }}" class="nav-item-link {{ request('category') === 'seo' ? 'active' : '' }}"><x-heroicon-o-globe-alt style="width: 14px; height: 14px; flex-shrink: 0;" /> {{ __('seo') }}</a></li>
                 </ul>
             </nav>
@@ -190,6 +191,12 @@
                         <a href="{{ route('games.index') }}" class="mobile-nav-link {{ request()->is('games*') ? 'active' : '' }}">
                             <x-heroicon-o-puzzle-piece style="width: 1.2em; height: 1.2em;" />
                             <span>🎮 {{ __('games') }}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('deals.index') }}" class="mobile-nav-link {{ request()->is('deals*') ? 'active' : '' }}" style="color: #ef4444; font-weight: 700;">
+                            <span>🔥</span>
+                            <span>{{ app()->getLocale() === 'en' ? 'AI Deals (-88%)' : 'Tài Khoản AI (-88%)' }}</span>
                         </a>
                     </li>
                     <li>

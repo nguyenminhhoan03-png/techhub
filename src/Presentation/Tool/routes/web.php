@@ -41,3 +41,10 @@ Route::controller(\Presentation\Http\Controllers\Web\GameController::class)->gro
     Route::get('/games/{slug}', 'show')->name('games.show');
     Route::post('/games/{slug}/play', 'play')->name('games.play');
 });
+
+// AI Accounts & Digital Deals Store
+Route::controller(\Presentation\Http\Controllers\Web\DealController::class)->group(function (): void {
+    Route::get('/deals', 'index')->name('deals.index');
+    Route::get('/deals/{slug}', 'show')->name('deals.show');
+});
+

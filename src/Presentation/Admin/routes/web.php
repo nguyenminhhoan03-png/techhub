@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Presentation\Admin\Controllers\AdminAdController;
 use Presentation\Admin\Controllers\AdminAuthController;
 use Presentation\Admin\Controllers\AdminDashboardController;
+use Presentation\Admin\Controllers\AdminDealController;
 use Presentation\Admin\Controllers\AdminSettingController;
 use Presentation\Admin\Controllers\AdminToolController;
 use Presentation\Admin\Controllers\AdminUserController;
@@ -43,6 +44,17 @@ Route::prefix('admin')->name('admin.')->group(function (): void {
             Route::put('/{id}', [AdminAdController::class, 'update'])->name('update');
             Route::post('/{id}/toggle', [AdminAdController::class, 'toggle'])->name('toggle');
             Route::delete('/{id}', [AdminAdController::class, 'destroy'])->name('destroy');
+        });
+
+        // AI Deals & Digital Subscriptions Management
+        Route::prefix('deals')->name('deals.')->group(function (): void {
+            Route::get('/', [AdminDealController::class, 'index'])->name('index');
+            Route::get('/create', [AdminDealController::class, 'create'])->name('create');
+            Route::post('/', [AdminDealController::class, 'store'])->name('store');
+            Route::get('/{id}/edit', [AdminDealController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [AdminDealController::class, 'update'])->name('update');
+            Route::post('/{id}/toggle', [AdminDealController::class, 'toggle'])->name('toggle');
+            Route::delete('/{id}', [AdminDealController::class, 'destroy'])->name('destroy');
         });
 
         // Dynamic System Settings

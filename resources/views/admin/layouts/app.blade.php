@@ -66,6 +66,9 @@
                 <a href="{{ route('admin.tools.index') }}" class="admin-nav-item {{ request()->routeIs('admin.tools.*') ? 'active' : '' }}" style="display: flex; align-items: center; gap: 0.5rem;">
                     <span style="display: flex; align-items: center;"><x-heroicon-o-wrench-screwdriver style="width: 1.2em; height: 1.2em;" /></span> <span>Công Cụ &amp; Danh Mục</span>
                 </a>
+                <a href="{{ route('admin.deals.index') }}" class="admin-nav-item {{ request()->routeIs('admin.deals.*') ? 'active' : '' }}" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="display: flex; align-items: center;"><x-heroicon-o-shopping-bag style="width: 1.2em; height: 1.2em; color: var(--accent-emerald);" /></span> <span style="font-weight: 700; color: var(--accent-emerald);">Tài Khoản AI &amp; Deals</span>
+                </a>
                 <a href="{{ route('admin.ads.index') }}" class="admin-nav-item {{ request()->routeIs('admin.ads.*') ? 'active' : '' }}" style="display: flex; align-items: center; gap: 0.5rem;">
                     <span style="display: flex; align-items: center;"><x-heroicon-o-megaphone style="width: 1.2em; height: 1.2em;" /></span> <span>Quảng Cáo &amp; Banner</span>
                 </a>

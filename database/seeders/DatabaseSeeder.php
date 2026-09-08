@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             ProxyCheckerToolSeeder::class,
             GameSeeder::class,
             HardwareAndArticleSeeder::class,
+            DigitalDealSeeder::class,
         ]);
     }
 }

@@ -133,6 +133,7 @@ class ToolWebController extends Controller
         // 2. Hub Indexes
         $hubs = [
             ['path' => '/tools', 'priority' => '0.9', 'freq' => 'daily'],
+            ['path' => '/deals', 'priority' => '0.9', 'freq' => 'daily'],
             ['path' => '/articles', 'priority' => '0.9', 'freq' => 'daily'],
             ['path' => '/games', 'priority' => '0.9', 'freq' => 'daily'],
             ['path' => '/compare', 'priority' => '0.8', 'freq' => 'weekly'],
@@ -214,6 +215,20 @@ class ToolWebController extends Controller
             $xml .= "    <lastmod>{$lastmod}</lastmod>\n";
             $xml .= "    <changefreq>weekly</changefreq>\n";
             $xml .= "    <priority>0.8</priority>\n";
+            $xml .= "  </url>\n";
+        }
+
+        // 6. AI Deals & Digital Accounts
+        $deals = \Domain\Deal\Entities\DigitalDeal::query()->where('is_active', true)->orderByDesc('updated_at')->get();
+        foreach ($deals as $deal) {
+            $dealUrl = "{$baseUrl}/deals/{$deal->slug}";
+            $lastmod = $deal->updated_at ? $deal->updated_at->toAtomString() : $nowIso;
+
+            $xml .= "  <url>\n";
+            $xml .= "    <loc>{$dealUrl}</loc>\n";
+            $xml .= "    <lastmod>{$lastmod}</lastmod>\n";
+            $xml .= "    <changefreq>daily</changefreq>\n";
+            $xml .= "    <priority>0.9</priority>\n";
             $xml .= "  </url>\n";
         }
 
