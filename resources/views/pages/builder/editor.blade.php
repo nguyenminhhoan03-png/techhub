@@ -520,10 +520,29 @@
             align-items: center !important;
             justify-content: center !important;
             text-align: center !important;
-            cursor: grab !important;
+            cursor: pointer !important;
             transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03) !important;
             user-select: none !important;
+            position: relative !important;
+            overflow: hidden !important;
+        }
+        .gjs-block::after {
+            content: '+ Chèn';
+            position: absolute;
+            bottom: 3px;
+            right: 5px;
+            background: #eff6ff;
+            color: var(--primary);
+            font-size: 9px;
+            font-weight: 800;
+            padding: 1px 5px;
+            border-radius: 4px;
+            opacity: 0;
+            transform: translateY(4px);
+            transition: all 0.15s ease;
+            pointer-events: none;
+            border: 1px solid #bfdbfe;
         }
         .gjs-block:hover {
             background: #ffffff !important;
@@ -532,9 +551,13 @@
             transform: translateY(-2px) !important;
             box-shadow: 0 6px 18px rgba(37, 99, 235, 0.13) !important;
         }
+        .gjs-block:hover::after {
+            opacity: 1;
+            transform: translateY(0);
+        }
         .gjs-block:active {
             cursor: grabbing !important;
-            transform: scale(0.98) !important;
+            transform: scale(0.97) !important;
         }
         .gjs-block i, .gjs-block svg, .gjs-block span {
             font-size: 1.25rem !important;
@@ -1274,9 +1297,9 @@
         .gjs-toolbar {
             background: #ffffff !important;
             border: 1px solid #cbd5e1 !important;
-            border-radius: 8px !important;
-            padding: 3px !important;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+            border-radius: 9px !important;
+            padding: 3px 4px !important;
+            box-shadow: 0 10px 28px rgba(15, 23, 42, 0.16) !important;
             display: flex !important;
             align-items: center !important;
             gap: 3px !important;
@@ -1284,19 +1307,46 @@
         }
         .gjs-toolbar-item {
             color: #334155 !important;
-            width: 26px !important;
-            height: 26px !important;
+            min-width: 28px !important;
+            height: 28px !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
             border-radius: 6px !important;
             font-size: 12px !important;
             cursor: pointer !important;
-            transition: all 0.15s ease !important;
+            transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            user-select: none !important;
         }
         .gjs-toolbar-item:hover {
             background: var(--primary) !important;
             color: #ffffff !important;
+            transform: scale(1.06) !important;
+        }
+        .gjs-toolbar-item.fa-trash:hover {
+            background: #ef4444 !important;
+            color: #ffffff !important;
+        }
+        .gjs-toolbar-item.gjs-tlb-tag-badge {
+            width: auto !important;
+            padding: 0 9px !important;
+            background: #eff6ff !important;
+            color: var(--primary) !important;
+            font-weight: 800 !important;
+            font-size: 11px !important;
+            border-radius: 6px !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 5px !important;
+            cursor: pointer !important;
+            border: 1px solid #bfdbfe !important;
+            letter-spacing: 0.03em !important;
+        }
+        .gjs-toolbar-item.gjs-tlb-tag-badge:hover {
+            background: var(--primary) !important;
+            color: #ffffff !important;
+            border-color: var(--primary) !important;
+            transform: none !important;
         }
         .gjs-toolbar-item.fa-arrows,
         .gjs-toolbar-item.gjs-no-touch-actions {
@@ -1307,6 +1357,138 @@
         .gjs-toolbar-item.fa-arrows:active,
         .gjs-toolbar-item.gjs-no-touch-actions:active {
             cursor: grabbing !important;
+        }
+
+        /* 1-Click Landing Page Starter Banner */
+        .one-click-starter-card {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border: 1.5px dashed #3b82f6;
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin-bottom: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
+        }
+        .one-click-starter-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.16);
+            border-color: #2563eb;
+            background: linear-gradient(135deg, #e0e7ff 0%, #bfdbfe 100%);
+        }
+
+        /* Quick Colors & Gradients Card */
+        .quick-color-palette-card {
+            background: #ffffff;
+            border: 1px solid var(--border-studio);
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        }
+        .qcp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.69rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        .qcp-target-toggle {
+            display: flex;
+            gap: 3px;
+            background: #f1f5f9;
+            padding: 2px;
+            border-radius: 6px;
+        }
+        .qcp-target-btn {
+            border: none;
+            background: transparent;
+            font-size: 0.63rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #64748b;
+            transition: all 0.15s;
+        }
+        .qcp-target-btn.active {
+            background: #ffffff;
+            color: var(--primary);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+        }
+        .qcp-swatches-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+        }
+        .qcp-swatch {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            border: 1px solid rgba(0,0,0,0.12);
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .qcp-swatch:hover {
+            transform: scale(1.18);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            z-index: 10;
+        }
+
+        /* Quick Style Presets Card (Border Radius, Box Shadow, Alignment) */
+        .quick-presets-card {
+            background: #ffffff;
+            border: 1px solid var(--border-studio);
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        }
+        .qp-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .qp-label {
+            font-size: 0.67rem;
+            font-weight: 700;
+            color: #64748b;
+            min-width: 48px;
+        }
+        .qp-btn-group {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+        .qp-btn {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: #334155;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none;
+        }
+        .qp-btn:hover {
+            background: #eff6ff;
+            color: var(--primary);
+            border-color: #bfdbfe;
+            transform: translateY(-1px);
+        }
+        .qp-btn:active {
+            transform: translateY(0);
         }
 
         /* GrapesJS Drop Placement Indicator (Bright Blue Line) */
@@ -1931,6 +2113,14 @@
                     <span style="font-size: 0.68rem; color: var(--accent-emerald); background: rgba(16, 185, 129, 0.12); padding: 2px 6px; border-radius: 4px; font-weight: 700;">PRO</span>
                 </div>
                 <div class="drawer-body">
+                    <div class="one-click-starter-card" onclick="createFullLandingPage()" title="Tự động tạo trọn gói Header + Hero + Tính Năng + Khách Hàng + Báo Giá + Banner + Chân Trang">
+                        <div style="font-size: 1.4rem;">⚡</div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 800; font-size: 0.78rem; color: #1e3a8a;">Tạo Trọn Gói Landing Page (1 Click)</div>
+                            <div style="font-size: 0.66rem; color: #3b82f6; margin-top: 2px;">Header + Hero + Tính Năng + Báo Giá + Footer</div>
+                        </div>
+                        <i class="fa fa-arrow-right" style="color: #2563eb; font-size: 0.8rem;"></i>
+                    </div>
                     <div id="custom-sections-container"></div>
                 </div>
             </div>
@@ -2130,6 +2320,75 @@
                         <button class="btn-move-action danger" onclick="deleteSelectedElement()" title="Xóa khối này">
                             <i class="fa fa-trash"></i> <span>Xóa</span>
                         </button>
+                    </div>
+                </div>
+
+                {{-- Quick Brand Color & Gradient Palette (1-Click Styling) --}}
+                <div id="quick-color-palette" class="quick-color-palette-card" style="display: none;">
+                    <div class="qcp-header">
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <i class="fa fa-palette" style="color: var(--primary);"></i>
+                            <span>BẢNG MÀU & GRADIENT 1-CHẠM</span>
+                        </div>
+                        <div class="qcp-target-toggle">
+                            <button id="qcp-btn-color" class="qcp-target-btn active" onclick="setQcpTarget('color')">Chữ</button>
+                            <button id="qcp-btn-bg" class="qcp-target-btn" onclick="setQcpTarget('background-color')">Nền</button>
+                        </div>
+                    </div>
+                    <div class="qcp-swatches-grid">
+                        <div class="qcp-swatch" style="background: #0f172a;" title="Đen Slate (#0f172a)" onclick="applyQuickColor('#0f172a')"></div>
+                        <div class="qcp-swatch" style="background: #ffffff; border: 1px solid #cbd5e1;" title="Trắng (#ffffff)" onclick="applyQuickColor('#ffffff')"></div>
+                        <div class="qcp-swatch" style="background: #64748b;" title="Xám Slate (#64748b)" onclick="applyQuickColor('#64748b')"></div>
+                        <div class="qcp-swatch" style="background: #2563eb;" title="Xanh Dương Royal (#2563eb)" onclick="applyQuickColor('#2563eb')"></div>
+                        <div class="qcp-swatch" style="background: #0284c7;" title="Xanh Cyan (#0284c7)" onclick="applyQuickColor('#0284c7')"></div>
+                        <div class="qcp-swatch" style="background: #059669;" title="Xanh Ngọc Emerald (#059669)" onclick="applyQuickColor('#059669')"></div>
+                        <div class="qcp-swatch" style="background: #7c3aed;" title="Tím Violet (#7c3aed)" onclick="applyQuickColor('#7c3aed')"></div>
+                        <div class="qcp-swatch" style="background: #e11d48;" title="Đỏ Hồng Rose (#e11d48)" onclick="applyQuickColor('#e11d48')"></div>
+                        <div class="qcp-swatch" style="background: #d97706;" title="Cam Hổ Phách (#d97706)" onclick="applyQuickColor('#d97706')"></div>
+                        <div class="qcp-swatch" style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);" title="Gradient Xanh Dương" onclick="applyQuickColor('linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)', true)"></div>
+                        <div class="qcp-swatch" style="background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);" title="Gradient Tím Hồng" onclick="applyQuickColor('linear-gradient(135deg, #7c3aed 0%, #db2777 100%)', true)"></div>
+                        <div class="qcp-swatch" style="background: linear-gradient(135deg, #059669 0%, #0284c7 100%);" title="Gradient Ngọc Biển" onclick="applyQuickColor('linear-gradient(135deg, #059669 0%, #0284c7 100%)', true)"></div>
+                        <div class="qcp-swatch" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);" title="Gradient Đêm Đậm" onclick="applyQuickColor('linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', true)"></div>
+                        <div class="qcp-swatch" style="background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);" title="Gradient Hoàng Hôn" onclick="applyQuickColor('linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)', true)"></div>
+                    </div>
+                </div>
+
+                {{-- Quick Presets: Bo Góc, Bóng Đổ & Bố Cục 1-Chạm --}}
+                <div id="quick-presets-card" class="quick-presets-card" style="display: none;">
+                    <div class="qcp-header">
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <i class="fa fa-magic" style="color: var(--accent-violet);"></i>
+                            <span>HIỆU ỨNG & BO GÓC 1-CHẠM</span>
+                        </div>
+                    </div>
+                    <div class="qp-row">
+                        <span class="qp-label">Bo góc:</span>
+                        <div class="qp-btn-group">
+                            <button type="button" class="qp-btn" onclick="applyQuickRadius('0px')" title="Không bo (Vuông)">0</button>
+                            <button type="button" class="qp-btn" onclick="applyQuickRadius('6px')" title="Bo nhẹ (6px)">6px</button>
+                            <button type="button" class="qp-btn" onclick="applyQuickRadius('12px')" title="Bo vừa (12px)">12px</button>
+                            <button type="button" class="qp-btn" onclick="applyQuickRadius('20px')" title="Bo lớn (20px)">20px</button>
+                            <button type="button" class="qp-btn" onclick="applyQuickRadius('9999px')" title="Bo tròn viên thuốc (Pill)">Pill</button>
+                        </div>
+                    </div>
+                    <div class="qp-row" style="margin-top: 6px;">
+                        <span class="qp-label">Bóng đổ:</span>
+                        <div class="qp-btn-group">
+                            <button type="button" class="qp-btn" onclick="applyQuickShadow('none')" title="Tắt bóng đổ">Tắt</button>
+                            <button type="button" class="qp-btn" onclick="applyQuickShadow('0 2px 8px rgba(0,0,0,0.06)')" title="Bóng nhẹ">Nhẹ</button>
+                            <button type="button" class="qp-btn" onclick="applyQuickShadow('0 10px 25px -5px rgba(0,0,0,0.12)')" title="Bóng nổi">Nổi</button>
+                            <button type="button" class="qp-btn" onclick="applyQuickShadow('0 20px 35px -8px rgba(0,0,0,0.22)')" title="Bóng đậm">Đậm</button>
+                            <button type="button" class="qp-btn" onclick="applyQuickShadow('0 0 25px rgba(37,99,235,0.38)')" title="Hào quang xanh">Glow</button>
+                        </div>
+                    </div>
+                    <div class="qp-row" style="margin-top: 6px;">
+                        <span class="qp-label">Bố cục:</span>
+                        <div class="qp-btn-group" style="flex: 1;">
+                            <button type="button" class="qp-btn" style="flex: 1;" onclick="applyQuickAlign('left')" title="Canh lề trái"><i class="fa fa-align-left"></i></button>
+                            <button type="button" class="qp-btn" style="flex: 1;" onclick="applyQuickAlign('center')" title="Căn giữa khối"><i class="fa fa-align-center"></i> Giữa</button>
+                            <button type="button" class="qp-btn" style="flex: 1;" onclick="applyQuickAlign('right')" title="Canh lề phải"><i class="fa fa-align-right"></i></button>
+                            <button type="button" class="qp-btn" style="flex: 1;" onclick="applyQuickAlign('full')" title="Rộng 100%"><i class="fa fa-arrows-alt-h"></i> 100%</button>
+                        </div>
                     </div>
                 </div>
 
@@ -2518,6 +2777,10 @@
             },
             panels: { defaults: [] },
             canvas: {
+                styles: [
+                    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
+                    'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap'
+                ],
                 frameStyle: `
                     html, body {
                         margin: 0 !important;
@@ -2527,10 +2790,10 @@
                         width: 100% !important;
                         overflow-x: hidden !important;
                         overflow-y: auto !important;
+                        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
                     }
-                    body {
-                        overflow-y: auto !important;
-                        overflow-x: hidden !important;
+                    * {
+                        box-sizing: border-box;
                     }
                 `
             },
@@ -2738,13 +3001,7 @@
                     { name: 'Mobile', width: '', widthMedia: '480px' },
                 ]
             },
-            plugins: ['gjs-blocks-basic', 'gjs-plugin-forms'],
-            canvas: {
-                styles: [
-                    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
-                    'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap'
-                ]
-            }
+            plugins: ['gjs-blocks-basic', 'gjs-plugin-forms']
         });
 
         // ======================================================================
@@ -2967,6 +3224,104 @@
                 `
             },
             {
+                id: 'sec-navbar-pro',
+                name: 'Thanh Điều Hướng (Header Nav Sticky)',
+                desc: 'Thanh menu hiện đại hiệu ứng kính mờ, Logo, Links và nút Hành động',
+                icon: '🧭',
+                html: `
+                    <header style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 100; padding: 16px 24px;">
+                        <div style="max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between;">
+                            <div style="display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 20px; color: #0f172a;">
+                                <span style="background: #2563eb; color: #fff; width: 34px; height: 34px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-size: 16px;">✦</span>
+                                <span>TechHub</span>
+                            </div>
+                            <nav style="display: flex; gap: 28px; align-items: center; font-size: 15px; font-weight: 600;">
+                                <a href="#features" style="color: #475569; text-decoration: none;">Tính Năng</a>
+                                <a href="#pricing" style="color: #475569; text-decoration: none;">Bảng Giá</a>
+                                <a href="#testimonials" style="color: #475569; text-decoration: none;">Đánh Giá</a>
+                                <a href="#contact" style="color: #475569; text-decoration: none;">Liên Hệ</a>
+                            </nav>
+                            <div style="display: flex; gap: 12px; align-items: center;">
+                                <a href="#" style="background: #2563eb; color: #ffffff; padding: 10px 22px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 14px; box-shadow: 0 4px 12px rgba(37,99,235,0.25);">
+                                    Dùng Thử Miễn Phí
+                                </a>
+                            </div>
+                        </div>
+                    </header>
+                `
+            },
+            {
+                id: 'sec-testimonials',
+                name: 'Đánh Giá Khách Hàng (Social Proof)',
+                desc: '3 Thẻ phản hồi 5 sao uy tín kèm ảnh avatar và trích dẫn thực tế',
+                icon: '⭐',
+                html: `
+                    <section id="testimonials" style="padding: 85px 20px; background: #ffffff; text-align: center;">
+                        <div style="max-width: 1140px; margin: 0 auto;">
+                            <span style="color: #2563eb; font-weight: 800; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; display: inline-block;">ĐÁNH GIÁ TỪ KHÁCH HÀNG</span>
+                            <h2 style="font-size: 36px; font-weight: 900; color: #0f172a; margin-bottom: 16px;">Được Tin Tưởng Bởi Hơn 5,000+ Khách Hàng</h2>
+                            <p style="color: #64748b; font-size: 17px; margin-bottom: 48px;">Xem trải nghiệm thực tế từ các doanh nghiệp đang sử dụng nền tảng của chúng tôi.</p>
+                            <div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;">
+                                <div style="flex: 1; min-width: 280px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 32px 24px; text-align: left; box-shadow: 0 4px 16px rgba(0,0,0,0.02);">
+                                    <div style="color: #f59e0b; margin-bottom: 16px; font-size: 18px;">★★★★★</div>
+                                    <p style="color: #334155; line-height: 1.6; font-size: 15px; margin-bottom: 20px;">"Tốc độ tải trang nhanh đến kinh ngạc. Doanh số tăng 45% sau khi chuyển toàn bộ Landing Page sang hệ thống tĩnh này."</p>
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover;" alt="Avatar">
+                                        <div>
+                                            <div style="font-weight: 800; font-size: 15px; color: #0f172a;">Nguyễn Mai Hương</div>
+                                            <div style="color: #64748b; font-size: 13px;">Founder tại BeautySpa VN</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="flex: 1; min-width: 280px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 32px 24px; text-align: left; box-shadow: 0 4px 16px rgba(0,0,0,0.02);">
+                                    <div style="color: #f59e0b; margin-bottom: 16px; font-size: 18px;">★★★★★</div>
+                                    <p style="color: #334155; line-height: 1.6; font-size: 15px; margin-bottom: 20px;">"Không cần biết code vẫn tự dựng được trang bán khóa học siêu xịn. Kéo thả mượt mà, lưu trữ S3 siêu an tâm."</p>
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover;" alt="Avatar">
+                                        <div>
+                                            <div style="font-weight: 800; font-size: 15px; color: #0f172a;">Trần Minh Tuấn</div>
+                                            <div style="color: #64748b; font-size: 13px;">Giám Đốc Marketing EduTech</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="flex: 1; min-width: 280px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 32px 24px; text-align: left; box-shadow: 0 4px 16px rgba(0,0,0,0.02);">
+                                    <div style="color: #f59e0b; margin-bottom: 16px; font-size: 18px;">★★★★★</div>
+                                    <p style="color: #334155; line-height: 1.6; font-size: 15px; margin-bottom: 20px;">"Trước đây dùng WordPress cứ vài tháng lại bị hack hoặc lỗi plugin. Giờ sang đây website tải êm ru, bảo mật tuyệt đối."</p>
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover;" alt="Avatar">
+                                        <div>
+                                            <div style="font-weight: 800; font-size: 15px; color: #0f172a;">Hoàng Gia Bảo</div>
+                                            <div style="color: #64748b; font-size: 13px;">CEO Bất Động Sản Landmark</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                `
+            },
+            {
+                id: 'sec-cta-banner',
+                name: 'Banner Kêu Gọi (CTA Gradient)',
+                desc: 'Banner xanh hoàng gia sang trọng thúc đẩy chuyển đổi hành động ngay',
+                icon: '📣',
+                html: `
+                    <section style="background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #1d4ed8 100%); color: #ffffff; padding: 80px 20px; text-align: center;">
+                        <div style="max-width: 800px; margin: 0 auto;">
+                            <h2 style="font-size: 38px; font-weight: 900; line-height: 1.25; margin-bottom: 18px; color: #ffffff;">
+                                Sẵn Sàng Bứt Phá Doanh Số Cùng Website Đỉnh Cao?
+                            </h2>
+                            <p style="font-size: 18px; opacity: 0.9; margin-bottom: 36px; line-height: 1.6;">
+                                Tham gia cùng hàng nghìn nhà sáng tạo và doanh nghiệp đang tăng trưởng vượt bậc với nền tảng của chúng tôi.
+                            </p>
+                            <a href="#" style="background: #ffffff; color: #1d4ed8; padding: 16px 38px; border-radius: 12px; text-decoration: none; font-weight: 800; font-size: 16px; display: inline-block; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                                Bắt Đầu Ngay Hôm Nay →
+                            </a>
+                        </div>
+                    </section>
+                `
+            },
+            {
                 id: 'sec-footer-pro',
                 name: 'Chân Trang (Footer Pro)',
                 desc: 'Chân trang 4 cột chuyên nghiệp với liên kết và bản quyền',
@@ -2995,6 +3350,24 @@
             }
         ];
 
+        // 1-Click Starter: Generate complete 7-section Landing Page
+        function createFullLandingPage() {
+            if (editor.getComponents().length > 0) {
+                if (!confirm('Khởi tạo trọn gói Landing Page sẽ tạo sẵn 7 Section (Header, Hero, Tính Năng, Báo Giá, Đánh Giá, Banner, Chân Trang). Bạn có muốn tiếp tục không?')) {
+                    return;
+                }
+            }
+            // Sort standard order: Navbar, Hero, Features, Testimonials, Pricing, CTA, Footer
+            const orderedIds = ['sec-navbar-pro', 'sec-hero-pro', 'sec-features-grid', 'sec-testimonials', 'sec-pricing', 'sec-cta-banner', 'sec-footer-pro'];
+            const fullHtml = orderedIds.map(id => {
+                const s = prebuiltSections.find(x => x.id === id);
+                return s ? s.html : '';
+            }).filter(Boolean).join('\n');
+
+            editor.setComponents(fullHtml);
+            showStudioToast('🚀 Đã khởi tạo trọn gói Landing Page hoàn chỉnh (7 Section)!', 'success');
+        }
+
         // Render sections
         const secContainer = document.getElementById('custom-sections-container');
         prebuiltSections.forEach(sec => {
@@ -3017,10 +3390,18 @@
                 <button class="btn-topbar" style="padding: 3px 8px; font-size: 0.68rem; margin-left: 6px; border-color: rgba(56,189,248,0.4); color: var(--accent-cyan);" title="Chèn vào bản vẽ">+ Chèn</button>
             `;
             card.onclick = () => {
-                const added = editor.addComponents(sec.html);
-                if (added && added[0]) {
-                    editor.select(added[0]);
-                    const el = added[0].getEl();
+                let added;
+                if (currentSelectedModel && currentSelectedModel.parent && currentSelectedModel.parent()) {
+                    const parent = currentSelectedModel.parent();
+                    const at = currentSelectedModel.index() + 1;
+                    added = parent.append(sec.html, { at });
+                } else {
+                    added = editor.addComponents(sec.html);
+                }
+                if (added) {
+                    const comp = Array.isArray(added) ? added[0] : added;
+                    editor.select(comp);
+                    const el = comp.getEl();
                     if (el && el.scrollIntoView) {
                         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }
@@ -3028,6 +3409,162 @@
                 showStudioToast(`✨ Đã chèn mẫu "${sec.name}" vào trang!`, 'success');
             };
             secContainer.appendChild(card);
+        });
+
+        // 1-Click Insert for Blocks in left panel
+        const blocksContainer = document.getElementById('grapes-blocks-container');
+        if (blocksContainer) {
+            blocksContainer.addEventListener('click', (e) => {
+                const blockEl = e.target.closest('.gjs-block');
+                if (!blockEl) return;
+                
+                const label = blockEl.querySelector('.gjs-block-label')?.innerText?.trim();
+                const allBlocks = bm.getAll().models;
+                let block = allBlocks.find(b => b.get('label') === label || blockEl.getAttribute('title') === b.get('label'));
+                if (!block) {
+                    const blockId = blockEl.getAttribute('data-id') || blockEl.id;
+                    block = allBlocks.find(b => blockId && (b.getId() === blockId || blockId.endsWith(b.getId())));
+                }
+
+                if (block) {
+                    const content = block.get('content');
+                    if (!content) return;
+                    
+                    let added;
+                    if (currentSelectedModel && currentSelectedModel.parent && currentSelectedModel.parent()) {
+                        const parent = currentSelectedModel.parent();
+                        const at = currentSelectedModel.index() + 1;
+                        added = parent.append(content, { at });
+                    } else {
+                        added = editor.addComponents(content);
+                    }
+                    
+                    if (added) {
+                        const comp = Array.isArray(added) ? added[0] : added;
+                        editor.select(comp);
+                        try {
+                            const el = comp.getEl();
+                            if (el && el.scrollIntoView) {
+                                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
+                        } catch (err) {}
+                        showStudioToast(`✨ Đã thêm "${block.get('label') || 'khối'}" vào trang!`, 'success');
+                    }
+                }
+            });
+        }
+
+        // Quick Color Palette logic
+        let activeQcpTarget = 'color';
+        function setQcpTarget(target) {
+            activeQcpTarget = target;
+            const btnColor = document.getElementById('qcp-btn-color');
+            const btnBg = document.getElementById('qcp-btn-bg');
+            if (btnColor && btnBg) {
+                if (target === 'color') {
+                    btnColor.classList.add('active');
+                    btnBg.classList.remove('active');
+                } else {
+                    btnBg.classList.add('active');
+                    btnColor.classList.remove('active');
+                }
+            }
+        }
+
+        function applyQuickColor(colorValue, isGradient = false) {
+            if (!currentSelectedModel) {
+                showStudioToast('⚠️ Vui lòng nhấp chọn một phần tử trên Canvas trước!', 'warning');
+                return;
+            }
+            if (isGradient) {
+                currentSelectedModel.addStyle({ 'background-image': colorValue, 'background-color': 'transparent' });
+            } else {
+                if (activeQcpTarget === 'color') {
+                    currentSelectedModel.addStyle({ 'color': colorValue });
+                } else {
+                    currentSelectedModel.addStyle({ 'background-color': colorValue, 'background-image': 'none' });
+                }
+            }
+            showStudioToast(`🎨 Đã áp dụng màu mới cho phần tử!`, 'success');
+        }
+
+        function applyQuickRadius(rad) {
+            if (!currentSelectedModel) {
+                showStudioToast('⚠️ Vui lòng nhấp chọn một phần tử trên Canvas trước!', 'warning');
+                return;
+            }
+            currentSelectedModel.addStyle({ 'border-radius': rad });
+            showStudioToast(`✨ Đã đặt bo góc: ${rad}`, 'success');
+        }
+
+        function applyQuickShadow(shadow) {
+            if (!currentSelectedModel) {
+                showStudioToast('⚠️ Vui lòng nhấp chọn một phần tử trên Canvas trước!', 'warning');
+                return;
+            }
+            currentSelectedModel.addStyle({ 'box-shadow': shadow });
+            showStudioToast(`✨ Đã áp dụng hiệu ứng bóng đổ!`, 'success');
+        }
+
+        function applyQuickAlign(type) {
+            if (!currentSelectedModel) {
+                showStudioToast('⚠️ Vui lòng nhấp chọn một phần tử trên Canvas trước!', 'warning');
+                return;
+            }
+            if (type === 'left') {
+                currentSelectedModel.addStyle({ 'margin-left': '0', 'margin-right': 'auto', 'text-align': 'left' });
+            } else if (type === 'center') {
+                currentSelectedModel.addStyle({ 'margin-left': 'auto', 'margin-right': 'auto', 'text-align': 'center' });
+            } else if (type === 'right') {
+                currentSelectedModel.addStyle({ 'margin-left': 'auto', 'margin-right': '0', 'text-align': 'right' });
+            } else if (type === 'full') {
+                currentSelectedModel.addStyle({ 'width': '100%', 'max-width': '100%' });
+            }
+            showStudioToast(`📐 Đã căn chỉnh bố cục!`, 'success');
+        }
+
+        // Global Keyboard Shortcuts
+        window.addEventListener('keydown', (e) => {
+            const activeTag = document.activeElement ? document.activeElement.tagName : '';
+            const isInputActive = ['INPUT', 'TEXTAREA', 'SELECT'].includes(activeTag) || (document.activeElement && document.activeElement.isContentEditable);
+            
+            let isIframeEditing = false;
+            try {
+                const frameDoc = editor.Canvas.getDocument();
+                if (frameDoc && frameDoc.activeElement && frameDoc.activeElement.isContentEditable) {
+                    isIframeEditing = true;
+                }
+            } catch (err) {}
+
+            // Ctrl + S: Quick Save Draft
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+                e.preventDefault();
+                saveDraft(true);
+                return;
+            }
+
+            if (isInputActive || isIframeEditing) return;
+
+            // Delete / Backspace: Delete selected element
+            if (e.key === 'Delete' || e.key === 'Backspace') {
+                if (currentSelectedModel && !['wrapper', 'body'].includes(currentSelectedModel.get('type'))) {
+                    e.preventDefault();
+                    deleteSelectedElement();
+                }
+            }
+
+            // Ctrl + D: Duplicate selected element
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'd') {
+                if (currentSelectedModel && !['wrapper', 'body'].includes(currentSelectedModel.get('type'))) {
+                    e.preventDefault();
+                    duplicateSelectedElement();
+                }
+            }
+
+            // Escape: Deselect
+            if (e.key === 'Escape') {
+                editor.select(null);
+            }
         });
 
         // Load initial content
@@ -3051,8 +3588,25 @@
             if (!model) return;
             currentSelectedModel = model;
 
-            // Customize toolbar on component inside canvas
-            model.set('toolbar', [
+            const tagRaw = (model.get('tagName') || model.get('type') || 'DIV').toUpperCase();
+            let tagIcon = '📦';
+            if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(tagRaw)) tagIcon = '🔤';
+            else if (tagRaw === 'P' || tagRaw === 'SPAN') tagIcon = '📝';
+            else if (tagRaw === 'A' || tagRaw === 'BUTTON') tagIcon = '🔘';
+            else if (tagRaw === 'IMG' || tagRaw === 'IMAGE') tagIcon = '🖼️';
+            else if (tagRaw === 'VIDEO') tagIcon = '🎬';
+            else if (tagRaw === 'SECTION') tagIcon = '📑';
+            else if (tagRaw === 'CONTAINER') tagIcon = '🍱';
+
+            const toolbarItems = [
+                {
+                    attributes: {
+                        class: 'gjs-tlb-tag-badge',
+                        title: 'Thẻ: <' + tagRaw.toLowerCase() + '> — Bấm để chọn khối cha bao ngoài'
+                    },
+                    command: 'core:component-exit',
+                    label: `${tagIcon} ${tagRaw}`
+                },
                 {
                     attributes: { class: 'gjs-no-touch-actions fa fa-arrows', draggable: 'true', title: 'Giữ chuột và kéo để di chuyển khối (Drag to Move)' },
                     command: 'tlb-move'
@@ -3066,18 +3620,35 @@
                     command: () => moveComponentDown()
                 },
                 {
-                    attributes: { class: 'fa fa-arrow-up', title: 'Chọn khối cha bao ngoài' },
-                    command: 'core:component-exit'
-                },
-                {
                     attributes: { class: 'fa fa-clone', title: 'Nhân bản khối (Ctrl + D)' },
-                    command: 'tlb-clone'
+                    command: () => duplicateSelectedElement()
                 },
                 {
                     attributes: { class: 'fa fa-trash', title: 'Xóa khối (Delete)' },
-                    command: 'tlb-delete'
+                    command: () => deleteSelectedElement()
                 }
-            ]);
+            ];
+
+            // Inline edit for text elements
+            if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P', 'SPAN', 'A', 'BUTTON'].includes(tagRaw)) {
+                toolbarItems.splice(1, 0, {
+                    attributes: { class: 'fa fa-pencil-alt', title: 'Sửa chữ trực tiếp (Nhấp để gõ)' },
+                    command: (ed) => {
+                        const comp = ed.getSelected();
+                        if (comp) {
+                            try {
+                                const el = comp.getEl();
+                                if (el) {
+                                    el.contentEditable = 'true';
+                                    el.focus();
+                                }
+                            } catch(e) {}
+                        }
+                    }
+                });
+            }
+
+            model.set('toolbar', toolbarItems);
 
             // Cho phép nhấp giữ và kéo thả trực tiếp phần tử trên bản vẽ canvas
             try {
@@ -3089,15 +3660,24 @@
             } catch (err) {}
 
             // Hiển thị Card thông tin phần tử ở thanh Inspector bên phải
-            document.getElementById('selected-element-box').style.display = 'block';
-            document.getElementById('inspector-empty-state').style.display = 'none';
-            document.getElementById('box-model-wrapper').style.display = 'block';
+            const selBox = document.getElementById('selected-element-box');
+            if (selBox) selBox.style.display = 'block';
+            const emptyState = document.getElementById('inspector-empty-state');
+            if (emptyState) emptyState.style.display = 'none';
+            const boxModel = document.getElementById('box-model-wrapper');
+            if (boxModel) boxModel.style.display = 'block';
+            const qcp = document.getElementById('quick-color-palette');
+            if (qcp) qcp.style.display = 'block';
+            const qPresets = document.getElementById('quick-presets-card');
+            if (qPresets) qPresets.style.display = 'block';
 
-            const tag = (model.get('tagName') || model.get('type') || 'DIV').toUpperCase();
-            document.getElementById('selected-tag-name').innerText = tag;
+            const tag = tagRaw;
+            const tagNameEl = document.getElementById('selected-tag-name');
+            if (tagNameEl) tagNameEl.innerText = tag;
 
             const classes = model.getClasses();
-            document.getElementById('selected-class-list').innerText = classes.length ? `.${classes.join(' .')}` : '';
+            const classListEl = document.getElementById('selected-class-list');
+            if (classListEl) classListEl.innerText = classes.length ? `.${classes.join(' .')}` : '';
 
             // Update Box Model
             updateBoxModelInputs(model);
@@ -3117,10 +3697,18 @@
                 }
             } catch (err) {}
             currentSelectedModel = null;
-            document.getElementById('selected-element-box').style.display = 'none';
-            document.getElementById('inspector-empty-state').style.display = 'block';
-            document.getElementById('smart-setup-wrapper').style.display = 'none';
-            document.getElementById('box-model-wrapper').style.display = 'none';
+            const selBox = document.getElementById('selected-element-box');
+            if (selBox) selBox.style.display = 'none';
+            const emptyState = document.getElementById('inspector-empty-state');
+            if (emptyState) emptyState.style.display = 'block';
+            const smartWrap = document.getElementById('smart-setup-wrapper');
+            if (smartWrap) smartWrap.style.display = 'none';
+            const boxModel = document.getElementById('box-model-wrapper');
+            if (boxModel) boxModel.style.display = 'none';
+            const qcp = document.getElementById('quick-color-palette');
+            if (qcp) qcp.style.display = 'none';
+            const qPresets = document.getElementById('quick-presets-card');
+            if (qPresets) qPresets.style.display = 'none';
             toggleTypographySectorVisibility(true);
         });
 
