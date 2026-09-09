@@ -142,6 +142,7 @@
                     <li><a href="{{ route('articles.index') }}" class="nav-item-link {{ request()->is('articles*') ? 'active' : '' }}"><x-heroicon-o-newspaper style="width: 14px; height: 14px; flex-shrink: 0;" /> {{ __('articles') }}</a></li>
                     <li><a href="{{ route('games.index') }}" class="nav-item-link {{ request()->is('games*') ? 'active' : '' }}"><x-heroicon-o-puzzle-piece style="width: 14px; height: 14px; flex-shrink: 0;" /> {{ __('games') }}</a></li>
                     <li><a href="{{ route('deals.index') }}" class="nav-item-link {{ request()->is('deals*') ? 'active' : '' }}" style="position: relative; display: flex; align-items: center; gap: 0.35rem;"><span style="font-size: 13px;">🔥</span> <span>{{ app()->getLocale() === 'en' ? 'AI Deals' : 'Tài Khoản AI' }}</span><span style="font-size: 9px; font-weight: 800; background: linear-gradient(135deg, #ef4444, #f97316); color: #fff; padding: 1px 5px; border-radius: 999px;">-88%</span></a></li>
+                    <li><a href="{{ route('builder.index') }}" class="nav-item-link {{ request()->is('builder*') ? 'active' : '' }}" style="display: flex; align-items: center; gap: 0.35rem;"><span style="font-size: 13px;">🌐</span> <span>{{ __('builder_nav') }}</span><span style="font-size: 9px; font-weight: 800; background: linear-gradient(135deg, #2563eb, #06b6d4); color: #fff; padding: 1px 5px; border-radius: 999px;">{{ __('builder_nav_badge') }}</span></a></li>
                     <li><a href="{{ url('/tools?category=seo') }}" class="nav-item-link {{ request('category') === 'seo' ? 'active' : '' }}"><x-heroicon-o-globe-alt style="width: 14px; height: 14px; flex-shrink: 0;" /> {{ __('seo') }}</a></li>
                 </ul>
             </nav>
@@ -197,6 +198,12 @@
                         <a href="{{ route('deals.index') }}" class="mobile-nav-link {{ request()->is('deals*') ? 'active' : '' }}" style="color: #ef4444; font-weight: 700;">
                             <span>🔥</span>
                             <span>{{ app()->getLocale() === 'en' ? 'AI Deals (-88%)' : 'Tài Khoản AI (-88%)' }}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('builder.index') }}" class="mobile-nav-link {{ request()->is('builder*') ? 'active' : '' }}" style="color: #38bdf8; font-weight: 700;">
+                            <span>🌐</span>
+                            <span>{{ __('builder_nav') }} ({{ __('builder_nav_badge') }})</span>
                         </a>
                     </li>
                     <li>

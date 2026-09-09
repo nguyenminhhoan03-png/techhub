@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             GameSeeder::class,
             HardwareAndArticleSeeder::class,
             DigitalDealSeeder::class,
+            WebsiteBuilderSeeder::class,
         ]);
     }
 }

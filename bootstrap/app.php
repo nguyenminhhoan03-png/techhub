@@ -20,10 +20,12 @@ return Application::configure(basePath: dirname(__DIR__))
             __DIR__ . '/../src/Presentation/Admin/routes/web.php',
             __DIR__ . '/../src/Presentation/Tool/routes/web.php',
             __DIR__ . '/../src/Presentation/UserManagement/routes/web.php',
+            __DIR__ . '/../src/Presentation/WebsiteBuilder/routes/web.php',
         ],
         api: [
             __DIR__ . '/../src/Presentation/UserManagement/routes/api.php',
             __DIR__ . '/../src/Presentation/Tool/routes/api.php',
+            __DIR__ . '/../src/Presentation/WebsiteBuilder/routes/api.php',
         ],
         commands: __DIR__ . '/../routes/console.php',
         health: '/up',
