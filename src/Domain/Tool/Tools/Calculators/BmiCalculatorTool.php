@@ -63,9 +63,7 @@ class BmiCalculatorTool implements ToolContract
 
         $bmi = round($bmi, 1);
 
-        $isVi = (class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication())
-            ? 'vi' === \Illuminate\Support\Facades\App::getLocale()
-            : true;
+        $isVi = $this->isVietnamese();
 
         // WHO Classification
         if ($bmi < 18.5) {
@@ -117,5 +115,21 @@ class BmiCalculatorTool implements ToolContract
                 'weight' => $weight,
             ],
         ], executionTimeMs: $executionTimeMs);
+    }
+
+    private function isVietnamese(): bool
+    {
+        try {
+            if (class_exists(\Illuminate\Support\Facades\Facade::class)) {
+                $app = \Illuminate\Support\Facades\Facade::getFacadeApplication();
+                if ($app && method_exists($app, 'bound') && $app->bound('config')) {
+                    return 'vi' === \Illuminate\Support\Facades\App::getLocale();
+                }
+            }
+        } catch (\Throwable) {
+            // Fallback to Vietnamese
+        }
+
+        return true;
     }
 }

@@ -53,9 +53,7 @@ class SchemaGeneratorTool implements ToolContract
             '@type' => $type,
         ];
 
-        $isEn = (class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication())
-            ? 'en' === \Illuminate\Support\Facades\App::getLocale()
-            : false;
+        $isEn = $this->isEnglish();
 
         switch ($type) {
             case 'Article':
@@ -241,9 +239,7 @@ class SchemaGeneratorTool implements ToolContract
             }
         }
 
-        $isEn = (class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication())
-            ? 'en' === \Illuminate\Support\Facades\App::getLocale()
-            : false;
+        $isEn = $this->isEnglish();
 
         // Fallback default sample FAQs
         return $isEn ? [
@@ -278,9 +274,7 @@ class SchemaGeneratorTool implements ToolContract
             return $input['breadcrumbs'];
         }
 
-        $isEn = (class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication())
-            ? 'en' === \Illuminate\Support\Facades\App::getLocale()
-            : false;
+        $isEn = $this->isEnglish();
 
         return $isEn ? [
             ['name' => 'Home', 'url' => 'https://example.com'],
@@ -310,5 +304,21 @@ class SchemaGeneratorTool implements ToolContract
         }
 
         return $array;
+    }
+
+    private function isEnglish(): bool
+    {
+        try {
+            if (class_exists(\Illuminate\Support\Facades\Facade::class)) {
+                $app = \Illuminate\Support\Facades\Facade::getFacadeApplication();
+                if ($app && method_exists($app, 'bound') && $app->bound('config')) {
+                    return 'en' === \Illuminate\Support\Facades\App::getLocale();
+                }
+            }
+        } catch (\Throwable) {
+            // Fallback
+        }
+
+        return false;
     }
 }

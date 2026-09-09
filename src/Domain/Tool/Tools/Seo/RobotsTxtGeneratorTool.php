@@ -133,9 +133,7 @@ class RobotsTxtGeneratorTool implements ToolContract
 
         $robotsTxtContent = implode("\n", $lines);
 
-        $isEn = (class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication())
-            ? 'en' === \Illuminate\Support\Facades\App::getLocale()
-            : false;
+        $isEn = $this->isEnglish();
 
         // Validation Analysis
         $warnings = [];
@@ -156,5 +154,21 @@ class RobotsTxtGeneratorTool implements ToolContract
             'ai_bots_blocked' => $blockAi || 'block_ai_bots' === $preset,
             'warnings' => $warnings,
         ], executionTimeMs: $executionTimeMs);
+    }
+
+    private function isEnglish(): bool
+    {
+        try {
+            if (class_exists(\Illuminate\Support\Facades\Facade::class)) {
+                $app = \Illuminate\Support\Facades\Facade::getFacadeApplication();
+                if ($app && method_exists($app, 'bound') && $app->bound('config')) {
+                    return 'en' === \Illuminate\Support\Facades\App::getLocale();
+                }
+            }
+        } catch (\Throwable) {
+            // Fallback
+        }
+
+        return false;
     }
 }

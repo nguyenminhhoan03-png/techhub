@@ -97,9 +97,7 @@ class SerpPreviewTool implements ToolContract
         $isDescTruncated = $descPixelEst > $maxDescPixels || $descCharCount > 160;
         $truncatedDesc = $isDescTruncated ? mb_substr($description, 0, 155) . '...' : $description;
 
-        $isEn = (class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication())
-            ? 'en' === \Illuminate\Support\Facades\App::getLocale()
-            : false;
+        $isEn = $this->isEnglish();
 
         // SEO Health Checks
         $titleStatus = 'optimal';
@@ -205,5 +203,21 @@ class SerpPreviewTool implements ToolContract
         }
 
         return $totalWidth;
+    }
+
+    private function isEnglish(): bool
+    {
+        try {
+            if (class_exists(\Illuminate\Support\Facades\Facade::class)) {
+                $app = \Illuminate\Support\Facades\Facade::getFacadeApplication();
+                if ($app && method_exists($app, 'bound') && $app->bound('config')) {
+                    return 'en' === \Illuminate\Support\Facades\App::getLocale();
+                }
+            }
+        } catch (\Throwable) {
+            // Fallback
+        }
+
+        return false;
     }
 }

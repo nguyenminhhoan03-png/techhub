@@ -145,9 +145,25 @@ class MetaTagGeneratorTool implements ToolContract
             'summary_data' => [
                 'title' => $title,
                 'description' => $description,
-                'canonical' => $canonicalUrl ?: (((class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication()) && 'en' === \Illuminate\Support\Facades\App::getLocale()) ? 'Not configured (Recommended)' : 'Chưa cấu hình (Khuyên dùng)'),
+                'canonical' => $canonicalUrl ?: ($this->isEnglish() ? 'Not configured (Recommended)' : 'Chưa cấu hình (Khuyên dùng)'),
                 'robots' => $robotsContent,
             ],
         ], executionTimeMs: $executionTimeMs);
+    }
+
+    private function isEnglish(): bool
+    {
+        try {
+            if (class_exists(\Illuminate\Support\Facades\Facade::class)) {
+                $app = \Illuminate\Support\Facades\Facade::getFacadeApplication();
+                if ($app && method_exists($app, 'bound') && $app->bound('config')) {
+                    return 'en' === \Illuminate\Support\Facades\App::getLocale();
+                }
+            }
+        } catch (\Throwable) {
+            // Fallback
+        }
+
+        return false;
     }
 }

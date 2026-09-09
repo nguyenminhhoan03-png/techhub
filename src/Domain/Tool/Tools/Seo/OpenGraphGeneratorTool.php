@@ -130,12 +130,28 @@ class OpenGraphGeneratorTool implements ToolContract
             ],
             'audit' => [
                 'has_og_image' => ! empty($imageUrl),
-                'og_image_recommendation' => ((class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication()) && 'en' === \Illuminate\Support\Facades\App::getLocale())
+                'og_image_recommendation' => $this->isEnglish()
                     ? 'Recommended size: 1200 x 630 px (1.91:1 ratio) for crisp display on all social feeds.'
                     : 'Kích thước khuyên dùng: 1200 x 630 px (Tỷ lệ 1.91:1) để hiển thị sắc nét nhất.',
                 'title_length' => mb_strlen($title),
                 'description_length' => mb_strlen($description),
             ],
         ], executionTimeMs: $executionTimeMs);
+    }
+
+    private function isEnglish(): bool
+    {
+        try {
+            if (class_exists(\Illuminate\Support\Facades\Facade::class)) {
+                $app = \Illuminate\Support\Facades\Facade::getFacadeApplication();
+                if ($app && method_exists($app, 'bound') && $app->bound('config')) {
+                    return 'en' === \Illuminate\Support\Facades\App::getLocale();
+                }
+            }
+        } catch (\Throwable) {
+            // Fallback
+        }
+
+        return false;
     }
 }

@@ -54,9 +54,7 @@ class PercentageCalculatorTool implements ToolContract
         $result = 0.0;
         $description = '';
 
-        $isVi = (class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication())
-            ? 'vi' === \Illuminate\Support\Facades\App::getLocale()
-            : true;
+        $isVi = $this->isVietnamese();
 
         if ('percent_of' === $mode) {
             // What is X% of Y? (e.g. 20% of 150 = 30)
@@ -95,5 +93,21 @@ class PercentageCalculatorTool implements ToolContract
             'result' => round($result, 4),
             'formatted_description' => $description,
         ], executionTimeMs: $executionTimeMs);
+    }
+
+    private function isVietnamese(): bool
+    {
+        try {
+            if (class_exists(\Illuminate\Support\Facades\Facade::class)) {
+                $app = \Illuminate\Support\Facades\Facade::getFacadeApplication();
+                if ($app && method_exists($app, 'bound') && $app->bound('config')) {
+                    return 'vi' === \Illuminate\Support\Facades\App::getLocale();
+                }
+            }
+        } catch (\Throwable) {
+            // Fallback to Vietnamese
+        }
+
+        return true;
     }
 }

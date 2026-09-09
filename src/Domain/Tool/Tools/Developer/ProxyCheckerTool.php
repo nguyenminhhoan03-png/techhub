@@ -70,9 +70,7 @@ class ProxyCheckerTool implements ToolContract
             }
         }
 
-        $isVi = (class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication())
-            ? 'vi' === \Illuminate\Support\Facades\App::getLocale()
-            : true;
+        $isVi = $this->isVietnamese();
 
         if (empty($proxyList)) {
             return ToolResult::failure($isVi
@@ -292,9 +290,7 @@ class ProxyCheckerTool implements ToolContract
         }
 
         // Connection failed
-        $isVi = (class_exists(\Illuminate\Support\Facades\Facade::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication())
-            ? 'vi' === \Illuminate\Support\Facades\App::getLocale()
-            : true;
+        $isVi = $this->isVietnamese();
         $errorMessage = match ($curlErrno) {
             CURLE_OPERATION_TIMEDOUT => $isVi ? "Hết thời gian chờ (Timeout > {$timeout}s)" : "Operation timed out (> {$timeout}s)",
             CURLE_COULDNT_CONNECT => $isVi ? 'Không thể kết nối đến Proxy (Connection Refused)' : 'Could not connect to proxy (Connection Refused)',
@@ -360,5 +356,21 @@ class ProxyCheckerTool implements ToolContract
         }
 
         return $default;
+    }
+
+    private function isVietnamese(): bool
+    {
+        try {
+            if (class_exists(\Illuminate\Support\Facades\Facade::class)) {
+                $app = \Illuminate\Support\Facades\Facade::getFacadeApplication();
+                if ($app && method_exists($app, 'bound') && $app->bound('config')) {
+                    return 'vi' === \Illuminate\Support\Facades\App::getLocale();
+                }
+            }
+        } catch (\Throwable) {
+            // Fallback to Vietnamese
+        }
+
+        return true;
     }
 }
