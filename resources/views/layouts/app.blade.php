@@ -143,15 +143,14 @@
                     <li><a href="{{ route('games.index') }}" class="nav-item-link {{ request()->is('games*') ? 'active' : '' }}"><x-heroicon-o-puzzle-piece style="width: 14px; height: 14px; flex-shrink: 0;" /> {{ __('games') }}</a></li>
                     <li><a href="{{ route('deals.index') }}" class="nav-item-link {{ request()->is('deals*') ? 'active' : '' }}" style="position: relative; display: flex; align-items: center; gap: 0.35rem;"><span style="font-size: 13px;">🔥</span> <span>{{ app()->getLocale() === 'en' ? 'AI Deals' : 'Tài Khoản AI' }}</span><span style="font-size: 9px; font-weight: 800; background: linear-gradient(135deg, #ef4444, #f97316); color: #fff; padding: 1px 5px; border-radius: 999px;">-88%</span></a></li>
                     <li><a href="{{ route('builder.index') }}" class="nav-item-link {{ request()->is('builder*') ? 'active' : '' }}" style="display: flex; align-items: center; gap: 0.35rem;"><span style="font-size: 13px;">🌐</span> <span>{{ __('builder_nav') }}</span><span style="font-size: 9px; font-weight: 800; background: linear-gradient(135deg, #2563eb, #06b6d4); color: #fff; padding: 1px 5px; border-radius: 999px;">{{ __('builder_nav_badge') }}</span></a></li>
-                    <li><a href="{{ url('/tools?category=seo') }}" class="nav-item-link {{ request('category') === 'seo' ? 'active' : '' }}"><x-heroicon-o-globe-alt style="width: 14px; height: 14px; flex-shrink: 0;" /> {{ __('seo') }}</a></li>
                 </ul>
             </nav>
 
             {{-- Right Controls: Language Switcher, CTA & Mobile Toggle --}}
-            <div class="header-right" style="display: flex; align-items: center; gap: 0.75rem;">
+            <div class="header-right" style="display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem; flex-shrink: 0;">
                 
                 {{-- Language Switcher (VI / EN) --}}
-                <div class="lang-switcher">
+                <div class="lang-switcher" style="flex-shrink: 0;">
                     <a href="{{ route('lang.switch', 'vi') }}" class="lang-btn {{ app()->getLocale() === 'vi' ? 'active' : '' }}" title="Tiếng Việt">
                         <span>🇻🇳</span> <span>VI</span>
                     </a>
@@ -160,9 +159,50 @@
                     </a>
                 </div>
 
-                <a href="{{ url('/tools') }}" class="btn btn-primary btn-sm header-cta-btn">
-                    {{ __('explore_tools') }} →
-                </a>
+                @auth
+                    {{-- Logged in user menu --}}
+                    <div style="position: relative; display: inline-block; flex-shrink: 0;" id="user-menu-wrap">
+                        <button type="button" onclick="const dd = document.getElementById('user-menu-dropdown'); dd.style.display = dd.style.display === 'block' ? 'none' : 'block';" style="display: inline-flex; align-items: center; gap: 0.5rem; background: #ffffff; border: 1px solid #cbd5e1; height: 36px; padding: 0 0.85rem; border-radius: 999px; cursor: pointer; color: #0f172a; font-weight: 700; font-size: 0.88rem; white-space: nowrap;">
+                            <span style="width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #0284c7); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800;">
+                                {{ mb_substr(auth()->user()->name, 0, 1) }}
+                            </span>
+                            <span style="max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                {{ auth()->user()->name }}
+                            </span>
+                            <span style="font-size: 0.65rem; color: #64748b;">▼</span>
+                        </button>
+
+                        <div id="user-menu-dropdown" style="display: none; position: absolute; right: 0; top: calc(100% + 8px); background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; box-shadow: 0 12px 30px rgba(0,0,0,0.12); width: 220px; z-index: 1000; overflow: hidden;">
+                            <div style="padding: 0.75rem 1rem; border-bottom: 1px solid #f1f5f9; background: #f8fafc;">
+                                <div style="font-weight: 700; color: #0f172a; font-size: 0.88rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ auth()->user()->name }}</div>
+                                <div style="font-size: 0.78rem; color: #64748b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ auth()->user()->email }}</div>
+                            </div>
+                            <div style="padding: 0.35rem 0;">
+                                <a href="{{ route('builder.index') }}" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1rem; color: #334155; text-decoration: none; font-size: 0.88rem; font-weight: 600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='transparent'">
+                                    <span>🌐</span> <span>{{ app()->getLocale() === 'en' ? 'My Websites' : 'Website của tôi' }}</span>
+                                </a>
+                                @if(auth()->user()->role === 'admin')
+                                    <a href="{{ route('admin.dashboard') }}" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1rem; color: #4338ca; text-decoration: none; font-size: 0.88rem; font-weight: 600;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='transparent'">
+                                        <span>🛡️</span> <span>{{ __('admin_portal') }}</span>
+                                    </a>
+                                @endif
+                            </div>
+                            <form action="{{ route('logout') }}" method="POST" style="margin: 0; padding: 0; border-top: 1px solid #f1f5f9;">
+                                @csrf
+                                <button type="submit" style="width: 100%; display: flex; align-items: center; gap: 0.5rem; padding: 0.65rem 1rem; color: #ef4444; border: none; background: transparent; cursor: pointer; font-size: 0.88rem; font-weight: 600; text-align: left;" onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='transparent'">
+                                    <span>🚪</span> <span>{{ app()->getLocale() === 'en' ? 'Log Out' : 'Đăng xuất' }}</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                @else
+                    <a href="{{ route('login') }}" style="display: inline-flex; align-items: center; justify-content: center; height: 36px; color: var(--text-main, #0f172a); font-weight: 700; font-size: 0.88rem; text-decoration: none; padding: 0 0.85rem; border-radius: 999px; white-space: nowrap; flex-shrink: 0; line-height: 1; transition: background 0.15s;" onmouseover="this.style.background='rgba(0,0,0,0.05)'" onmouseout="this.style.background='transparent'">
+                        {{ app()->getLocale() === 'en' ? 'Log In' : 'Đăng Nhập' }}
+                    </a>
+                    <a href="{{ route('register') }}" class="btn btn-primary btn-sm header-cta-btn" style="display: inline-flex; align-items: center; justify-content: center; height: 36px; background: linear-gradient(135deg, #2563eb, #0284c7); border: none; font-weight: 800; border-radius: 999px; white-space: nowrap; flex-shrink: 0; padding: 0 1.15rem; font-size: 0.88rem; line-height: 1;">
+                        {{ app()->getLocale() === 'en' ? 'Sign Up' : 'Đăng Ký' }}
+                    </a>
+                @endauth
 
                 {{-- Mobile Menu Hamburger Button --}}
                 <button type="button" id="btn-mobile-menu" class="btn-mobile-menu" aria-label="Toggle Menu" onclick="toggleMobileMenu()">
@@ -226,6 +266,28 @@
                             </a>
                         </li>
                     @endif
+                    @auth
+                        <li style="padding-top: 0.75rem; border-top: 1px solid var(--border-subtle); margin-top: 0.5rem;">
+                            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                                <span>👤</span> <span>{{ app()->getLocale() === 'vi' ? 'Tài khoản:' : 'Account:' }} <strong style="color: var(--text-main);">{{ auth()->user()->name }}</strong></span>
+                            </div>
+                            <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
+                                @csrf
+                                <button type="submit" class="mobile-nav-link" style="width: 100%; border: none; background: transparent; color: #ef4444; cursor: pointer; text-align: left; padding: 0.5rem 0; font-weight: 700;">
+                                    <span>🚪 {{ app()->getLocale() === 'en' ? 'Log Out' : 'Đăng xuất' }}</span>
+                                </button>
+                            </form>
+                        </li>
+                    @else
+                        <li style="padding-top: 0.75rem; border-top: 1px solid var(--border-subtle); margin-top: 0.5rem; display: flex; gap: 0.75rem;">
+                            <a href="{{ route('login') }}" class="btn btn-sm" style="flex: 1; text-align: center; border: 1px solid var(--border-subtle); color: var(--text-main); font-weight: 700; text-decoration: none; padding: 0.6rem; border-radius: 8px;">
+                                {{ app()->getLocale() === 'en' ? 'Log In' : 'Đăng Nhập' }}
+                            </a>
+                            <a href="{{ route('register') }}" class="btn btn-primary btn-sm" style="flex: 1; text-align: center; font-weight: 800; text-decoration: none; padding: 0.6rem; border-radius: 8px;">
+                                {{ app()->getLocale() === 'en' ? 'Sign Up' : 'Đăng Ký' }}
+                            </a>
+                        </li>
+                    @endauth
                     <li style="padding-top: 0.75rem; border-top: 1px solid var(--border-subtle); margin-top: 0.5rem; display: flex; align-items: center; justify-content: space-between;">
                         <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">{{ app()->getLocale() === 'vi' ? 'Ngôn ngữ' : 'Language' }}</span>
                         <div class="lang-switcher">
@@ -321,5 +383,14 @@
     {{-- Core Javascript --}}
     <script defer src="{{ asset('js/techhub.js') }}?v={{ @filemtime(public_path('js/techhub.js')) ?: '2.0.1' }}"></script>
     @stack('scripts')
+    <script>
+        document.addEventListener('click', function(e) {
+            const userMenuWrap = document.getElementById('user-menu-wrap');
+            const userMenuDropdown = document.getElementById('user-menu-dropdown');
+            if (userMenuWrap && userMenuDropdown && !userMenuWrap.contains(e.target)) {
+                userMenuDropdown.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>

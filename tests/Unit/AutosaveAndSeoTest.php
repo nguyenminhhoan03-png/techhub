@@ -87,7 +87,7 @@ class AutosaveAndSeoTest extends TestCase
             'status' => \Domain\WebsiteBuilder\Enums\WebsiteStatus::DRAFT,
         ]);
 
-        $response = $this->postJson('/api/builder/pages', [
+        $response = $this->actingAs($user)->postJson('/api/builder/pages', [
             'website_id' => $website->id,
             'title' => 'Trang Dịch Vụ Mới',
             'slug' => 'dich-vu-moi',

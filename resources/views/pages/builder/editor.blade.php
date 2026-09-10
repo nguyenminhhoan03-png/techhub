@@ -729,6 +729,8 @@
             display: flex;
             align-items: center;
             gap: 0.3rem;
+            flex-shrink: 0;
+            white-space: nowrap;
         }
         .btn-canvas-tool {
             background: #ffffff;
@@ -743,6 +745,11 @@
             align-items: center;
             gap: 0.3rem;
             transition: all 0.15s ease;
+            white-space: nowrap !important;
+            flex-shrink: 0 !important;
+            height: 28px;
+            box-sizing: border-box;
+            line-height: 1;
         }
         .btn-canvas-tool:hover {
             background: #f8fafc;
@@ -754,6 +761,19 @@
             color: var(--primary);
             border-color: #bfdbfe;
             box-shadow: 0 0 8px rgba(37, 99, 235, 0.15);
+        }
+        @media (max-width: 1400px) {
+            .hide-on-compact {
+                display: none !important;
+            }
+        }
+
+        /* Ẩn badge hiển thị tên "Body" trên khung vẽ */
+        .gjs-badge[data-badge="Body"],
+        .gjs-badge[data-badge="body"],
+        .gjs-badge[data-badge="wrapper"],
+        .gjs-badge[data-badge="Wrapper"] {
+            display: none !important;
         }
 
         /* Canvas Interactive Viewport */
@@ -1491,13 +1511,41 @@
             transform: translateY(0);
         }
 
-        /* GrapesJS Drop Placement Indicator (Bright Blue Line) */
+        /* GrapesJS Drop Placement Indicator (Elementor-Grade Bright Cyan/Blue Line) */
         :root {
-            --gjs-placeholder-background-color: #2563eb !important;
+            --gjs-placeholder-background-color: #0284c7 !important;
+        }
+        .gjs-placeholder {
+            z-index: 99999 !important;
+            pointer-events: none !important;
         }
         .gjs-placeholder-int, .gjs-com-placeholder-int {
-            background-color: #2563eb !important;
-            box-shadow: 0 0 8px rgba(37, 99, 235, 0.5) !important;
+            background: linear-gradient(90deg, #0284c7 0%, #38bdf8 50%, #0284c7 100%) !important;
+            border: 1px solid #38bdf8 !important;
+            box-shadow: 0 0 14px rgba(2, 132, 199, 0.9), 0 0 28px rgba(56, 189, 248, 0.6) !important;
+            height: 4px !important;
+            border-radius: 999px !important;
+            position: relative !important;
+            transition: all 0.1s ease !important;
+        }
+        .gjs-placeholder-int::after, .gjs-com-placeholder-int::after {
+            content: '⬇ Thả khối vào đây' !important;
+            position: absolute !important;
+            left: 50% !important;
+            top: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            background: #0284c7 !important;
+            color: #ffffff !important;
+            font-size: 10px !important;
+            font-weight: 800 !important;
+            padding: 2px 10px !important;
+            border-radius: 999px !important;
+            white-space: nowrap !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+            letter-spacing: 0.02em !important;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+            border: 1px solid rgba(255, 255, 255, 0.4) !important;
+            line-height: 1.4 !important;
         }
 
         /* ==========================================================================
@@ -1644,11 +1692,31 @@
         .gjs-sm-property__font-family,
         .gjs-sm-property__text-align,
         .gjs-sm-property__display,
+        .gjs-sm-property__position,
         .gjs-sm-property__background-image,
+        .gjs-sm-property__background-size,
+        .gjs-sm-property__background-repeat,
+        .gjs-sm-property__background-position,
+        .gjs-sm-property__background-attachment,
         .gjs-sm-property__border-radius,
+        .gjs-sm-property__border-style,
         .gjs-sm-property__box-shadow,
         .gjs-sm-property__overflow,
-        .gjs-sm-property__gap {
+        .gjs-sm-property__gap,
+        .gjs-sm-property[id*="font-family"],
+        .gjs-sm-property[id*="text-align"],
+        .gjs-sm-property[id*="display"],
+        .gjs-sm-property[id*="position"],
+        .gjs-sm-property[id*="background-image"],
+        .gjs-sm-property[id*="background-size"],
+        .gjs-sm-property[id*="background-repeat"],
+        .gjs-sm-property[id*="background-position"],
+        .gjs-sm-property[id*="background-attachment"],
+        .gjs-sm-property[id*="border-radius"],
+        .gjs-sm-property[id*="border-style"],
+        .gjs-sm-property[id*="box-shadow"],
+        .gjs-sm-property[id*="overflow"],
+        .gjs-sm-property[id*="gap"] {
             grid-column: 1 / -1 !important;
             width: 100% !important;
         }
@@ -1784,34 +1852,271 @@
             height: 0 !important;
         }
 
-        /* COLOR PICKER FIELD */
+        /* COLOR PICKER FIELD ENHANCEMENTS */
         .gjs-field-color {
             position: relative !important;
-            padding-right: 34px !important;
+            padding-right: 36px !important;
+            cursor: pointer !important;
+        }
+        .gjs-field-color input {
+            cursor: pointer !important;
         }
         .gjs-field-colorp {
             position: absolute !important;
-            right: 3px !important;
-            top: 3px !important;
-            bottom: 3px !important;
+            right: 4px !important;
+            top: 4px !important;
+            bottom: 4px !important;
             width: 26px !important;
-            border: 1px solid #cbd5e1 !important;
-            border-radius: 4px !important;
+            border: 1.5px solid #cbd5e1 !important;
+            border-radius: 5px !important;
             overflow: hidden !important;
             cursor: pointer !important;
             padding: 0 !important;
             background: #ffffff !important;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.06) !important;
+            transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease !important;
+        }
+        .gjs-field-colorp:hover {
+            transform: scale(1.1) !important;
+            border-color: var(--primary) !important;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2) !important;
         }
         .gjs-field-colorp-c {
             width: 100% !important;
             height: 100% !important;
             border: none !important;
         }
-        .gjs-field-color-picker {
-            width: 100% !important;
-            height: 100% !important;
-            border: none !important;
-            cursor: pointer !important;
+        .gjs-field-colorp.is-none .gjs-field-colorp-c,
+        .gjs-field-color[data-none="true"] .gjs-field-colorp-c {
+            background: repeating-conic-gradient(#cbd5e1 0% 25%, #ffffff 0% 50%) 50% / 6px 6px !important;
+            position: relative;
+        }
+        .gjs-field-colorp.is-none::after,
+        .gjs-field-color[data-none="true"] .gjs-field-colorp::after {
+            content: '✕';
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ef4444;
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        /* ==========================================================================
+           STUDIO PRO COLOR PALETTE POPOVER (FIGMA & CANVA GRADE)
+           ========================================================================== */
+        .studio-color-popover {
+            position: fixed;
+            z-index: 100000;
+            width: 295px;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            box-shadow: 0 14px 40px rgba(15, 23, 42, 0.2), 0 2px 10px rgba(0, 0, 0, 0.06);
+            padding: 14px;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            animation: scpFadeIn 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes scpFadeIn {
+            from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .scp-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .scp-title {
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .scp-close-btn {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 0.95rem;
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: all 0.15s ease;
+        }
+        .scp-close-btn:hover {
+            color: #ef4444;
+            background: #fef2f2;
+        }
+        .scp-active-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .scp-preview-wrapper {
+            position: relative;
+            width: 36px;
+            height: 36px;
+            min-width: 36px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid #cbd5e1;
+            cursor: pointer;
+            box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
+            transition: transform 0.15s ease, border-color 0.15s ease;
+        }
+        .scp-preview-wrapper:hover {
+            transform: scale(1.06);
+            border-color: var(--primary);
+        }
+        .scp-active-preview {
+            width: 100%;
+            height: 100%;
+            background: #0f172a;
+        }
+        .scp-hex-input {
+            flex: 1;
+            height: 36px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 0 10px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #0f172a;
+            font-family: monospace, sans-serif;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.15s ease, background 0.15s ease;
+        }
+        .scp-hex-input:focus {
+            background: #ffffff;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+        }
+        .scp-eyedropper-btn {
+            height: 36px;
+            width: 36px;
+            min-width: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            color: #475569;
+            cursor: pointer;
+            font-size: 0.82rem;
+            transition: all 0.15s ease;
+        }
+        .scp-eyedropper-btn:hover {
+            background: #eff6ff;
+            color: var(--primary);
+            border-color: #bfdbfe;
+        }
+        .scp-quick-actions {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+        .scp-action-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 6px 10px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 0.70rem;
+            font-weight: 700;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .scp-action-btn:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+            border-color: #cbd5e1;
+        }
+        .scp-action-btn.primary {
+            background: #eff6ff;
+            color: var(--primary);
+            border-color: #bfdbfe;
+        }
+        .scp-action-btn.primary:hover {
+            background: #dbeafe;
+        }
+        .scp-swatch-checkered {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            border: 1px solid #cbd5e1;
+            background: repeating-conic-gradient(#cbd5e1 0% 25%, #ffffff 0% 50%) 50% / 6px 6px;
+        }
+        .scp-section-label {
+            font-size: 0.63rem;
+            font-weight: 800;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 7px;
+        }
+        .scp-swatches-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+        .scp-swatch {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 6px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s ease;
+            position: relative;
+            padding: 0;
+            outline: none;
+            box-sizing: border-box;
+        }
+        .scp-swatch:hover {
+            transform: scale(1.18);
+            z-index: 2;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            border-color: #ffffff;
+        }
+        .scp-swatch:active {
+            transform: scale(1.05);
+        }
+        .scp-gradients-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 6px;
+        }
+        .scp-gradient-swatch {
+            width: 100%;
+            height: 24px;
+            border-radius: 6px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            padding: 0;
+            outline: none;
+            box-sizing: border-box;
+        }
+        .scp-gradient-swatch:hover {
+            transform: scale(1.12);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+            z-index: 2;
         }
 
         /* RADIO / SEGMENTED BUTTONS (e.g. Text Align: Left, Center, Right, Justify) */
@@ -1859,6 +2164,54 @@
             color: var(--primary) !important;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
             font-weight: 800 !important;
+        }
+
+        /* Hide GrapesJS default legacy spectrum container so it doesn't conflict with Studio Color Popover */
+        .sp-container {
+            display: none !important;
+        }
+
+        /* Text Align Radio Items with FontAwesome Icons */
+        .gjs-sm-property__text-align .gjs-radio-item label,
+        .gjs-sm-property[id*="text-align"] .gjs-radio-item label {
+            font-size: 0 !important;
+            height: 28px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            min-width: 32px !important;
+        }
+        .gjs-sm-property__text-align .gjs-radio-item input[value="left"] + label::before,
+        .gjs-sm-property[id*="text-align"] .gjs-radio-item input[value="left"] + label::before,
+        .gjs-sm-property[id*="text-align"] .gjs-radio-item:nth-child(1) label::before {
+            font-family: "Font Awesome 6 Free", "FontAwesome" !important;
+            content: "\f036" !important;
+            font-weight: 900 !important;
+            font-size: 13px !important;
+        }
+        .gjs-sm-property__text-align .gjs-radio-item input[value="center"] + label::before,
+        .gjs-sm-property[id*="text-align"] .gjs-radio-item input[value="center"] + label::before,
+        .gjs-sm-property[id*="text-align"] .gjs-radio-item:nth-child(2) label::before {
+            font-family: "Font Awesome 6 Free", "FontAwesome" !important;
+            content: "\f037" !important;
+            font-weight: 900 !important;
+            font-size: 13px !important;
+        }
+        .gjs-sm-property__text-align .gjs-radio-item input[value="right"] + label::before,
+        .gjs-sm-property[id*="text-align"] .gjs-radio-item input[value="right"] + label::before,
+        .gjs-sm-property[id*="text-align"] .gjs-radio-item:nth-child(3) label::before {
+            font-family: "Font Awesome 6 Free", "FontAwesome" !important;
+            content: "\f038" !important;
+            font-weight: 900 !important;
+            font-size: 13px !important;
+        }
+        .gjs-sm-property__text-align .gjs-radio-item input[value="justify"] + label::before,
+        .gjs-sm-property[id*="text-align"] .gjs-radio-item input[value="justify"] + label::before,
+        .gjs-sm-property[id*="text-align"] .gjs-radio-item:nth-child(4) label::before {
+            font-family: "Font Awesome 6 Free", "FontAwesome" !important;
+            content: "\f039" !important;
+            font-weight: 900 !important;
+            font-size: 13px !important;
         }
 
         /* Fullscreen Preview Mode */
@@ -2186,13 +2539,13 @@
             {{-- Canvas Controls Sub-header --}}
             <div class="canvas-header-bar">
                 {{-- Left: Current Device & Dimension Tag & Hint --}}
-                <div style="display: flex; align-items: center; gap: 0.45rem;">
-                    <span id="canvas-device-label" style="font-weight: 800; color: var(--text-main); display: inline-flex; align-items: center; gap: 0.35rem;">
-                        <i class="fa fa-desktop" style="color: var(--accent-cyan);"></i> <span>Desktop</span>
+                <div style="display: flex; align-items: center; gap: 0.4rem; flex-shrink: 0;">
+                    <span id="canvas-device-label" style="font-weight: 800; color: var(--text-main); display: inline-flex; align-items: center; gap: 0.3rem; white-space: nowrap;">
+                        <i class="fa fa-desktop" style="color: var(--accent-cyan);"></i> <span class="hide-on-compact">Desktop</span>
                     </span>
                     <span style="color: #64748b;">•</span>
                     <span id="canvas-width-badge" class="canvas-width-pill">1200px</span>
-                    <div class="canvas-shortcut-pill">
+                    <div class="canvas-shortcut-pill hide-on-compact">
                         <i class="fa-regular fa-keyboard"></i>
                         <span>Phím tắt</span>
                         <div class="shortcut-tooltip-dropdown">
@@ -2209,14 +2562,14 @@
                 {{-- Center: Zoom Controls & Pan Tool ("Kéo qua kéo lại") --}}
                 <div class="canvas-control-group">
                     {{-- Zoom Tools --}}
-                    <button onclick="changeZoom(-10)" class="btn-canvas-tool" title="Thu nhỏ (Ctrl -)">
+                    <button onclick="changeZoom(-10)" class="btn-canvas-tool btn-icon-only" title="Thu nhỏ (Ctrl -)">
                         <i class="fa fa-minus"></i>
                     </button>
 
                     {{-- Zoom Level Dropdown --}}
                     <div style="position: relative; display: inline-block;">
-                        <button id="zoom-level-badge" onclick="toggleZoomMenu(event)" class="btn-canvas-tool" style="min-width: 62px; justify-content: space-between;" title="Nhấp để chọn mức thu phóng">
-                            <span id="zoom-text">100%</span> <i class="fa fa-caret-down" style="font-size: 0.65rem; margin-left: 3px;"></i>
+                        <button id="zoom-level-badge" onclick="toggleZoomMenu(event)" class="btn-canvas-tool" style="min-width: 58px; justify-content: space-between;" title="Nhấp để chọn mức thu phóng">
+                            <span id="zoom-text">100%</span> <i class="fa fa-caret-down" style="font-size: 0.65rem; margin-left: 2px;"></i>
                         </button>
                         <div id="zoom-dropdown-menu" class="zoom-dropdown-menu">
                             <div class="zoom-opt" onclick="setZoom(50); closeZoomMenu();"><span>50%</span> <span style="font-size: 0.6rem; color: #64748b;">Nhỏ</span></div>
@@ -2229,30 +2582,47 @@
                         </div>
                     </div>
 
-                    <button onclick="changeZoom(10)" class="btn-canvas-tool" title="Phóng to (Ctrl +)">
+                    <button onclick="changeZoom(10)" class="btn-canvas-tool btn-icon-only" title="Phóng to (Ctrl +)">
                         <i class="fa fa-plus"></i>
                     </button>
                     <button onclick="zoomToFit()" class="btn-canvas-tool" title="Tự động thu phóng vừa màn hình (Fit to Screen)">
                         <i class="fa fa-expand"></i> <span>Fit</span>
                     </button>
 
-                    <span style="color: var(--border-studio-light); margin: 0 0.2rem;">|</span>
+                    <span style="color: var(--border-studio-light); margin: 0 0.15rem;">|</span>
 
                     {{-- Pan Hand Tool ("Kéo bản vẽ qua lại để căn chỉnh") --}}
                     <button id="btn-pan-mode" onclick="togglePanMode()" class="btn-canvas-tool" title="Bật/Tắt chế độ kéo bản vẽ qua lại (Hoặc giữ phím Space / Chuột giữa)">
-                        <i class="fa fa-hand"></i> <span>Kéo bản vẽ (Pan)</span>
+                        <i class="fa fa-hand"></i> <span>Pan</span>
                     </button>
                     <button onclick="resetPanPosition()" class="btn-canvas-tool btn-icon-only" title="Căn giữa lại bản vẽ (Reset Pan)">
                         <i class="fa fa-crosshairs"></i>
                     </button>
+
+                    <span style="color: var(--border-studio-light); margin: 0 0.15rem;">|</span>
+
+                    {{-- Drag Mode Toggle: Flow Layout (Bố cục chuẩn WordPress) vs Free Drag (Tự do) --}}
+                    <div style="display: inline-flex; align-items: center; background: #f1f5f9; padding: 2px; border-radius: 7px; border: 1px solid var(--border-studio); gap: 2px; flex-shrink: 0;">
+                        <button id="btn-drag-flow" onclick="setStudioDragMode('flow')" class="btn-canvas-tool active" style="border: none; padding: 0.2rem 0.45rem; font-size: 0.72rem; border-radius: 5px; height: 24px;" title="Chế độ Bố Cục Chuẩn WordPress / Elementor: Kéo thả chèn tự động vào cột hoặc trên/dưới các khối, không bao giờ bị đè chữ">
+                            <i class="fa fa-layer-group" style="color: var(--primary);"></i> <span>Bố Cục</span>
+                        </button>
+                        <button id="btn-drag-absolute" onclick="setStudioDragMode('absolute')" class="btn-canvas-tool" style="border: none; padding: 0.2rem 0.45rem; font-size: 0.72rem; border-radius: 5px; height: 24px;" title="Chế độ Tự Do: Kéo thả theo tọa độ pixel tự do (như Canva / Figma)">
+                            <i class="fa fa-arrows-up-down-left-right"></i> <span>Tự Do</span>
+                        </button>
+                    </div>
+
+                    {{-- WordPress / Elementor Auto Clean & Fix Overlaps --}}
+                    <button onclick="autoFixCleanLayout()" class="btn-canvas-tool" style="background: #eff6ff; color: #2563eb; border-color: #bfdbfe; font-weight: 800; height: 28px;" title="Dọn dẹp và sửa lỗi đè khối: Đưa toàn bộ các phần tử bị trôi tọa độ về lại ngay ngắn theo bố cục chuẩn WordPress">
+                        <i class="fa fa-wand-magic-sparkles"></i> <span>Căn Bố Cục</span>
+                    </button>
                 </div>
 
                 {{-- Right: Toggle Right Inspector --}}
-                <div style="display: flex; align-items: center; gap: 0.4rem;">
+                <div style="display: flex; align-items: center; gap: 0.35rem; flex-shrink: 0;">
                     <button id="btn-toggle-inspector" onclick="toggleRightSidebar()" class="btn-canvas-tool" title="Ẩn/Hiện bảng thuộc tính bên phải">
                         <i class="fa fa-sliders"></i>
-                        <span id="inspector-toggle-label">Bảng Thuộc Tính</span>
-                        <i id="inspector-toggle-icon" class="fa fa-chevron-right" style="font-size: 0.68rem;"></i>
+                        <span id="inspector-toggle-label" class="hide-on-compact">Thuộc Tính</span>
+                        <i id="inspector-toggle-icon" class="fa fa-chevron-right" style="font-size: 0.65rem;"></i>
                     </button>
                 </div>
             </div>
@@ -2319,6 +2689,13 @@
                         </button>
                         <button class="btn-move-action danger" onclick="deleteSelectedElement()" title="Xóa khối này">
                             <i class="fa fa-trash"></i> <span>Xóa</span>
+                        </button>
+                    </div>
+
+                    {{-- Quick Free/Flow Position Mode Toggle for this Element --}}
+                    <div style="margin-top: 8px; display: flex; gap: 6px;">
+                        <button id="btn-toggle-free-pos" onclick="toggleElementPositionMode()" class="btn-move-action" style="flex: 1; padding: 5px 8px; font-size: 0.72rem; justify-content: center; background: #f8fafc; border: 1px solid var(--border-studio); border-radius: 6px; font-weight: 700;" title="Bật/Tắt chế độ đặt vị trí tự do (Absolute) cho phần tử này để kéo thả bất kỳ đâu trên trang">
+                            <i class="fa fa-arrows-up-down-left-right" style="color: var(--primary);"></i> <span id="lbl-pos-mode">Đặt Vị Trí Tự Do (Free)</span>
                         </button>
                     </div>
                 </div>
@@ -2491,8 +2868,27 @@
                             <input type="text" id="smart-btn-text" class="gjs-field" style="width: 100%;" oninput="updateSmartButtonText(this.value)">
                         </div>
                         <div class="smart-form-row">
+                            <label>Chọn trang trong website (Internal Page):</label>
+                            <select id="smart-btn-internal-page" class="gjs-field" style="width: 100%; margin-bottom: 0.35rem;" onchange="onSelectInternalPage(this.value)">
+                                <option value="">-- Chọn trang nội bộ để tự điền link --</option>
+                                @foreach($page->website->pages as $p)
+                                    @php
+                                        $pageUrl = $p->is_home ? '/' : '/' . ltrim($p->slug, '/');
+                                    @endphp
+                                    <option value="{{ $pageUrl }}">
+                                        {{ $p->is_home ? '🏠' : '📄' }} {{ $p->title }} ({{ $pageUrl }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="smart-form-row">
                             <label>Đích đến liên kết (Href):</label>
-                            <input type="text" id="smart-btn-href" class="gjs-field" style="width: 100%;" placeholder="https://... hoặc #features" onchange="updateSmartButtonHref(this.value)">
+                            <input type="text" id="smart-btn-href" class="gjs-field" style="width: 100%;" placeholder="/slug-trang, https://... hoặc #neo" onchange="updateSmartButtonHref(this.value)">
+                            <div style="font-size: 0.65rem; color: var(--text-subtle); margin-top: 0.25rem; line-height: 1.35;">
+                                💡 <b>/slug</b>: Sang trang khác (vd: <code>/dang-ky</code>)<br>
+                                💡 <b>#id</b>: Cuộn tới phần tử cùng trang (vd: <code>#pricing</code>)<br>
+                                💡 <b>https://...</b>: Mở liên kết ngoài
+                            </div>
                         </div>
                         <label class="smart-toggle-label" style="margin-top: 0.4rem;">
                             <input type="checkbox" id="smart-btn-blank" onchange="updateSmartButtonBlank(this.checked)">
@@ -2626,6 +3022,55 @@
                     ✓ Tạo Trang Ngay
                 </button>
             </div>
+        </div>
+    </div>
+
+    {{-- Studio Pro Color Palette Popover (Chuẩn UX Figma/Canva) --}}
+    <div id="studio-color-palette-popover" class="studio-color-popover" style="display: none;">
+        <div class="scp-header">
+            <div class="scp-title">
+                <i class="fa fa-palette" style="color: var(--primary);"></i>
+                <span id="scp-title-text">BẢNG MÀU THIẾT KẾ</span>
+            </div>
+            <button type="button" class="scp-close-btn" onclick="closeStudioColorPopover()" title="Đóng bảng màu">✕</button>
+        </div>
+
+        {{-- Active Color Preview & Hex Input & EyeDropper --}}
+        <div class="scp-active-row">
+            <div class="scp-preview-wrapper" onclick="triggerNativeColorPicker()" title="Nhấp để mở bánh xe pha màu chi tiết">
+                <div id="scp-active-preview" class="scp-active-preview"></div>
+                <input type="color" id="scp-native-color-picker" style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0;" oninput="onNativeColorChange(this.value)">
+            </div>
+            <input type="text" id="scp-hex-input" class="scp-hex-input" placeholder="#000000" maxlength="35" oninput="onHexInputChange(this.value)" onkeydown="if(event.key==='Enter') closeStudioColorPopover()">
+            <button type="button" class="scp-eyedropper-btn" onclick="pickColorWithEyeDropper()" title="Ống hút chấm màu trên màn hình (Eyedropper)">
+                <i class="fa fa-eye-dropper"></i>
+            </button>
+        </div>
+
+        {{-- Quick Actions: Trong suốt (None) & Bánh xe màu --}}
+        <div class="scp-quick-actions">
+            <button type="button" class="scp-action-btn" onclick="applyStudioColor('none')">
+                <span class="scp-swatch-checkered"></span>
+                <span>Trong suốt (None)</span>
+            </button>
+            <button type="button" class="scp-action-btn primary" onclick="triggerNativeColorPicker()">
+                <i class="fa fa-sliders"></i>
+                <span>Pha màu chi tiết...</span>
+            </button>
+        </div>
+
+        {{-- Section 1: Palette Màu Cơ Bản & Trung Tính --}}
+        <div class="scp-section-label">MÀU CƠ BẢN & TRUNG TÍNH</div>
+        <div class="scp-swatches-grid" id="scp-neutral-swatches"></div>
+
+        {{-- Section 2: Palette Màu Hiện Đại & Sắc Nét --}}
+        <div class="scp-section-label">BẢNG MÀU HIỆN ĐẠI</div>
+        <div class="scp-swatches-grid" id="scp-brand-swatches"></div>
+
+        {{-- Section 3: Gradients (Chỉ hiển thị khi chọn màu nền) --}}
+        <div id="scp-gradients-section" style="display: none; margin-top: 10px;">
+            <div class="scp-section-label">GRADIENT HIỆN ĐẠI (NỀN)</div>
+            <div class="scp-gradients-grid" id="scp-gradients-grid"></div>
         </div>
     </div>
 
@@ -2771,7 +3216,8 @@
             width: '100%',
             fromElement: false,
             storageManager: false,
-            avoidInlineStyle: false,
+            avoidInlineStyle: true,
+            dragMode: '',
             selectorManager: {
                 componentFirst: true,
             },
@@ -2779,7 +3225,7 @@
             canvas: {
                 styles: [
                     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
-                    'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap'
+                    'https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700;900&display=swap'
                 ],
                 frameStyle: `
                     html, body {
@@ -2795,6 +3241,34 @@
                     * {
                         box-sizing: border-box;
                     }
+                    /* Loại trừ thẻ body / wrapper để không bao giờ vẽ khung xanh quanh toàn trang */
+                    body, [data-gjs-type="wrapper"] {
+                        outline: none !important;
+                        cursor: default !important;
+                    }
+                    body:hover, [data-gjs-type="wrapper"]:hover {
+                        outline: none !important;
+                        background-color: transparent !important;
+                    }
+                    [data-gjs-type]:not(body):not([data-gjs-type="wrapper"]) {
+                        cursor: pointer;
+                        transition: outline 0.15s ease;
+                    }
+                    [data-gjs-type]:not(body):not([data-gjs-type="wrapper"]):hover {
+                        outline: 1.5px dashed rgba(37, 99, 235, 0.45) !important;
+                        outline-offset: -1px;
+                    }
+                    [data-gjs-droppable="true"]:not(body):not([data-gjs-type="wrapper"]):hover {
+                        outline: 2px dashed #0284c7 !important;
+                        background-color: rgba(2, 132, 199, 0.02) !important;
+                    }
+                    .gjs-hovered:not(body):not([data-gjs-type="wrapper"]) {
+                        outline: 2px dashed #2563eb !important;
+                    }
+                    .gjs-selected:not(body):not([data-gjs-type="wrapper"]) {
+                        outline: 2px solid #2563eb !important;
+                        outline-offset: -1px;
+                    }
                 `
             },
             blockManager: {
@@ -2806,10 +3280,28 @@
                     {
                         name: '📐 Bố Cục & Vị Trí (Layout)',
                         open: true,
-                        buildProps: ['display', 'text-align', 'flex-direction', 'justify-content', 'align-items', 'flex-wrap', 'gap'],
+                        buildProps: ['position', 'top', 'left', 'right', 'bottom', 'z-index', 'display', 'text-align', 'flex-direction', 'justify-content', 'align-items', 'flex-wrap', 'gap'],
                         properties: [
                             {
-                                name: 'Hiển thị',
+                                name: 'Kiểu Vị Trí (Position)',
+                                property: 'position',
+                                type: 'select',
+                                defaults: 'static',
+                                options: [
+                                    { value: 'static', name: 'Mặc định (Static - theo luồng)' },
+                                    { value: 'relative', name: 'Tương đối (Relative)' },
+                                    { value: 'absolute', name: 'Tự do (Absolute - kéo thả tùy ý)' },
+                                    { value: 'fixed', name: 'Cố định màn hình (Fixed)' },
+                                    { value: 'sticky', name: 'Dính mép khi cuộn (Sticky)' },
+                                ]
+                            },
+                            { name: 'Cách Đỉnh (Top)', property: 'top', type: 'integer', units: ['px', '%', 'auto'] },
+                            { name: 'Cách Trái (Left)', property: 'left', type: 'integer', units: ['px', '%', 'auto'] },
+                            { name: 'Cách Phải (Right)', property: 'right', type: 'integer', units: ['px', '%', 'auto'] },
+                            { name: 'Cách Đáy (Bottom)', property: 'bottom', type: 'integer', units: ['px', '%', 'auto'] },
+                            { name: 'Thứ Tự Lớp (Z-Index)', property: 'z-index', type: 'integer', defaults: '0' },
+                            {
+                                name: 'Hiển thị (Display)',
                                 property: 'display',
                                 type: 'select',
                                 defaults: 'block',
@@ -2818,6 +3310,7 @@
                                     { value: 'flex', name: 'Flexbox (Căn chỉnh linh hoạt)' },
                                     { value: 'grid', name: 'Grid (Lưới)' },
                                     { value: 'inline-block', name: 'Inline Block (Ngang hàng)' },
+                                    { value: 'inline', name: 'Inline (Nội dòng)' },
                                     { value: 'none', name: 'Ẩn (None)' },
                                 ]
                             },
@@ -2827,60 +3320,130 @@
                                 type: 'radio',
                                 defaults: 'left',
                                 list: [
-                                    { value: 'left', name: 'Trái' },
-                                    { value: 'center', name: 'Giữa' },
-                                    { value: 'right', name: 'Phải' },
-                                    { value: 'justify', name: 'Đều' },
+                                    { value: 'left', name: 'Trái', title: 'Căn trái' },
+                                    { value: 'center', name: 'Giữa', title: 'Căn giữa' },
+                                    { value: 'right', name: 'Phải', title: 'Căn phải' },
+                                    { value: 'justify', name: 'Đều', title: 'Căn đều 2 bên' },
                                 ]
                             },
                             {
-                                name: 'Hướng Flex',
+                                name: 'Hướng Flex (Direction)',
                                 property: 'flex-direction',
                                 type: 'select',
                                 defaults: 'row',
                                 options: [
                                     { value: 'row', name: 'Hàng Ngang (Row)' },
                                     { value: 'column', name: 'Cột Dọc (Column)' },
+                                    { value: 'row-reverse', name: 'Hàng Ngược' },
+                                    { value: 'column-reverse', name: 'Cột Ngược' },
                                 ]
                             },
-                            { name: 'Căn trục chính', property: 'justify-content' },
-                            { name: 'Căn trục phụ', property: 'align-items' },
-                            { name: 'Khoảng cách Gap', property: 'gap' },
+                            {
+                                name: 'Căn trục chính (Justify)',
+                                property: 'justify-content',
+                                type: 'select',
+                                defaults: 'flex-start',
+                                options: [
+                                    { value: 'flex-start', name: 'Bắt đầu (Start)' },
+                                    { value: 'center', name: 'Chính giữa (Center)' },
+                                    { value: 'flex-end', name: 'Cuối hàng (End)' },
+                                    { value: 'space-between', name: 'Giãn 2 đầu (Between)' },
+                                    { value: 'space-around', name: 'Giãn đều (Around)' },
+                                    { value: 'space-evenly', name: 'Cách đều (Evenly)' },
+                                ]
+                            },
+                            {
+                                name: 'Căn trục phụ (Align)',
+                                property: 'align-items',
+                                type: 'select',
+                                defaults: 'stretch',
+                                options: [
+                                    { value: 'stretch', name: 'Kéo dãn (Stretch)' },
+                                    { value: 'center', name: 'Chính giữa (Center)' },
+                                    { value: 'flex-start', name: 'Bắt đầu (Start)' },
+                                    { value: 'flex-end', name: 'Cuối hàng (End)' },
+                                    { value: 'baseline', name: 'Chân dòng (Baseline)' },
+                                ]
+                            },
+                            {
+                                name: 'Xuống dòng (Wrap)',
+                                property: 'flex-wrap',
+                                type: 'select',
+                                defaults: 'nowrap',
+                                options: [
+                                    { value: 'nowrap', name: 'Không xuống dòng' },
+                                    { value: 'wrap', name: 'Tự xuống dòng (Wrap)' },
+                                ]
+                            },
+                            { name: 'Khoảng cách Gap', property: 'gap', type: 'integer', units: ['px', 'rem', '%'], defaults: '0px' },
+                        ]
+                    },
+                    {
+                        name: '📦 Khoảng Cách (Spacing)',
+                        open: true,
+                        buildProps: ['margin-top', 'margin-right', 'margin-bottom', 'margin-left', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left'],
+                        properties: [
+                            { name: 'Margin Đỉnh', property: 'margin-top', type: 'integer', units: ['px', '%', 'auto', 'rem'], defaults: '0px' },
+                            { name: 'Margin Đáy', property: 'margin-bottom', type: 'integer', units: ['px', '%', 'auto', 'rem'], defaults: '0px' },
+                            { name: 'Margin Trái', property: 'margin-left', type: 'integer', units: ['px', '%', 'auto', 'rem'], defaults: '0px' },
+                            { name: 'Margin Phải', property: 'margin-right', type: 'integer', units: ['px', '%', 'auto', 'rem'], defaults: '0px' },
+                            { name: 'Padding Đỉnh', property: 'padding-top', type: 'integer', units: ['px', '%', 'rem'], defaults: '0px' },
+                            { name: 'Padding Đáy', property: 'padding-bottom', type: 'integer', units: ['px', '%', 'rem'], defaults: '0px' },
+                            { name: 'Padding Trái', property: 'padding-left', type: 'integer', units: ['px', '%', 'rem'], defaults: '0px' },
+                            { name: 'Padding Phải', property: 'padding-right', type: 'integer', units: ['px', '%', 'rem'], defaults: '0px' },
                         ]
                     },
                     {
                         name: '📏 Kích Thước (Size)',
                         open: true,
-                        buildProps: ['width', 'min-width', 'max-width', 'height', 'min-height', 'overflow'],
+                        buildProps: ['width', 'min-width', 'max-width', 'height', 'min-height', 'max-height', 'overflow'],
                         properties: [
-                            { name: 'Chiều rộng', property: 'width' },
-                            { name: 'Rộng tối đa', property: 'max-width' },
-                            { name: 'Chiều cao', property: 'height' },
-                            { name: 'Cao tối thiểu', property: 'min-height' },
-                            { name: 'Tràn viền (Overflow)', property: 'overflow' },
+                            { name: 'Chiều rộng', property: 'width', type: 'integer', units: ['px', '%', 'vw', 'auto'], defaults: 'auto' },
+                            { name: 'Rộng tối đa', property: 'max-width', type: 'integer', units: ['px', '%', 'vw', 'none'], defaults: 'none' },
+                            { name: 'Rộng tối thiểu', property: 'min-width', type: 'integer', units: ['px', '%', 'vw', 'auto'], defaults: 'auto' },
+                            { name: 'Chiều cao', property: 'height', type: 'integer', units: ['px', '%', 'vh', 'auto'], defaults: 'auto' },
+                            { name: 'Cao tối đa', property: 'max-height', type: 'integer', units: ['px', '%', 'vh', 'none'], defaults: 'none' },
+                            { name: 'Cao tối thiểu', property: 'min-height', type: 'integer', units: ['px', '%', 'vh', 'auto'], defaults: 'auto' },
+                            {
+                                name: 'Tràn viền (Overflow)',
+                                property: 'overflow',
+                                type: 'select',
+                                defaults: 'visible',
+                                options: [
+                                    { value: 'visible', name: 'Hiển thị tràn (Visible)' },
+                                    { value: 'hidden', name: 'Cắt bỏ phần tràn (Hidden)' },
+                                    { value: 'auto', name: 'Hiện cuộn khi tràn (Auto)' },
+                                    { value: 'scroll', name: 'Luôn hiện cuộn (Scroll)' },
+                                ]
+                            },
                         ]
                     },
                     {
                         name: '🔤 Chữ & Phông (Typography)',
                         open: true,
-                        buildProps: ['font-family', 'font-size', 'line-height', 'font-weight', 'color', 'text-align', 'letter-spacing'],
+                        buildProps: ['font-family', 'font-size', 'line-height', 'font-weight', 'color', 'text-align', 'letter-spacing', 'text-transform', 'text-decoration'],
                         properties: [
                             {
                                 name: 'Font chữ',
                                 property: 'font-family',
                                 type: 'select',
-                                defaults: 'Plus Jakarta Sans',
+                                full: true,
+                                defaults: 'Plus Jakarta Sans, sans-serif',
                                 options: [
-                                    { value: 'Plus Jakarta Sans, sans-serif', name: 'Plus Jakarta Sans' },
+                                    { value: 'Plus Jakarta Sans, sans-serif', name: 'Plus Jakarta Sans (Mặc định)' },
+                                    { value: 'Be Vietnam Pro, sans-serif', name: 'Be Vietnam Pro (Tiếng Việt)' },
                                     { value: 'Inter, sans-serif', name: 'Inter' },
                                     { value: 'Roboto, sans-serif', name: 'Roboto' },
                                     { value: 'Montserrat, sans-serif', name: 'Montserrat' },
-                                    { value: 'Playfair Display, serif', name: 'Playfair Display' },
+                                    { value: 'Poppins, sans-serif', name: 'Poppins' },
+                                    { value: 'Playfair Display, serif', name: 'Playfair Display (Thanh lịch)' },
                                     { value: 'sans-serif', name: 'System Sans-Serif' },
+                                    { value: 'serif', name: 'System Serif' },
+                                    { value: 'monospace', name: 'Monospace' },
                                 ]
                             },
-                            { name: 'Cỡ chữ', property: 'font-size' },
-                            { name: 'Chiều cao dòng', property: 'line-height' },
+                            { name: 'Cỡ chữ', property: 'font-size', type: 'integer', units: ['px', 'rem', 'em'], defaults: '16px' },
+                            { name: 'Chiều cao dòng', property: 'line-height', type: 'integer', units: ['px', 'em', 'normal'], defaults: 'normal' },
                             {
                                 name: 'Độ đậm',
                                 property: 'font-weight',
@@ -2896,74 +3459,131 @@
                                     { value: '900', name: '900 (Đặc)' },
                                 ]
                             },
-                            { name: 'Màu chữ', property: 'color', type: 'color' },
+                            { name: 'Màu chữ', property: 'color', type: 'color', defaults: '#0f172a', full: true },
                             {
                                 name: 'Căn lề',
                                 property: 'text-align',
                                 type: 'radio',
+                                full: true,
                                 defaults: 'left',
                                 list: [
-                                    { value: 'left', name: 'Trái' },
-                                    { value: 'center', name: 'Giữa' },
-                                    { value: 'right', name: 'Phải' },
-                                    { value: 'justify', name: 'Đều' },
+                                    { value: 'left', name: 'Trái', title: 'Căn trái' },
+                                    { value: 'center', name: 'Giữa', title: 'Căn giữa' },
+                                    { value: 'right', name: 'Phải', title: 'Căn phải' },
+                                    { value: 'justify', name: 'Đều', title: 'Căn đều 2 bên' },
                                 ]
                             },
-                            { name: 'Giãn chữ', property: 'letter-spacing' },
+                            { name: 'Giãn chữ', property: 'letter-spacing', type: 'integer', units: ['px', 'em'], defaults: 'normal' },
+                            {
+                                name: 'Biến đổi chữ',
+                                property: 'text-transform',
+                                type: 'select',
+                                defaults: 'none',
+                                options: [
+                                    { value: 'none', name: 'Bình thường' },
+                                    { value: 'uppercase', name: 'IN HOA TOÀN BỘ' },
+                                    { value: 'lowercase', name: 'in thường toàn bộ' },
+                                    { value: 'capitalize', name: 'Viết Hoa Đầu Từ' },
+                                ]
+                            },
+                            {
+                                name: 'Gạch chân',
+                                property: 'text-decoration',
+                                type: 'select',
+                                defaults: 'none',
+                                options: [
+                                    { value: 'none', name: 'Không' },
+                                    { value: 'underline', name: 'Gạch chân' },
+                                    { value: 'line-through', name: 'Gạch ngang (Xóa)' },
+                                ]
+                            },
                         ]
                     },
                     {
                         name: '🎨 Nền & Hình Nền (Background)',
-                        open: false,
-                        buildProps: ['background-color', 'background-image', 'background-size', 'background-repeat'],
+                        open: true,
+                        buildProps: ['background-color', 'background-image', 'background-size', 'background-repeat', 'background-position', 'background-attachment'],
                         properties: [
-                            { name: 'Màu nền', property: 'background-color', type: 'color' },
-                            { name: 'Ảnh nền URL', property: 'background-image' },
+                            { name: 'Màu nền', property: 'background-color', type: 'color', full: true },
+                            {
+                                name: 'Ảnh nền URL',
+                                property: 'background-image',
+                                type: 'text',
+                                defaults: 'none',
+                                full: true
+                            },
                             {
                                 name: 'Kích cỡ ảnh',
                                 property: 'background-size',
                                 type: 'select',
-                                defaults: 'auto',
+                                full: true,
+                                defaults: 'cover',
                                 options: [
-                                    { value: 'auto', name: 'Tự động (Auto)' },
-                                    { value: 'cover', name: 'Phủ kín (Cover)' },
-                                    { value: 'contain', name: 'Vừa khung (Contain)' },
+                                    { value: 'cover', name: 'Phủ kín khung (Cover - Khuyên dùng)' },
+                                    { value: 'contain', name: 'Vừa vặn trong khung (Contain)' },
+                                    { value: 'auto', name: 'Kích thước gốc (Auto)' },
+                                    { value: '100% 100%', name: 'Kéo dãn vừa khung (100% 100%)' },
                                 ]
                             },
                             {
                                 name: 'Lặp lại',
                                 property: 'background-repeat',
                                 type: 'select',
+                                full: true,
                                 defaults: 'no-repeat',
                                 options: [
-                                    { value: 'no-repeat', name: 'Không lặp' },
-                                    { value: 'repeat', name: 'Lặp lại (Repeat)' },
-                                    { value: 'repeat-x', name: 'Lặp ngang' },
-                                    { value: 'repeat-y', name: 'Lặp dọc' },
+                                    { value: 'no-repeat', name: 'Không lặp (No-repeat - Khuyên dùng)' },
+                                    { value: 'repeat', name: 'Lặp lại toàn bộ (Repeat)' },
+                                    { value: 'repeat-x', name: 'Lặp theo chiều ngang (Repeat-X)' },
+                                    { value: 'repeat-y', name: 'Lặp theo chiều dọc (Repeat-Y)' },
+                                ]
+                            },
+                            {
+                                name: 'Vị trí ảnh',
+                                property: 'background-position',
+                                type: 'select',
+                                full: true,
+                                defaults: 'center center',
+                                options: [
+                                    { value: 'center center', name: 'Chính giữa (Center)' },
+                                    { value: 'top center', name: 'Đỉnh giữa (Top Center)' },
+                                    { value: 'bottom center', name: 'Đáy giữa (Bottom Center)' },
+                                    { value: 'left center', name: 'Trái giữa (Left Center)' },
+                                    { value: 'right center', name: 'Phải giữa (Right Center)' },
+                                    { value: 'top left', name: 'Góc trên trái (Top Left)' },
+                                ]
+                            },
+                            {
+                                name: 'Hiệu ứng cuộn',
+                                property: 'background-attachment',
+                                type: 'select',
+                                full: true,
+                                defaults: 'scroll',
+                                options: [
+                                    { value: 'scroll', name: 'Cuộn theo trang (Scroll)' },
+                                    { value: 'fixed', name: 'Đứng yên cố định (Parallax)' },
                                 ]
                             },
                         ]
                     },
                     {
                         name: '🔲 Viền & Bo Góc (Borders & Radius)',
-                        open: false,
+                        open: true,
                         buildProps: ['border-radius', 'border-style', 'border-width', 'border-color'],
                         properties: [
                             {
                                 name: 'Bo góc tròn (Radius)',
                                 property: 'border-radius',
-                                type: 'composite',
-                                properties: [
-                                    { name: 'Góc trên-trái', property: 'border-top-left-radius', type: 'integer', units: ['px', '%'], defaults: '0px' },
-                                    { name: 'Góc trên-phải', property: 'border-top-right-radius', type: 'integer', units: ['px', '%'], defaults: '0px' },
-                                    { name: 'Góc dưới-trái', property: 'border-bottom-left-radius', type: 'integer', units: ['px', '%'], defaults: '0px' },
-                                    { name: 'Góc dưới-phải', property: 'border-bottom-right-radius', type: 'integer', units: ['px', '%'], defaults: '0px' },
-                                ]
+                                type: 'integer',
+                                full: true,
+                                units: ['px', '%'],
+                                defaults: '0px'
                             },
                             {
                                 name: 'Kiểu viền',
                                 property: 'border-style',
                                 type: 'select',
+                                full: true,
                                 defaults: 'none',
                                 options: [
                                     { value: 'none', name: 'Không viền' },
@@ -2973,17 +3593,52 @@
                                     { value: 'double', name: 'Viền đôi (Double)' },
                                 ]
                             },
-                            { name: 'Độ dày viền', property: 'border-width' },
-                            { name: 'Màu viền', property: 'border-color', type: 'color' },
+                            { name: 'Độ dày viền', property: 'border-width', type: 'integer', units: ['px'], defaults: '0px' },
+                            { name: 'Màu viền', property: 'border-color', type: 'color', defaults: '#e2e8f0', full: true },
                         ]
                     },
                     {
                         name: '✨ Hiệu Ứng & Đổ Bóng (Effects & Shadow)',
-                        open: false,
-                        buildProps: ['box-shadow', 'opacity'],
+                        open: true,
+                        buildProps: ['opacity', 'box-shadow', 'cursor'],
                         properties: [
-                            { name: 'Đổ bóng', property: 'box-shadow' },
-                            { name: 'Độ mờ (Opacity)', property: 'opacity' },
+                            {
+                                name: 'Độ mờ (Opacity)',
+                                property: 'opacity',
+                                type: 'slider',
+                                defaults: '1',
+                                step: 0.05,
+                                max: 1,
+                                min: 0,
+                            },
+                            {
+                                name: 'Bóng đổ (Box Shadow)',
+                                property: 'box-shadow',
+                                type: 'select',
+                                full: true,
+                                defaults: 'none',
+                                options: [
+                                    { value: 'none', name: 'Tắt bóng đổ (None)' },
+                                    { value: '0 2px 8px rgba(0,0,0,0.06)', name: 'Bóng nhẹ (Subtle)' },
+                                    { value: '0 10px 25px -5px rgba(0,0,0,0.12)', name: 'Bóng nổi (Floating)' },
+                                    { value: '0 20px 35px -8px rgba(0,0,0,0.22)', name: 'Bóng đậm (Deep)' },
+                                    { value: '0 0 25px rgba(37,99,235,0.38)', name: 'Hào quang xanh (Blue Glow)' },
+                                    { value: '0 0 25px rgba(245,158,11,0.38)', name: 'Hào quang vàng (Gold Glow)' },
+                                ]
+                            },
+                            {
+                                name: 'Con trỏ chuột (Cursor)',
+                                property: 'cursor',
+                                type: 'select',
+                                defaults: 'default',
+                                options: [
+                                    { value: 'default', name: 'Mặc định (Default)' },
+                                    { value: 'pointer', name: 'Bàn tay nhấp (Pointer)' },
+                                    { value: 'grab', name: 'Nắm kéo (Grab)' },
+                                    { value: 'text', name: 'Con trỏ chữ (Text)' },
+                                    { value: 'not-allowed', name: 'Cấm (Not Allowed)' },
+                                ]
+                            }
                         ]
                     }
                 ]
@@ -3471,20 +4126,388 @@
             }
         }
 
+        // ======================================================================
+        // STUDIO COLOR PALETTE POPOVER CONTROLLER (FIGMA & CANVA GRADE UX)
+        // ======================================================================
+        const SCP_NEUTRALS = [
+            { name: 'Trắng tinh khiết', value: '#ffffff' },
+            { name: 'Xám sáng Slate 50', value: '#f8fafc' },
+            { name: 'Xám nhạt Slate 100', value: '#f1f5f9' },
+            { name: 'Xám viền Slate 200', value: '#e2e8f0' },
+            { name: 'Xám Slate 400', value: '#94a3b8' },
+            { name: 'Xám đậm Slate 500', value: '#64748b' },
+            { name: 'Xám tối Slate 700', value: '#334155' },
+            { name: 'Đen Slate 900', value: '#0f172a' },
+        ];
+
+        const SCP_BRANDS = [
+            { name: 'Xanh Royal TechHub', value: '#2563eb' },
+            { name: 'Xanh Blue sáng', value: '#3b82f6' },
+            { name: 'Xanh Sky', value: '#0284c7' },
+            { name: 'Xanh Ngọc Cyan', value: '#06b6d4' },
+            { name: 'Xanh Ngọc Emerald', value: '#10b981' },
+            { name: 'Xanh Lá Green', value: '#16a34a' },
+            { name: 'Xanh Chuối Lime', value: '#84cc16' },
+            { name: 'Vàng Amber', value: '#f59e0b' },
+            { name: 'Cam Rực Rỡ', value: '#f97316' },
+            { name: 'Đỏ Ruby', value: '#ef4444' },
+            { name: 'Đỏ Thẫm Rose', value: '#e11d48' },
+            { name: 'Hồng Pink', value: '#ec4899' },
+            { name: 'Tím Hồng Fuchsia', value: '#d946ef' },
+            { name: 'Tím Violet', value: '#8b5cf6' },
+            { name: 'Chàm Indigo', value: '#6366f1' },
+            { name: 'Đen Tuyệt Đối', value: '#000000' },
+        ];
+
+        const SCP_GRADIENTS = [
+            { name: 'Ocean Blue', value: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)' },
+            { name: 'Purple Glow', value: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)' },
+            { name: 'Cyan Breeze', value: 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)' },
+            { name: 'Sunset Warm', value: 'linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)' },
+            { name: 'Emerald Forest', value: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' },
+            { name: 'Dark Slate', value: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' },
+        ];
+
+        let currentScpTarget = {
+            fieldEl: null,
+            inputEl: null,
+            colorpEl: null,
+            colorpcEl: null,
+            propName: null,
+        };
+
+        function detectPropNameFromField(fieldEl) {
+            const propEl = fieldEl.closest('.gjs-sm-property');
+            if (propEl) {
+                const classMatch = propEl.className.match(/gjs-sm-property__([a-zA-Z0-9_-]+)/);
+                if (classMatch && classMatch[1]) return classMatch[1];
+
+                if (propEl.id) {
+                    const idMatch = propEl.id.match(/gjs-sm-([a-zA-Z0-9_-]+)/);
+                    if (idMatch && idMatch[1]) return idMatch[1];
+                }
+
+                const labelEl = propEl.querySelector('.gjs-sm-label, label');
+                if (labelEl) {
+                    const text = labelEl.innerText.trim().toLowerCase();
+                    if (text.includes('màu chữ') || text.includes('text color')) return 'color';
+                    if (text.includes('màu nền') || text.includes('background color')) return 'background-color';
+                    if (text.includes('màu viền') || text.includes('border color')) return 'border-color';
+                }
+            }
+            return 'color';
+        }
+
+        function initStudioColorPopover() {
+            // Render Swatches
+            const neutralGrid = document.getElementById('scp-neutral-swatches');
+            if (neutralGrid && neutralGrid.children.length === 0) {
+                SCP_NEUTRALS.forEach(c => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'scp-swatch';
+                    btn.style.backgroundColor = c.value;
+                    btn.title = `${c.name} (${c.value})`;
+                    btn.onclick = (e) => { e.stopPropagation(); applyStudioColor(c.value); };
+                    neutralGrid.appendChild(btn);
+                });
+            }
+
+            const brandGrid = document.getElementById('scp-brand-swatches');
+            if (brandGrid && brandGrid.children.length === 0) {
+                SCP_BRANDS.forEach(c => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'scp-swatch';
+                    btn.style.backgroundColor = c.value;
+                    btn.title = `${c.name} (${c.value})`;
+                    btn.onclick = (e) => { e.stopPropagation(); applyStudioColor(c.value); };
+                    brandGrid.appendChild(btn);
+                });
+            }
+
+            const gradGrid = document.getElementById('scp-gradients-grid');
+            if (gradGrid && gradGrid.children.length === 0) {
+                SCP_GRADIENTS.forEach(g => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'scp-gradient-swatch';
+                    btn.style.backgroundImage = g.value;
+                    btn.title = g.name;
+                    btn.onclick = (e) => { e.stopPropagation(); applyStudioColor(g.value, true); };
+                    gradGrid.appendChild(btn);
+                });
+            }
+
+            // Delegated click on GrapesJS styles container
+            const stylesContainer = document.getElementById('grapes-styles-container');
+            if (stylesContainer) {
+                stylesContainer.addEventListener('click', (e) => {
+                    const colorField = e.target.closest('.gjs-field-color');
+                    if (!colorField) return;
+                    e.stopPropagation();
+                    e.preventDefault();
+                    openStudioColorPopover(colorField);
+                });
+            }
+
+            // Click outside to close
+            document.addEventListener('mousedown', (e) => {
+                const popover = document.getElementById('studio-color-palette-popover');
+                if (!popover || popover.style.display === 'none') return;
+                if (popover.contains(e.target)) return;
+                if (currentScpTarget.fieldEl && currentScpTarget.fieldEl.contains(e.target)) return;
+                closeStudioColorPopover();
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeStudioColorPopover();
+            });
+
+            // Update swatches on sector clicks
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('.gjs-sm-sector-title')) {
+                    setTimeout(updateAllColorFieldSwatches, 100);
+                }
+            });
+        }
+
+        function openStudioColorPopover(fieldEl) {
+            const popover = document.getElementById('studio-color-palette-popover');
+            if (!popover) return;
+
+            const inputEl = fieldEl.querySelector('input');
+            const colorpEl = fieldEl.querySelector('.gjs-field-colorp');
+            const colorpcEl = fieldEl.querySelector('.gjs-field-colorp-c');
+            const propName = detectPropNameFromField(fieldEl);
+
+            currentScpTarget = {
+                fieldEl,
+                inputEl,
+                colorpEl,
+                colorpcEl,
+                propName,
+            };
+
+            // Set Title according to property
+            const titleText = document.getElementById('scp-title-text');
+            if (titleText) {
+                if (propName === 'color') titleText.innerText = 'BẢNG MÀU CHỮ';
+                else if (propName === 'background-color') titleText.innerText = 'BẢNG MÀU NỀN';
+                else if (propName === 'border-color') titleText.innerText = 'BẢNG MÀU VIỀN';
+                else titleText.innerText = 'BẢNG MÀU THIẾT KẾ';
+            }
+
+            // Toggle Gradients Section (only for background-color)
+            const gradSection = document.getElementById('scp-gradients-section');
+            if (gradSection) {
+                gradSection.style.display = (propName === 'background-color') ? 'block' : 'none';
+            }
+
+            // Sync current value to preview
+            const curVal = inputEl ? inputEl.value.trim() : '';
+            syncPopoverPreview(curVal);
+
+            // Display & position cleanly
+            popover.style.display = 'block';
+            const rect = fieldEl.getBoundingClientRect();
+            const popoverWidth = 295;
+            const popoverHeight = popover.offsetHeight || 380;
+
+            let left = rect.left - popoverWidth - 14;
+            if (left < 10) {
+                left = Math.max(10, rect.right - popoverWidth);
+            }
+            let top = rect.top;
+            if (top + popoverHeight > window.innerHeight - 20) {
+                top = Math.max(10, window.innerHeight - popoverHeight - 20);
+            }
+
+            popover.style.left = `${left}px`;
+            popover.style.top = `${top}px`;
+        }
+
+        function closeStudioColorPopover() {
+            const popover = document.getElementById('studio-color-palette-popover');
+            if (popover) popover.style.display = 'none';
+            currentScpTarget = {
+                fieldEl: null,
+                inputEl: null,
+                colorpEl: null,
+                colorpcEl: null,
+                propName: null,
+            };
+        }
+
+        function syncPopoverPreview(val) {
+            const preview = document.getElementById('scp-active-preview');
+            const hexInput = document.getElementById('scp-hex-input');
+            const nativePicker = document.getElementById('scp-native-color-picker');
+
+            if (hexInput) hexInput.value = val;
+            if (preview) {
+                if (!val || val === 'none' || val === 'transparent') {
+                    preview.style.background = 'repeating-conic-gradient(#cbd5e1 0% 25%, #ffffff 0% 50%) 50% / 6px 6px';
+                } else if (val.startsWith('linear-gradient')) {
+                    preview.style.background = val;
+                } else {
+                    preview.style.background = val;
+                }
+            }
+            if (nativePicker && val && val.startsWith('#')) {
+                if (val.length === 7) nativePicker.value = val;
+                else if (val.length === 4) nativePicker.value = `#${val[1]}${val[1]}${val[2]}${val[2]}${val[3]}${val[3]}`;
+            }
+        }
+
+        function applyStudioColor(val, isGradient = false) {
+            const selected = editor.getSelected();
+            const propName = currentScpTarget.propName || (activeQcpTarget || 'color');
+
+            syncPopoverPreview(val);
+
+            // 1. Apply to GrapesJS Model and Canvas DOM Element
+            if (selected) {
+                const el = selected.getEl ? selected.getEl() : null;
+                if (isGradient) {
+                    selected.addStyle({ 'background-image': val });
+                    if (el && el.style) el.style.backgroundImage = val;
+                } else {
+                    if (val === 'none' || val === 'transparent') {
+                        selected.addStyle({ [propName]: 'none' });
+                        if (el && el.style) {
+                            if (propName === 'background-color') el.style.backgroundColor = 'transparent';
+                            else el.style[propName] = 'transparent';
+                        }
+                    } else {
+                        selected.addStyle({ [propName]: val });
+                        if (el && el.style) el.style[propName] = val;
+                        if (propName === 'background-color') {
+                            const curBgImg = selected.getStyle()['background-image'];
+                            if (curBgImg && curBgImg.includes('gradient')) {
+                                selected.addStyle({ 'background-image': 'none' });
+                                if (el && el.style) el.style.backgroundImage = 'none';
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 2. Update Input & Swatch UI
+            if (currentScpTarget.inputEl) {
+                currentScpTarget.inputEl.value = isGradient ? 'gradient' : val;
+                currentScpTarget.inputEl.dispatchEvent(new Event('change', { bubbles: true }));
+                currentScpTarget.inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+
+            // 3. Update GrapesJS StyleManager model if available
+            try {
+                const sm = editor.StyleManager;
+                const propModel = sm.getProperty(propName) ||
+                                 sm.getProperty('🔤 Chữ & Phông (Typography)', propName) ||
+                                 sm.getProperty('🎨 Nền & Hình Nền (Background)', propName) ||
+                                 sm.getProperty('🔲 Viền & Bo Góc (Borders & Radius)', propName);
+                if (propModel && propModel.setValue) {
+                    propModel.setValue(isGradient ? 'gradient' : val);
+                }
+            } catch(e) {}
+
+            updateAllColorFieldSwatches();
+            showStudioToast(`🎨 Đã chọn màu: ${isGradient ? 'Gradient' : val}`, 'success', 1500);
+        }
+
+        function onHexInputChange(val) {
+            val = val.trim();
+            if (!val) return;
+            applyStudioColor(val);
+        }
+
+        function onNativeColorChange(val) {
+            if (!val) return;
+            applyStudioColor(val);
+        }
+
+        function triggerNativeColorPicker() {
+            const nativePicker = document.getElementById('scp-native-color-picker');
+            if (nativePicker) {
+                if (typeof nativePicker.showPicker === 'function') {
+                    try {
+                        nativePicker.showPicker();
+                    } catch(e) {
+                        nativePicker.click();
+                    }
+                } else {
+                    nativePicker.click();
+                }
+            }
+        }
+
+        async function pickColorWithEyeDropper() {
+            if ('EyeDropper' in window) {
+                try {
+                    const eyeDropper = new EyeDropper();
+                    const result = await eyeDropper.open();
+                    if (result && result.sRGBHex) {
+                        applyStudioColor(result.sRGBHex);
+                        showStudioToast(`🎨 Đã hút màu: ${result.sRGBHex}`, 'success', 2000);
+                    }
+                } catch (err) {
+                    // Eyedropper dismissed
+                }
+            } else {
+                triggerNativeColorPicker();
+            }
+        }
+
+        function updateAllColorFieldSwatches() {
+            document.querySelectorAll('.gjs-field-color').forEach(field => {
+                const input = field.querySelector('input');
+                const colorp = field.querySelector('.gjs-field-colorp');
+                const colorpc = field.querySelector('.gjs-field-colorp-c');
+                if (!input || !colorp) return;
+
+                const val = (input.value || '').trim().toLowerCase();
+                if (!val || val === 'none' || val === 'transparent' || val === 'rgba(0, 0, 0, 0)') {
+                    field.setAttribute('data-none', 'true');
+                    colorp.classList.add('is-none');
+                    if (colorpc) colorpc.style.backgroundColor = 'transparent';
+                } else {
+                    field.removeAttribute('data-none');
+                    colorp.classList.remove('is-none');
+                    if (colorpc) colorpc.style.backgroundColor = val;
+                }
+            });
+        }
+
         function applyQuickColor(colorValue, isGradient = false) {
             if (!currentSelectedModel) {
                 showStudioToast('⚠️ Vui lòng nhấp chọn một phần tử trên Canvas trước!', 'warning');
                 return;
             }
+            const el = currentSelectedModel.getEl();
             if (isGradient) {
                 currentSelectedModel.addStyle({ 'background-image': colorValue, 'background-color': 'transparent' });
+                if (el && el.style) { el.style.backgroundImage = colorValue; el.style.backgroundColor = 'transparent'; }
             } else {
                 if (activeQcpTarget === 'color') {
                     currentSelectedModel.addStyle({ 'color': colorValue });
+                    if (el && el.style) { el.style.color = colorValue; }
+                    try {
+                        const sm = editor.StyleManager;
+                        const prop = sm.getProperty('color') || sm.getProperty('🔤 Chữ & Phông (Typography)', 'color');
+                        if (prop && prop.setValue) prop.setValue(colorValue);
+                    } catch(e) {}
                 } else {
                     currentSelectedModel.addStyle({ 'background-color': colorValue, 'background-image': 'none' });
+                    if (el && el.style) { el.style.backgroundColor = colorValue; el.style.backgroundImage = 'none'; }
+                    try {
+                        const sm = editor.StyleManager;
+                        const prop = sm.getProperty('background-color') || sm.getProperty('🎨 Nền & Hình Nền (Background)', 'background-color');
+                        if (prop && prop.setValue) prop.setValue(colorValue);
+                    } catch(e) {}
                 }
             }
+            updateAllColorFieldSwatches();
             showStudioToast(`🎨 Đã áp dụng màu mới cho phần tử!`, 'success');
         }
 
@@ -3494,6 +4517,8 @@
                 return;
             }
             currentSelectedModel.addStyle({ 'border-radius': rad });
+            const el = currentSelectedModel.getEl();
+            if (el && el.style) el.style.borderRadius = rad;
             showStudioToast(`✨ Đã đặt bo góc: ${rad}`, 'success');
         }
 
@@ -3503,6 +4528,8 @@
                 return;
             }
             currentSelectedModel.addStyle({ 'box-shadow': shadow });
+            const el = currentSelectedModel.getEl();
+            if (el && el.style) el.style.boxShadow = shadow;
             showStudioToast(`✨ Đã áp dụng hiệu ứng bóng đổ!`, 'success');
         }
 
@@ -3511,14 +4538,19 @@
                 showStudioToast('⚠️ Vui lòng nhấp chọn một phần tử trên Canvas trước!', 'warning');
                 return;
             }
+            const el = currentSelectedModel.getEl();
             if (type === 'left') {
                 currentSelectedModel.addStyle({ 'margin-left': '0', 'margin-right': 'auto', 'text-align': 'left' });
+                if (el && el.style) { el.style.marginLeft = '0'; el.style.marginRight = 'auto'; el.style.textAlign = 'left'; }
             } else if (type === 'center') {
                 currentSelectedModel.addStyle({ 'margin-left': 'auto', 'margin-right': 'auto', 'text-align': 'center' });
+                if (el && el.style) { el.style.marginLeft = 'auto'; el.style.marginRight = 'auto'; el.style.textAlign = 'center'; }
             } else if (type === 'right') {
                 currentSelectedModel.addStyle({ 'margin-left': 'auto', 'margin-right': '0', 'text-align': 'right' });
+                if (el && el.style) { el.style.marginLeft = 'auto'; el.style.marginRight = '0'; el.style.textAlign = 'right'; }
             } else if (type === 'full') {
                 currentSelectedModel.addStyle({ 'width': '100%', 'max-width': '100%' });
+                if (el && el.style) { el.style.width = '100%'; el.style.maxWidth = '100%'; }
             }
             showStudioToast(`📐 Đã căn chỉnh bố cục!`, 'success');
         }
@@ -3580,15 +4612,177 @@
         }
 
         // ======================================================================
-        // 4. COMPONENT SELECTION & REORDERING HANDLERS
+        // 4. STYLE NORMALIZATION & COMPONENT SELECTION HANDLERS
         // ======================================================================
+        function expandShorthands(styleObj) {
+            if (!styleObj) return {};
+
+            // 1. Mở rộng khoảng cách ngoài margin: top [right] [bottom] [left]
+            if (styleObj.margin && typeof styleObj.margin === 'string') {
+                const parts = styleObj.margin.trim().split(/\s+/);
+                if (parts.length === 1) {
+                    styleObj['margin-top'] = parts[0];
+                    styleObj['margin-right'] = parts[0];
+                    styleObj['margin-bottom'] = parts[0];
+                    styleObj['margin-left'] = parts[0];
+                } else if (parts.length === 2) {
+                    styleObj['margin-top'] = parts[0];
+                    styleObj['margin-right'] = parts[1];
+                    styleObj['margin-bottom'] = parts[0];
+                    styleObj['margin-left'] = parts[1];
+                } else if (parts.length === 3) {
+                    styleObj['margin-top'] = parts[0];
+                    styleObj['margin-right'] = parts[1];
+                    styleObj['margin-bottom'] = parts[2];
+                    styleObj['margin-left'] = parts[1];
+                } else if (parts.length === 4) {
+                    styleObj['margin-top'] = parts[0];
+                    styleObj['margin-right'] = parts[1];
+                    styleObj['margin-bottom'] = parts[2];
+                    styleObj['margin-left'] = parts[3];
+                }
+                delete styleObj.margin;
+            }
+
+            // 2. Mở rộng khoảng cách trong padding: top [right] [bottom] [left]
+            if (styleObj.padding && typeof styleObj.padding === 'string') {
+                const parts = styleObj.padding.trim().split(/\s+/);
+                if (parts.length === 1) {
+                    styleObj['padding-top'] = parts[0];
+                    styleObj['padding-right'] = parts[0];
+                    styleObj['padding-bottom'] = parts[0];
+                    styleObj['padding-left'] = parts[0];
+                } else if (parts.length === 2) {
+                    styleObj['padding-top'] = parts[0];
+                    styleObj['padding-right'] = parts[1];
+                    styleObj['padding-bottom'] = parts[0];
+                    styleObj['padding-left'] = parts[1];
+                } else if (parts.length === 3) {
+                    styleObj['padding-top'] = parts[0];
+                    styleObj['padding-right'] = parts[1];
+                    styleObj['padding-bottom'] = parts[2];
+                    styleObj['padding-left'] = parts[1];
+                } else if (parts.length === 4) {
+                    styleObj['padding-top'] = parts[0];
+                    styleObj['padding-right'] = parts[1];
+                    styleObj['padding-bottom'] = parts[2];
+                    styleObj['padding-left'] = parts[3];
+                }
+                delete styleObj.padding;
+            }
+
+            // 3. Mở rộng màu nền và hình nền
+            if (styleObj.background && typeof styleObj.background === 'string') {
+                const bg = styleObj.background.trim();
+                if (bg.startsWith('#') || bg.startsWith('rgb') || bg.startsWith('hsl') || ['transparent', 'white', 'black'].includes(bg)) {
+                    if (!styleObj['background-color']) styleObj['background-color'] = bg;
+                    delete styleObj.background;
+                } else if (bg.includes('url(')) {
+                    if (!styleObj['background-image']) styleObj['background-image'] = bg;
+                    delete styleObj.background;
+                }
+            }
+
+            // 4. Mở rộng viền border
+            if (styleObj.border && typeof styleObj.border === 'string') {
+                const borderParts = styleObj.border.trim().split(/\s+/);
+                if (borderParts.length === 3) {
+                    if (!styleObj['border-width']) styleObj['border-width'] = borderParts[0];
+                    if (!styleObj['border-style']) styleObj['border-style'] = borderParts[1];
+                    if (!styleObj['border-color']) styleObj['border-color'] = borderParts[2];
+                    delete styleObj.border;
+                } else if (borderParts.length === 1 && borderParts[0] === 'none') {
+                    styleObj['border-style'] = 'none';
+                    delete styleObj.border;
+                }
+            }
+
+            return styleObj;
+        }
+
+        function cleanAndNormalizeComponentModel(comp) {
+            if (!comp) return;
+            try {
+                let styleObj = Object.assign({}, comp.getStyle ? comp.getStyle() : {});
+
+                // 1. Trích xuất inline style từ thẻ DOM iframe nếu có
+                const el = comp.getEl ? comp.getEl() : null;
+                if (el && el.getAttribute) {
+                    const inlineStyleStr = el.getAttribute('style');
+                    if (inlineStyleStr && typeof inlineStyleStr === 'string' && inlineStyleStr.trim() !== '') {
+                        inlineStyleStr.split(';').forEach(rule => {
+                            const parts = rule.split(':');
+                            if (parts.length >= 2) {
+                                const prop = parts[0].trim().toLowerCase();
+                                const val = parts.slice(1).join(':').trim();
+                                if (prop && val) {
+                                    styleObj[prop] = val;
+                                }
+                            }
+                        });
+                        el.removeAttribute('style');
+                    }
+                }
+
+                // Trích xuất inline style từ attributes model
+                const attrs = comp.getAttributes ? Object.assign({}, comp.getAttributes()) : {};
+                if (attrs && attrs.style) {
+                    const inlineStyleStr = attrs.style;
+                    if (typeof inlineStyleStr === 'string' && inlineStyleStr.trim() !== '') {
+                        inlineStyleStr.split(';').forEach(rule => {
+                            const parts = rule.split(':');
+                            if (parts.length >= 2) {
+                                const prop = parts[0].trim().toLowerCase();
+                                const val = parts.slice(1).join(':').trim();
+                                if (prop && val) {
+                                    styleObj[prop] = val;
+                                }
+                            }
+                        });
+                    }
+                    delete attrs.style;
+                    comp.setAttributes(attrs);
+                }
+
+                // 2. Mở rộng shorthand (margin, padding, border, background)
+                styleObj = expandShorthands(styleObj);
+
+                // 3. Tối ưu ảnh nền mặc định: Không bao giờ bị lặp ảnh ngang/dọc
+                if (styleObj['background-image'] && styleObj['background-image'] !== 'none') {
+                    if (!styleObj['background-size']) styleObj['background-size'] = 'cover';
+                    if (!styleObj['background-repeat']) styleObj['background-repeat'] = 'no-repeat';
+                    if (!styleObj['background-position']) styleObj['background-position'] = 'center center';
+                }
+
+                // 4. Lưu lại toàn bộ vào style model chuẩn GrapesJS
+                if (comp.setStyle) {
+                    comp.setStyle(styleObj);
+                }
+            } catch (e) {
+                console.warn('cleanAndNormalizeComponentModel warn:', e);
+            }
+        }
+
+        function normalizeComponentTree(root) {
+            if (!root) return;
+            cleanAndNormalizeComponentModel(root);
+            if (root.components) {
+                root.components().forEach(child => normalizeComponentTree(child));
+            }
+        }
+
         let currentSelectedModel = null;
 
         editor.on('component:selected', (model) => {
             if (!model) return;
+            cleanAndNormalizeComponentModel(model);
             currentSelectedModel = model;
 
             const tagRaw = (model.get('tagName') || model.get('type') || 'DIV').toUpperCase();
+            if (model === editor.getWrapper() || tagRaw === 'BODY' || tagRaw === 'WRAPPER') {
+                model.set('toolbar', []);
+                return;
+            }
             let tagIcon = '📦';
             if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(tagRaw)) tagIcon = '🔤';
             else if (tagRaw === 'P' || tagRaw === 'SPAN') tagIcon = '📝';
@@ -3608,7 +4802,12 @@
                     label: `${tagIcon} ${tagRaw}`
                 },
                 {
-                    attributes: { class: 'gjs-no-touch-actions fa fa-arrows', draggable: 'true', title: 'Giữ chuột và kéo để di chuyển khối (Drag to Move)' },
+                    attributes: {
+                        class: 'gjs-no-touch-actions fa fa-arrows-up-down-left-right',
+                        draggable: 'true',
+                        title: 'Giữ chuột và kéo để di chuyển khối (Drag to Move)',
+                        style: 'cursor: grab;'
+                    },
                     command: 'tlb-move'
                 },
                 {
@@ -3650,15 +4849,6 @@
 
             model.set('toolbar', toolbarItems);
 
-            // Cho phép nhấp giữ và kéo thả trực tiếp phần tử trên bản vẽ canvas
-            try {
-                const el = model.getEl();
-                if (el && !['BODY', 'HTML'].includes(el.tagName)) {
-                    el.setAttribute('draggable', 'true');
-                    el.style.cursor = 'grab';
-                }
-            } catch (err) {}
-
             // Hiển thị Card thông tin phần tử ở thanh Inspector bên phải
             const selBox = document.getElementById('selected-element-box');
             if (selBox) selBox.style.display = 'block';
@@ -3679,24 +4869,20 @@
             const classListEl = document.getElementById('selected-class-list');
             if (classListEl) classListEl.innerText = classes.length ? `.${classes.join(' .')}` : '';
 
-            // Update Box Model
+            // Update Box Model & Position Mode label
             updateBoxModelInputs(model);
+            updatePosModeButton(model);
 
             // Cấu hình thông minh theo loại phần tử (Video, Image, Button, Text)
             setupContextualInspector(model);
+
+            // Cập nhật các ô swatch màu (hiển thị caro cho màu 'none' / 'transparent')
+            setTimeout(updateAllColorFieldSwatches, 60);
         });
 
         editor.on('component:deselected', (prevModel) => {
-            try {
-                if (prevModel && typeof prevModel.getEl === 'function') {
-                    const el = prevModel.getEl();
-                    if (el) {
-                        el.removeAttribute('draggable');
-                        el.style.cursor = '';
-                    }
-                }
-            } catch (err) {}
             currentSelectedModel = null;
+            closeStudioColorPopover();
             const selBox = document.getElementById('selected-element-box');
             if (selBox) selBox.style.display = 'none';
             const emptyState = document.getElementById('inspector-empty-state');
@@ -3711,6 +4897,113 @@
             if (qPresets) qPresets.style.display = 'none';
             toggleTypographySectorVisibility(true);
         });
+
+        // ======================================================================
+        // DRAG MODE & POSITIONING ENGINE ("KÉO THẢ VÀO VỊ TRÍ MONG MUỐN")
+        // ======================================================================
+        function setStudioDragMode(mode) {
+            const btnFlow = document.getElementById('btn-drag-flow');
+            const btnAbs = document.getElementById('btn-drag-absolute');
+            if (mode === 'absolute') {
+                if (editor.setDragMode) editor.setDragMode('absolute');
+                if (btnFlow && btnAbs) {
+                    btnAbs.classList.add('active');
+                    btnFlow.classList.remove('active');
+                }
+                showStudioToast('🎯 Đã bật Chế độ Kéo Tự Do! Bạn có thể nhấp giữ và kéo bất kỳ phần tử nào đến vị trí mong muốn.', 'info', 3000);
+            } else {
+                if (editor.setDragMode) editor.setDragMode('');
+                if (btnFlow && btnAbs) {
+                    btnFlow.classList.add('active');
+                    btnAbs.classList.remove('active');
+                }
+                showStudioToast('📐 Đã chuyển sang Chế độ Bố Cục! Kéo thả sẽ tự động căn vào cột và khung chứa.', 'info', 3000);
+            }
+        }
+
+        function toggleElementPositionMode() {
+            if (!currentSelectedModel) return;
+            const style = currentSelectedModel.getStyle();
+            const currentPos = style['position'] || 'static';
+            if (currentPos === 'absolute') {
+                currentSelectedModel.addStyle({
+                    'position': 'relative',
+                    'top': '',
+                    'left': '',
+                    'right': '',
+                    'bottom': '',
+                    'z-index': ''
+                });
+                showStudioToast('📐 Đã chuyển phần tử về Bố cục khối (Relative/Flow)', 'info');
+            } else {
+                const parent = currentSelectedModel.parent();
+                if (parent) {
+                    const pStyle = parent.getStyle();
+                    if (!pStyle['position'] || pStyle['position'] === 'static') {
+                        parent.addStyle({ 'position': 'relative' });
+                    }
+                }
+                const el = currentSelectedModel.getEl();
+                let top = 20, left = 20;
+                if (el) {
+                    const rect = el.getBoundingClientRect();
+                    top = Math.round(rect.top);
+                    left = Math.round(rect.left);
+                }
+                currentSelectedModel.addStyle({
+                    'position': 'absolute',
+                    'top': top + 'px',
+                    'left': left + 'px',
+                    'z-index': '10'
+                });
+                showStudioToast('🎯 Đã bật Vị Trí Tự Do! Giờ bạn có thể kéo thả phần tử này đến bất kỳ vị trí nào.', 'success');
+            }
+            updateBoxModelInputs(currentSelectedModel);
+            updatePosModeButton(currentSelectedModel);
+        }
+
+        function updatePosModeButton(model) {
+            const btn = document.getElementById('lbl-pos-mode');
+            if (!btn || !model) return;
+            const style = model.getStyle();
+            const isAbs = (style['position'] === 'absolute');
+            btn.innerText = isAbs ? 'Đổi Về Bố Cục (Flow)' : 'Đặt Vị Trí Tự Do (Free)';
+        }
+
+        // TỰ ĐỘNG CĂN CHUẨN BỐ CỤC CHUẨN WORDPRESS / ELEMENTOR (CLEAN OVERLAPS & ABSOLUTE POSITIONS)
+        function autoFixCleanLayout() {
+            if (typeof editor === 'undefined') return;
+            const wrapper = editor.getWrapper();
+            if (!wrapper) return;
+            let fixedCount = 0;
+
+            function cleanModel(comp) {
+                if (!comp) return;
+                const style = comp.getStyle ? comp.getStyle() : {};
+                if (style['position'] === 'absolute' || style['position'] === 'fixed') {
+                    comp.addStyle({
+                        'position': '',
+                        'top': '',
+                        'left': '',
+                        'right': '',
+                        'bottom': '',
+                        'z-index': ''
+                    });
+                    fixedCount++;
+                }
+                if (comp.components) {
+                    comp.components().forEach(child => cleanModel(child));
+                }
+            }
+
+            cleanModel(wrapper);
+            setStudioDragMode('flow');
+            if (currentSelectedModel) {
+                updateBoxModelInputs(currentSelectedModel);
+                updatePosModeButton(currentSelectedModel);
+            }
+            showStudioToast(`✨ Đã căn chuẩn lại bố cục (${fixedCount} phần tử)! Toàn bộ khối đã trở về dòng chảy chuẩn WordPress/Elementor, tự co giãn và không bị đè khối.`, 'success', 4500);
+        }
 
         // REORDER FUNCTIONS: MOVE UP & MOVE DOWN
         function moveComponentUp() {
@@ -3763,16 +5056,23 @@
         // ======================================================================
         editor.on('component:styleUpdate', (model, prop) => {
             if (!model) return;
-            const style = model.getStyle();
+            const style = model.getStyle() || {};
+
+            // Cập nhật trực tiếp lên DOM element của Canvas để người dùng thấy thay đổi ngay lập tức
+            const el = model.getEl ? model.getEl() : null;
+            if (el && prop && style[prop] !== undefined && style[prop] !== null) {
+                try {
+                    el.style[prop] = style[prop];
+                } catch(e) {}
+            }
 
             // 1. TỰ ĐỘNG KÍCH HOẠT FLEXBOX KHI ĐIỀU CHỈNH CÁC TRỤC FLEX:
-            // Khi người dùng chọn Căn trục chính (justify-content), Hướng flex, Căn trục phụ hoặc khoảng cách Gap,
-            // nếu phần tử vẫn đang là 'block' hoặc 'inline-block', tự động chuyển sang 'flex' để có hiệu lực hiển thị ngay!
             const flexProps = ['justify-content', 'align-items', 'flex-direction', 'flex-wrap', 'gap'];
             if (flexProps.includes(prop) && style[prop] && style[prop] !== '') {
                 const currentDisplay = style['display'] || 'block';
                 if (!['flex', 'inline-flex', 'grid'].includes(currentDisplay)) {
                     model.addStyle({ 'display': 'flex' });
+                    if (el && el.style) el.style.display = 'flex';
                     try {
                         const sm = editor.StyleManager;
                         const propDisplay = sm.getProperty('📐 Bố Cục & Vị Trí (Layout)', 'display');
@@ -3782,8 +5082,6 @@
             }
 
             // 2. TỰ ĐỘNG ĐỒNG BỘ CĂN GIỮA CHỮ (TEXT ALIGN):
-            // Khi người dùng chọn căn trục chính (center/left/right) trên phần tử chứa chữ hoặc thẻ tiêu đề/đoạn văn,
-            // tự động cập nhật cả text-align để văn bản căn giữa trực quan ngay lập tức.
             if (prop === 'justify-content') {
                 const val = style['justify-content'];
                 const tag = (model.get('tagName') || '').toLowerCase();
@@ -3791,6 +5089,7 @@
                 if (isText && (val === 'center' || val === 'flex-start' || val === 'flex-end')) {
                     const alignVal = (val === 'flex-start') ? 'left' : (val === 'flex-end' ? 'right' : 'center');
                     model.addStyle({ 'text-align': alignVal });
+                    if (el && el.style) el.style.textAlign = alignVal;
                     try {
                         const sm = editor.StyleManager;
                         const propAlign1 = sm.getProperty('📐 Bố Cục & Vị Trí (Layout)', 'text-align');
@@ -3805,12 +5104,11 @@
             }
 
             // 3. TỰ ĐỘNG XÓA GRADIENT CŨ KHI CHỌN MÀU NỀN ĐƠN SẮC:
-            // Nếu phần tử trước đó có background-image (như linear-gradient của nút bấm mẫu),
-            // việc đổi background-color sẽ bị gradient che mất. Tự động set background-image: none.
             if (prop === 'background-color' && style['background-color']) {
                 const bgImg = style['background-image'] || '';
                 if (bgImg.includes('gradient')) {
                     model.addStyle({ 'background-image': 'none' });
+                    if (el && el.style) el.style.backgroundImage = 'none';
                     try {
                         const sm = editor.StyleManager;
                         const propBgImg = sm.getProperty('🎨 Nền & Hình Nền (Background)', 'background-image');
@@ -3819,24 +5117,96 @@
                 }
             }
 
-            // 4. ĐỒNG BỘ THƯỚC ĐO MÔ HÌNH KHOẢNG CÁCH (BOX MODEL WIDGET):
+            // 4. TỰ ĐỘNG ĐẶT COVER & NO-REPEAT CHO HÌNH NỀN:
+            if (prop === 'background-image' && style['background-image'] && style['background-image'] !== 'none') {
+                if (!style['background-size'] || style['background-size'] === 'auto') {
+                    model.addStyle({ 'background-size': 'cover' });
+                    if (el && el.style) el.style.backgroundSize = 'cover';
+                }
+                if (!style['background-repeat'] || style['background-repeat'] === 'repeat') {
+                    model.addStyle({ 'background-repeat': 'no-repeat' });
+                    if (el && el.style) el.style.backgroundRepeat = 'no-repeat';
+                }
+                if (!style['background-position']) {
+                    model.addStyle({ 'background-position': 'center center' });
+                    if (el && el.style) el.style.backgroundPosition = 'center center';
+                }
+            }
+
+            // 5. ĐỒNG BỘ THƯỚC ĐO MÔ HÌNH KHOẢNG CÁCH (BOX MODEL WIDGET):
             if (['margin-top','margin-bottom','margin-left','margin-right','padding-top','padding-bottom','padding-left','padding-right'].includes(prop)) {
                 updateBoxModelInputs(model);
             }
         });
 
-        // Đảm bảo mọi thay đổi từ StyleManager được cập nhật tức thì trên DOM canvas
-        editor.on('style:property:update', (prop, name, val) => {
+        // Đảm bảo mọi thay đổi từ StyleManager được cập nhật tức thì trên DOM canvas và Box Model
+        editor.on('style:property:update', (prop, changes) => {
             const selected = editor.getSelected();
-            if (selected) {
-                try {
-                    const pName = prop ? (prop.getName ? prop.getName() : prop.get('property')) : name;
-                    const pVal = prop ? (prop.getValue ? prop.getValue() : prop.get('value')) : val;
-                    if (pName && pVal !== undefined && pVal !== null) {
-                        selected.addStyle({ [pName]: pVal });
+            if (!selected) return;
+
+            try {
+                // Lấy đúng CSS Property ID (ví dụ: 'color', 'font-size') — TUYỆT ĐỐI KHÔNG dùng prop.getName() vì đó là nhãn Tiếng Việt!
+                let pName = null;
+                if (prop) {
+                    if (typeof prop.getProperty === 'function') pName = prop.getProperty();
+                    else if (typeof prop.getId === 'function') pName = prop.getId();
+                    else if (typeof prop.get === 'function') pName = prop.get('property') || prop.get('id');
+                }
+
+                let pVal = null;
+                if (prop) {
+                    if (typeof prop.getValue === 'function') pVal = prop.getValue();
+                    else if (typeof prop.get === 'function') pVal = prop.get('value');
+                }
+                if (changes && typeof changes === 'object' && changes.value !== undefined) {
+                    pVal = changes.value;
+                }
+
+                if (pName && pVal !== undefined && pVal !== null) {
+                    // Áp dụng trực tiếp vào DOM Element để người dùng thấy phản hồi tức thì
+                    const el = selected.getEl ? selected.getEl() : null;
+                    if (el && el.style) {
+                        try {
+                            el.style[pName] = pVal;
+                        } catch(e) {}
                     }
-                } catch (err) {}
+
+                    // Tự động tối ưu hình nền: Khi chọn ảnh nền, tự động đặt cover và no-repeat để không bị lặp ảnh
+                    if (pName === 'background-image' && pVal && pVal !== 'none') {
+                        // Tự động bọc url("...") nếu người dùng chỉ gõ/dán đường link ảnh trơn
+                        if (!pVal.startsWith('url(') && !pVal.startsWith('linear-gradient(')) {
+                            pVal = `url("${pVal}")`;
+                            selected.addStyle({ 'background-image': pVal });
+                            if (el && el.style) el.style.backgroundImage = pVal;
+                        }
+
+                        const curStyle = selected.getStyle() || {};
+                        if (!curStyle['background-size'] || curStyle['background-size'] === 'auto') {
+                            selected.addStyle({ 'background-size': 'cover' });
+                            if (el && el.style) el.style.backgroundSize = 'cover';
+                        }
+                        if (!curStyle['background-repeat'] || curStyle['background-repeat'] === 'repeat') {
+                            selected.addStyle({ 'background-repeat': 'no-repeat' });
+                            if (el && el.style) el.style.backgroundRepeat = 'no-repeat';
+                        }
+                        if (!curStyle['background-position']) {
+                            selected.addStyle({ 'background-position': 'center center' });
+                            if (el && el.style) el.style.backgroundPosition = 'center center';
+                        }
+                    }
+
+                    // Tự động đồng bộ ô hiển thị màu (swatch)
+                    if (['color', 'background-color', 'border-color'].includes(pName)) {
+                        setTimeout(updateAllColorFieldSwatches, 30);
+                    }
+                }
+            } catch (err) {
+                console.warn('style:property:update sync error:', err);
             }
+
+            // Đồng bộ thước đo Box Model và nút chế độ vị trí
+            updateBoxModelInputs(selected);
+            updatePosModeButton(selected);
         });
 
         // ======================================================================
@@ -3914,8 +5284,14 @@
                 toggleTypographySectorVisibility(true);
 
                 document.getElementById('smart-btn-text').value = model.getInnerHTML ? model.getInnerHTML() : '';
-                document.getElementById('smart-btn-href').value = attrs.href || '';
+                const curHref = attrs.href || '';
+                document.getElementById('smart-btn-href').value = curHref;
                 document.getElementById('smart-btn-blank').checked = (attrs.target === '_blank');
+
+                const pagePicker = document.getElementById('smart-btn-internal-page');
+                if (pagePicker) {
+                    pagePicker.value = curHref;
+                }
 
             } else if (isText) {
                 wrapper.style.display = 'block';
@@ -4050,6 +5426,20 @@
         function updateSmartButtonHref(val) {
             if (!currentSelectedModel) return;
             currentSelectedModel.addAttributes({ href: val });
+            const pagePicker = document.getElementById('smart-btn-internal-page');
+            if (pagePicker && pagePicker.value !== val) {
+                pagePicker.value = val;
+            }
+        }
+
+        function onSelectInternalPage(val) {
+            if (!val) return;
+            const hrefInput = document.getElementById('smart-btn-href');
+            if (hrefInput) {
+                hrefInput.value = val;
+                updateSmartButtonHref(val);
+                showStudioToast(`🔗 Đã liên kết tới trang: ${val}`, 'info', 2000);
+            }
         }
 
         function updateSmartButtonBlank(isBlank) {
@@ -4096,6 +5486,22 @@
             }
             currentSelectedModel.addStyle({ [prop]: finalVal });
 
+            const el = currentSelectedModel.getEl();
+            if (el && el.style) {
+                try {
+                    el.style[prop] = finalVal;
+                } catch(e) {}
+            }
+
+            // Đồng bộ sang thanh Kiểu Dáng (StyleManager) nếu đang mở
+            try {
+                const sm = editor.StyleManager;
+                const propModel = sm.getProperty('📦 Khoảng Cách (Spacing)', prop);
+                if (propModel && propModel.setValue) {
+                    propModel.setValue(finalVal);
+                }
+            } catch(e) {}
+
             setTimeout(() => {
                 if (currentSelectedModel) {
                     const el = currentSelectedModel.getEl();
@@ -4132,6 +5538,11 @@
             const badge = document.getElementById('zoom-text') || document.getElementById('zoom-level-badge');
             if (badge) badge.innerText = currentZoom + '%';
             updateViewportTransform();
+            try {
+                if (typeof editor !== 'undefined' && editor.Canvas && editor.Canvas.setZoom) {
+                    editor.Canvas.setZoom(currentZoom);
+                }
+            } catch (err) {}
         }
 
         function changeZoom(delta) {
@@ -4430,6 +5841,19 @@
 
         editor.on('load', () => {
             bindIframePanAndZoom();
+            initStudioColorPopover();
+            setTimeout(updateAllColorFieldSwatches, 300);
+            try {
+                const wrapper = editor.getWrapper();
+                if (wrapper) {
+                    wrapper.set({
+                        hoverable: false,
+                        badgable: false,
+                        highlightable: false,
+                        selectable: false,
+                    });
+                }
+            } catch (err) {}
             try {
                 const frame = editor.Canvas.getFrameEl();
                 if (frame && frame.contentDocument) {
@@ -4447,9 +5871,14 @@
                             scrollbar-width: thin;
                             scrollbar-color: #cbd5e1 transparent;
                         }
-                        body {
+                        body, [data-gjs-type="wrapper"] {
                             overflow-y: auto !important;
                             overflow-x: hidden !important;
+                            outline: none !important;
+                        }
+                        body:hover, [data-gjs-type="wrapper"]:hover {
+                            outline: none !important;
+                            background-color: transparent !important;
                         }
                         /* Vô hiệu hóa pointer-events trên iframe nhúng (Map/Video) khi đang ở chế độ sửa để có thể nhấp chọn và kéo thả trực tiếp */
                         body:not(.is-preview-mode) iframe {
@@ -4458,7 +5887,7 @@
                         [data-gjs-type="video"], [data-gjs-type="map"] {
                             cursor: grab !important;
                         }
-                        .gjs-selected {
+                        .gjs-selected:not(body):not([data-gjs-type="wrapper"]) {
                             outline: 2px solid #2563eb !important;
                             outline-offset: -2px !important;
                             cursor: grab !important;
@@ -4475,9 +5904,20 @@
                 }
             } catch(e) {}
             setTimeout(() => {
+                try {
+                    normalizeComponentTree(editor.getWrapper());
+                } catch(e) {}
                 zoomToFit();
                 updateDimensionBadge(viewportEl.offsetWidth, viewportEl.offsetHeight);
             }, 200);
+        });
+
+        editor.on('component:add', (comp) => {
+            if (comp) {
+                try {
+                    normalizeComponentTree(comp);
+                } catch(e) {}
+            }
         });
 
         // ======================================================================

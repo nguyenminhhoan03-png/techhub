@@ -8,7 +8,7 @@ use Presentation\WebsiteBuilder\Controllers\Api\PageApiController;
 use Presentation\WebsiteBuilder\Controllers\Api\PublishApiController;
 use Presentation\WebsiteBuilder\Controllers\Api\WebsiteApiController;
 
-Route::prefix('builder')->group(function (): void {
+Route::prefix('builder')->middleware(['web', 'auth'])->group(function (): void {
     // 1. Quản lý Website
     Route::get('websites', [WebsiteApiController::class, 'index']);
     Route::post('websites', [WebsiteApiController::class, 'store']);

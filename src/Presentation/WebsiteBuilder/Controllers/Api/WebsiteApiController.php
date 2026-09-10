@@ -14,11 +14,11 @@ use Presentation\WebsiteBuilder\Requests\CreateWebsiteRequest;
 class WebsiteApiController extends Controller
 {
     /**
-     * Lấy danh sách website của người dùng.
+     * Lấy danh sách website của người dùng đang đăng nhập.
      */
     public function index(Request $request): JsonResponse
     {
-        $userId = $request->user()?->id ?? 1;
+        $userId = (int) $request->user()->id;
 
         $websites = Website::with(['settings', 'seo'])
             ->where('user_id', $userId)
@@ -41,7 +41,7 @@ class WebsiteApiController extends Controller
      */
     public function store(CreateWebsiteRequest $request, CreateWebsiteAction $action): JsonResponse
     {
-        $userId = $request->user()?->id ?? 1;
+        $userId = (int) $request->user()->id;
         $name = (string) $request->validated('name');
         $subdomain = $request->validated('subdomain');
 
@@ -59,11 +59,11 @@ class WebsiteApiController extends Controller
     }
 
     /**
-     * Chi tiết website kèm các trang con, settings và SEO.
+     * Chi tiết website kèm các trang con, settings và SEO (chỉ chủ sở hữu).
      */
     public function show(int $id, Request $request): JsonResponse
     {
-        $userId = $request->user()?->id ?? 1;
+        $userId = (int) $request->user()->id;
 
         $website = Website::with(['pages', 'settings', 'seo', 'domains'])
             ->where('user_id', $userId)

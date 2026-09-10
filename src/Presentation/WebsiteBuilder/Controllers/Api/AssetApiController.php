@@ -18,7 +18,7 @@ class AssetApiController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $userId = $request->user()?->id ?? 1;
+        $userId = (int) $request->user()->id;
         $websiteId = $request->query('website_id');
 
         $query = Asset::where('user_id', $userId)->orderByDesc('id');
@@ -44,7 +44,7 @@ class AssetApiController extends Controller
      */
     public function upload(UploadAssetRequest $request, UploadAssetAction $action): JsonResponse
     {
-        $userId = $request->user()?->id ?? 1;
+        $userId = (int) $request->user()->id;
         $websiteId = $request->validated('website_id') ? (int) $request->validated('website_id') : null;
         $file = $request->file('file');
 

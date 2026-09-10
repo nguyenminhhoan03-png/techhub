@@ -7,18 +7,24 @@ namespace Presentation\WebsiteBuilder\Controllers\Api;
 use Application\WebsiteBuilder\Actions\AutosavePageAction;
 use Application\WebsiteBuilder\Exceptions\OptimisticLockConflictException;
 use Domain\WebsiteBuilder\Entities\Page;
+use Domain\WebsiteBuilder\Entities\Website;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Presentation\Controller;
 use Presentation\WebsiteBuilder\Requests\AutosavePageRequest;
 
 class PageApiController extends Controller
 {
     /**
-     * Tải dữ liệu trang để khởi tạo Canvas trong Visual Editor.
+     * Tải dữ liệu trang để khởi tạo Canvas trong Visual Editor (chỉ chủ sở hữu).
      */
-    public function show(int $id): JsonResponse
+    public function show(int $id, Request $request): JsonResponse
     {
-        $page = Page::with('website:id,name,subdomain,status')->findOrFail($id);
+        $page = Page::with('website:id,user_id,name,subdomain,status')->findOrFail($id);
+
+        if ($page->website->user_id !== (int) $request->user()->id) {
+            abort(403, 'Bạn không có quyền truy cập trang này.');
+        }
 
         return response()->json([
             'success' => true,
@@ -38,11 +44,16 @@ class PageApiController extends Controller
     }
 
     /**
-     * Autosave nội dung canvas kèm kiểm tra xung đột Optimistic Lock.
+     * Autosave nội dung canvas kèm kiểm tra xung đột Optimistic Lock (chỉ chủ sở hữu).
      */
     public function autosave(int $id, AutosavePageRequest $request, AutosavePageAction $action): JsonResponse
     {
-        $page = Page::findOrFail($id);
+        $page = Page::with('website:id,user_id')->findOrFail($id);
+
+        if ($page->website->user_id !== (int) $request->user()->id) {
+            abort(403, 'Bạn không có quyền chỉnh sửa trang này.');
+        }
+
         $newContent = (array) $request->validated('content_json');
         $baseVersion = (int) $request->validated('base_version');
 
@@ -72,9 +83,9 @@ class PageApiController extends Controller
     }
 
     /**
-     * Tạo trang mới cho website từ Visual Editor.
+     * Tạo trang mới cho website từ Visual Editor (chỉ chủ sở hữu website).
      */
-    public function store(\Illuminate\Http\Request $request): JsonResponse
+    public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'website_id' => 'required|exists:websites,id',
@@ -82,11 +93,14 @@ class PageApiController extends Controller
             'slug' => 'required|string|max:100',
         ]);
 
+        // Đảm bảo website thuộc về người dùng đang đăng nhập
+        $website = Website::where('user_id', (int) $request->user()->id)->findOrFail((int) $validated['website_id']);
+
         $slug = \Illuminate\Support\Str::slug($validated['slug']);
 
         $page = Page::create([
             'ulid' => (string) \Illuminate\Support\Str::ulid(),
-            'website_id' => (int) $validated['website_id'],
+            'website_id' => $website->id,
             'title' => $validated['title'],
             'slug' => $slug,
             'is_home' => false,

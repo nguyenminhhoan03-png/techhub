@@ -35,8 +35,10 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
+            'ulid' => (string) Str::ulid(),
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
+            'role' => 'user',
             'status' => UserStatus::Active,
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),

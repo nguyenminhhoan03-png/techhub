@@ -13,11 +13,11 @@ use Presentation\Controller;
 class PublishApiController extends Controller
 {
     /**
-     * Xuất bản toàn bộ website thành static files SSG lên S3 và cấu hình CDN.
+     * Xuất bản toàn bộ website thành static files SSG lên S3 và cấu hình CDN (chỉ chủ sở hữu).
      */
     public function publish(int $id, Request $request, PublishWebsiteAction $action): JsonResponse
     {
-        $userId = $request->user()?->id ?? 1;
+        $userId = (int) $request->user()->id;
 
         $website = Website::where('user_id', $userId)->findOrFail($id);
 
