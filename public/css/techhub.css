@@ -3256,3 +3256,101 @@ textarea.form-control {
   opacity: 1;
 }
 
+/* ==========================================================================
+   TechHub Modern Pagination Styles (Strict SVG & Layout Containment)
+   ========================================================================== */
+nav[role="navigation"] svg,
+.pagination svg,
+.techhub-pagination svg,
+.page-icon {
+  width: 16px !important;
+  height: 16px !important;
+  max-width: 18px !important;
+  max-height: 18px !important;
+  min-width: 14px;
+  min-height: 14px;
+  display: inline-block !important;
+  vertical-align: middle !important;
+  flex-shrink: 0 !important;
+}
+
+.techhub-pagination {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.45rem !important;
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 1.5rem 0 0.5rem !important;
+  flex-wrap: wrap !important;
+}
+
+.techhub-pagination .page-item {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  list-style: none !important;
+}
+
+.techhub-pagination .page-link {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.35rem !important;
+  min-width: 40px !important;
+  height: 40px !important;
+  padding: 0 0.85rem !important;
+  border-radius: 12px !important;
+  font-size: 0.92rem !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+  border: 1px solid rgba(226, 232, 240, 0.85) !important;
+  background: #ffffff !important;
+  color: var(--text-main, #1e293b) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  user-select: none !important;
+}
+
+.techhub-pagination .page-link:hover {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: var(--accent-indigo, #4f46e5) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.12) !important;
+}
+
+.techhub-pagination .page-item.active .page-link {
+  background: linear-gradient(135deg, #4f46e5 0%, #2563eb 100%) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35) !important;
+  cursor: default !important;
+  transform: none !important;
+}
+
+.techhub-pagination .page-item.disabled .page-link {
+  opacity: 0.45 !important;
+  cursor: not-allowed !important;
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  color: #94a3b8 !important;
+  pointer-events: none !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.pagination-info {
+  font-size: 0.875rem !important;
+  color: var(--text-sub, #64748b) !important;
+  font-weight: 500 !important;
+  text-align: center !important;
+  margin-top: 0.5rem !important;
+}
+
+.pagination-info strong {
+  color: var(--text-main, #1e293b) !important;
+  font-weight: 700 !important;
+}
+
+
