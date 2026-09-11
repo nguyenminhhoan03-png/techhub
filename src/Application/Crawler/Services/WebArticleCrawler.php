@@ -65,8 +65,20 @@ class WebArticleCrawler
             }
 
             // Clean HTML to extract pure readable text
-            $cleanHtml = preg_replace('/<(script|style|nav|header|footer|aside|svg|noscript)[^>]*>.*?<\/\1>/is', '', $html);
-            $text = strip_tags((string) $cleanHtml);
+            $cleanHtml = preg_replace('/<(script|style|nav|header|footer|aside|svg|noscript|iframe)[^>]*>.*?<\/\1>/is', '', $html);
+
+            // Prefer <article> or <main> tag if present to avoid header/footer noise
+            if (preg_match('/<article[^>]*>(.*?)<\/article>/is', (string) $cleanHtml, $articleMatch)) {
+                $contentBody = $articleMatch[1];
+            } elseif (preg_match('/<main[^>]*>(.*?)<\/main>/is', (string) $cleanHtml, $mainMatch)) {
+                $contentBody = $mainMatch[1];
+            } else {
+                $contentBody = $cleanHtml;
+            }
+
+            $text = strip_tags((string) $contentBody);
+            // Remove common noise like skip links
+            $text = preg_replace('/(Skip to content|Skip to main content|Skip to footer|NỘI DUNG)/ui', '', (string) $text);
             $text = preg_replace('/\s+/', ' ', (string) $text);
             $text = trim((string) $text);
 

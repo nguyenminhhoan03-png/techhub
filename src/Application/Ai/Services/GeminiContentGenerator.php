@@ -151,7 +151,7 @@ class GeminiContentGenerator
         }
 
         try {
-            $response = Http::timeout(45)->withToken($apiKey)->post($url, $payload);
+            $response = Http::timeout(60)->withToken($apiKey)->post($url, $payload);
 
             // Resilient retry: Some proxy gateways or upstream models fail with 400 when response_format: json_object is supplied
             if (! $response->successful() && $requireJson && isset($payload['response_format'])) {
@@ -160,13 +160,14 @@ class GeminiContentGenerator
                     'body' => $response->body(),
                 ]);
                 unset($payload['response_format']);
-                $response = Http::timeout(45)->withToken($apiKey)->post($url, $payload);
+                $response = Http::timeout(60)->withToken($apiKey)->post($url, $payload);
             }
 
             if ($response->successful()) {
                 $data = $response->json();
                 $text = $data['choices'][0]['message']['content'] ?? null;
                 if ($text) {
+                    Log::info('OpenAI Proxy API response received', ['length' => strlen($text)]);
                     return trim($text);
                 }
             } else {
@@ -365,12 +366,40 @@ PROMPT;
                 $parsed = json_decode($matches[0], true);
             }
 
-            if (is_array($parsed) && isset($parsed['title'], $parsed['content_markdown'])) {
-                $title = (string) $parsed['title'];
+            if (is_array($parsed)) {
+                $title = (string) ($parsed['title'] ?? $cleanTitle);
+                $contentMd = (string) ($parsed['content_markdown'] ?? $parsed['content'] ?? $parsed['body'] ?? $parsed['article'] ?? '');
+
+                if (! empty($contentMd)) {
+                    $slug = Str::slug($title . '-' . date('Y'));
+                    $markdown = $contentMd . "\n\n*Nguồn tham khảo: " . parse_url($sourceUrl, PHP_URL_HOST) . "*\n";
+                    $html = nl2br(htmlspecialchars($markdown, ENT_QUOTES, 'UTF-8'));
+                    $excerpt = (string) ($parsed['excerpt'] ?? $parsed['description'] ?? mb_substr(strip_tags($markdown), 0, 180));
+
+                    return [
+                        'title' => $title,
+                        'slug' => $slug,
+                        'excerpt' => $excerpt,
+                        'content_markdown' => $markdown,
+                        'content_html' => $html,
+                        'faqs' => array_values((array) ($parsed['faqs'] ?? [])),
+                        'seo_title' => $title . ' — TechHub',
+                        'seo_description' => $excerpt,
+                        'is_live_ai' => true,
+                    ];
+                }
+            }
+
+            // If LLM returned raw Markdown / Text instead of JSON (common in proxy gateways)
+            $trimmedLlm = trim((string) $llmResponse);
+            if (strlen($trimmedLlm) > 120) {
+                $lines = explode("\n", $trimmedLlm);
+                $firstLine = trim(ltrim($lines[0], "# \t\r"));
+                $title = ! empty($firstLine) && strlen($firstLine) < 160 ? $firstLine : $cleanTitle;
                 $slug = Str::slug($title . '-' . date('Y'));
-                $markdown = (string) $parsed['content_markdown'] . "\n\n*Nguồn tham khảo: " . parse_url($sourceUrl, PHP_URL_HOST) . "*\n";
+                $markdown = $trimmedLlm . "\n\n*Nguồn tham khảo: " . parse_url($sourceUrl, PHP_URL_HOST) . "*\n";
                 $html = nl2br(htmlspecialchars($markdown, ENT_QUOTES, 'UTF-8'));
-                $excerpt = (string) ($parsed['excerpt'] ?? 'Tổng hợp và phân tích toàn diện các diễn biến công nghệ mới nhất.');
+                $excerpt = mb_substr(strip_tags($markdown), 0, 180) . '...';
 
                 return [
                     'title' => $title,
@@ -378,7 +407,7 @@ PROMPT;
                     'excerpt' => $excerpt,
                     'content_markdown' => $markdown,
                     'content_html' => $html,
-                    'faqs' => array_values((array) ($parsed['faqs'] ?? [])),
+                    'faqs' => [],
                     'seo_title' => $title . ' — TechHub',
                     'seo_description' => $excerpt,
                     'is_live_ai' => true,
