@@ -15,6 +15,17 @@ class AdminSettingController extends Controller
 {
     public function index(): View
     {
+        Setting::query()->firstOrCreate(
+            ['key' => 'openai_api_url'],
+            [
+                'value' => env('OPENAI_API_URL', 'https://api.openai.com/v1'),
+                'group' => 'ai',
+                'type' => 'text',
+                'label' => 'OpenAI Base URL / Cổng Proxy API',
+                'description' => 'Mặc định là https://api.openai.com/v1. Nếu dùng dịch vụ trung gian (như vilao.ai), hãy điền Base URL: https://api.vilao.ai/v1',
+            ]
+        );
+
         $settings = Setting::query()->orderBy('group')->orderBy('id')->get()->groupBy('group');
 
         return view('admin.settings.index', [
