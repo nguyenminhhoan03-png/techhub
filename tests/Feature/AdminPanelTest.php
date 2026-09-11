@@ -113,3 +113,55 @@ it('allows admin to update system settings and flushes cache', function (): void
 
     expect(SettingService::get('hero_title'))->toBe('Cổng Tiện Ích Trực Tuyến Đẳng Cấp 2026');
 });
+
+it('allows admin to dynamically update AI settings and test connection', function (): void {
+    /** @var User $admin */
+    $admin = User::query()->where('role', 'admin')->firstOrFail();
+
+    $settingsIndexResponse = $this->actingAs($admin)->get('/admin/settings');
+    $settingsIndexResponse->assertStatus(200)
+        ->assertSee('Cấu Hình AI Content Engine')
+        ->assertSee('openai_api_url')
+        ->assertSee('Test Kết Nối Ngay');
+
+    $postResponse = $this->actingAs($admin)->post('/admin/settings', [
+        'openai_api_url' => 'https://api.vilao.ai/v1',
+        'openai_api_key' => 'sk-test-fake-key-123456',
+        'ai_default_provider' => 'openai',
+        'ai_model_name' => 'ram/gemini-3.6-flash-high',
+    ]);
+    $postResponse->assertRedirect('/admin/settings');
+
+    expect(SettingService::get('openai_api_url'))->toBe('https://api.vilao.ai/v1')
+        ->and(SettingService::get('ai_model_name'))->toBe('ram/gemini-3.6-flash-high')
+        ->and(SettingService::get('openai_api_key'))->toBe('sk-test-fake-key-123456');
+
+    // Test connection endpoint validation when key is empty
+    $testResponse = $this->actingAs($admin)->postJson('/admin/settings/test-ai', [
+        'openai_api_key' => '',
+        'ai_default_provider' => 'openai',
+    ]);
+    $testResponse->assertStatus(422)
+        ->assertJson(['success' => false]);
+
+    // Test connection endpoint success with Http fake
+    \Illuminate\Support\Facades\Http::fake([
+        'https://api.vilao.ai/v1/chat/completions' => \Illuminate\Support\Facades\Http::response([
+            'choices' => [
+                ['message' => ['content' => 'Ket noi TechHub OK!']],
+            ],
+        ], 200),
+    ]);
+
+    $successResponse = $this->actingAs($admin)->postJson('/admin/settings/test-ai', [
+        'openai_api_url' => 'https://api.vilao.ai/v1',
+        'openai_api_key' => 'sk-valid-key-123456',
+        'ai_default_provider' => 'openai',
+        'ai_model_name' => 'ram/gemini-3.6-flash-high',
+    ]);
+
+    $successResponse->assertStatus(200)
+        ->assertJson(['success' => true])
+        ->assertJsonFragment(['success' => true]);
+});
+

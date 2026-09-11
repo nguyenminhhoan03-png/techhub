@@ -61,6 +61,7 @@ Route::prefix('admin')->name('admin.')->group(function (): void {
         Route::prefix('settings')->name('settings.')->group(function (): void {
             Route::get('/', [AdminSettingController::class, 'index'])->name('index');
             Route::post('/', [AdminSettingController::class, 'update'])->name('update');
+            Route::post('/test-ai', [AdminSettingController::class, 'testAiConnection'])->name('test_ai');
         });
 
         // Articles & Content Management

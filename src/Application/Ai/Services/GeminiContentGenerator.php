@@ -114,11 +114,18 @@ class GeminiContentGenerator
      */
     protected function callOpenAiApi(string $prompt, string $systemInstruction, string $apiKey, bool $requireJson): ?string
     {
-        $model = (string) SettingService::get('ai_model_name', env('AI_MODEL_NAME', 'gpt-4o-mini'));
-        $baseUrl = (string) SettingService::get('openai_api_url', env('OPENAI_API_URL', 'https://api.openai.com/v1'));
-        $baseUrl = rtrim(trim($baseUrl), '/');
+        $model = trim((string) SettingService::get('ai_model_name', env('AI_MODEL_NAME', 'gpt-4o-mini')));
+        if (empty($model)) {
+            $model = 'gpt-4o-mini';
+        }
+
+        $baseUrl = trim((string) SettingService::get('openai_api_url', env('OPENAI_API_URL', 'https://api.openai.com/v1')));
+        $baseUrl = rtrim($baseUrl, '/');
         if (empty($baseUrl)) {
             $baseUrl = 'https://api.openai.com/v1';
+        }
+        if (! str_starts_with($baseUrl, 'http://') && ! str_starts_with($baseUrl, 'https://')) {
+            $baseUrl = 'https://' . $baseUrl;
         }
 
         // Only override model to gpt-4o-mini if using official OpenAI endpoint and model is a gemini model
@@ -145,6 +152,17 @@ class GeminiContentGenerator
 
         try {
             $response = Http::timeout(45)->withToken($apiKey)->post($url, $payload);
+
+            // Resilient retry: Some proxy gateways or upstream models fail with 400 when response_format: json_object is supplied
+            if (! $response->successful() && $requireJson && isset($payload['response_format'])) {
+                Log::info('Proxy rejected response_format: json_object. Retrying without response_format...', [
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                ]);
+                unset($payload['response_format']);
+                $response = Http::timeout(45)->withToken($apiKey)->post($url, $payload);
+            }
+
             if ($response->successful()) {
                 $data = $response->json();
                 $text = $data['choices'][0]['message']['content'] ?? null;
@@ -260,6 +278,10 @@ PROMPT;
             $cleaned = preg_replace('/\s*```$/', '', (string) $cleaned);
             $parsed = json_decode((string) $cleaned, true);
 
+            if (! is_array($parsed) && preg_match('/\{[\s\S]*\}/', (string) $llmResponse, $matches)) {
+                $parsed = json_decode($matches[0], true);
+            }
+
             if (is_array($parsed) && isset($parsed['title'], $parsed['content_markdown'], $parsed['product_a'], $parsed['product_b'])) {
                 $isLiveAi = true;
                 $slug = Str::slug("{$nameA}-vs-{$nameB}");
@@ -338,6 +360,10 @@ PROMPT;
             $cleaned = preg_replace('/^```(?:json)?\s*/i', '', trim($llmResponse));
             $cleaned = preg_replace('/\s*```$/', '', (string) $cleaned);
             $parsed = json_decode((string) $cleaned, true);
+
+            if (! is_array($parsed) && preg_match('/\{[\s\S]*\}/', (string) $llmResponse, $matches)) {
+                $parsed = json_decode($matches[0], true);
+            }
 
             if (is_array($parsed) && isset($parsed['title'], $parsed['content_markdown'])) {
                 $title = (string) $parsed['title'];
