@@ -23,17 +23,31 @@ class GeminiContentGenerator
         $geminiKey = (string) SettingService::get('gemini_api_key', env('GEMINI_API_KEY', ''));
         $openaiKey = (string) SettingService::get('openai_api_key', env('OPENAI_API_KEY', ''));
 
-        // 1. Try Google Gemini if configured or selected
-        if (($provider === 'gemini' || empty($openaiKey)) && ! empty($geminiKey)) {
+        // Smart route: If user put an OpenAI/Proxy key (starts with sk-) into gemini_api_key
+        if (empty($openaiKey) && ! empty($geminiKey) && str_starts_with($geminiKey, 'sk-')) {
+            $openaiKey = $geminiKey;
+            $provider = 'openai';
+        }
+
+        // 1. Try Google Gemini if configured or selected (and key is official Google key, not sk-)
+        if (($provider === 'gemini' || empty($openaiKey)) && ! empty($geminiKey) && ! str_starts_with($geminiKey, 'sk-')) {
             $result = $this->callGeminiApi($prompt, $systemInstruction, $geminiKey, $requireJson);
             if ($result !== null) {
                 return $result;
             }
         }
 
-        // 2. Try OpenAI if configured
+        // 2. Try OpenAI or Custom Proxy Gateway
         if (! empty($openaiKey)) {
             $result = $this->callOpenAiApi($prompt, $systemInstruction, $openaiKey, $requireJson);
+            if ($result !== null) {
+                return $result;
+            }
+        }
+
+        // 3. Fallback to Gemini if valid official key exists
+        if (! empty($geminiKey) && ! str_starts_with($geminiKey, 'sk-')) {
+            $result = $this->callGeminiApi($prompt, $systemInstruction, $geminiKey, $requireJson);
             if ($result !== null) {
                 return $result;
             }
@@ -96,16 +110,23 @@ class GeminiContentGenerator
     }
 
     /**
-     * Call OpenAI Chat Completions API.
+     * Call OpenAI Chat Completions API or OpenAI-compatible Proxy Gateway.
      */
     protected function callOpenAiApi(string $prompt, string $systemInstruction, string $apiKey, bool $requireJson): ?string
     {
         $model = (string) SettingService::get('ai_model_name', env('AI_MODEL_NAME', 'gpt-4o-mini'));
-        if (str_starts_with($model, 'gemini')) {
+        $baseUrl = (string) SettingService::get('openai_api_url', env('OPENAI_API_URL', 'https://api.openai.com/v1'));
+        $baseUrl = rtrim(trim($baseUrl), '/');
+        if (empty($baseUrl)) {
+            $baseUrl = 'https://api.openai.com/v1';
+        }
+
+        // Only override model to gpt-4o-mini if using official OpenAI endpoint and model is a gemini model
+        if (str_contains($baseUrl, 'api.openai.com') && str_starts_with($model, 'gemini')) {
             $model = 'gpt-4o-mini';
         }
 
-        $url = 'https://api.openai.com/v1/chat/completions';
+        $url = str_ends_with($baseUrl, '/chat/completions') ? $baseUrl : "{$baseUrl}/chat/completions";
         $messages = [];
         if (! empty($systemInstruction)) {
             $messages[] = ['role' => 'system', 'content' => $systemInstruction];
