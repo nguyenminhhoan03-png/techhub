@@ -208,10 +208,70 @@ class AdminAiCrawlerController
             'execution_time_ms' => $execMs,
         ]);
 
+        $autoSave = $request->boolean('auto_save', false);
+        $articleData = null;
+
+        if ($autoSave) {
+            $autoPublish = (bool) SettingService::get('ai_auto_publish', true);
+            $status = $autoPublish ? 'published' : 'draft';
+
+            $slug = Str::slug($generated['title']);
+            $count = Article::query()->where('slug', 'like', "{$slug}%")->count();
+            if ($count > 0) {
+                $slug .= '-' . ($count + 1);
+            }
+
+            $defaultCategory = ContentCategory::query()->first();
+            $categoryId = $defaultCategory ? $defaultCategory->id : 1;
+
+            $schemaMarkup = null;
+            if (! empty($generated['faqs'])) {
+                $schemaMarkup = [
+                    '@context' => 'https://schema.org',
+                    '@type' => 'FAQPage',
+                    'mainEntity' => array_map(fn ($f): array => [
+                        '@type' => 'Question',
+                        'name' => $f['question'],
+                        'acceptedAnswer' => [
+                            '@type' => 'Answer',
+                            'text' => $f['answer'],
+                        ],
+                    ], (array) $generated['faqs']),
+                ];
+            }
+
+            $article = Article::query()->create([
+                'author_id' => Auth::id() ?? 1,
+                'category_id' => $categoryId,
+                'type' => 'news',
+                'slug' => $slug,
+                'title' => $generated['title'],
+                'excerpt' => $generated['excerpt'],
+                'content_markdown' => $generated['content_markdown'],
+                'content_html' => $generated['content_html'],
+                'featured_image_url' => $crawlResult['featured_image'],
+                'meta_title' => $generated['seo_title'],
+                'meta_description' => $generated['seo_description'],
+                'schema_markup' => $schemaMarkup,
+                'status' => $status,
+                'published_at' => ('published' === $status) ? now() : null,
+            ]);
+
+            $job->update(['post_id' => $article->id]);
+
+            $articleData = [
+                'id' => $article->id,
+                'slug' => $article->slug,
+                'url' => url('/articles/' . $article->slug),
+                'status' => $status,
+            ];
+        }
+
         return response()->json([
             'success' => true,
             'job_id' => $job->id,
             'execution_time_ms' => $execMs,
+            'article' => $articleData,
             'data' => array_merge($generated, [
                 'featured_image_url' => $crawlResult['featured_image'],
                 'source_domain' => $crawlResult['domain'],

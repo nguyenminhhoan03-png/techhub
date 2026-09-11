@@ -121,22 +121,70 @@
         </form>
     </div>
 
-    {{-- TAB 2: CRAWL & REWRITE --}}
+    {{-- TAB 2: CRAWL & REWRITE (MULTI-URL BATCH SUPPORT) --}}
     <div id="studio-tab-crawl" style="display: none;">
         <form id="form-crawl-rewrite" onsubmit="handleCrawlRewrite(event)">
             @csrf
             <div class="form-group">
-                <label class="form-label" style="font-weight: 700;">Đường Dẫn URL Bài Báo / Nguồn Tin Công Nghệ Cần Cào</label>
-                <input type="url" id="input-source-url" name="source_url" class="form-control" placeholder="https://www.tomshardware.com/... hoặc https://techpowerup.com/..." required>
-                <small style="color: var(--text-muted); font-size: 0.8rem; display: block; margin-top: 0.35rem;">
-                    💡 Hệ thống sẽ tự động vượt rào, bóc tách text chính và dùng LLM để tái cấu trúc thành bài viết tiếng Việt chuẩn SEO độc bản.
-                </small>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                    <label class="form-label" style="font-weight: 700; margin-bottom: 0;">
+                        Danh Sách URL Cần Cào &amp; AI Viết Lại (Hỗ trợ 1 hoặc nhiều link)
+                    </label>
+                    <span id="url-count-badge" class="badge" style="background: rgba(99, 102, 241, 0.12); color: var(--accent-indigo); font-weight: 700;">0 URL</span>
+                </div>
+                <textarea id="input-source-urls" 
+                          name="source_urls" 
+                          class="form-control" 
+                          rows="5" 
+                          placeholder="Dán một hoặc nhiều link bài báo vào đây, mỗi dòng một link URL. Ví dụ:&#10;https://vietnix.vn/kafka-la-gi/&#10;https://www.tomshardware.com/pc-components/gpus/...&#10;https://theverge.com/..." 
+                          required 
+                          style="font-family: var(--font-mono); font-size: 0.88rem; line-height: 1.5;"></textarea>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; flex-wrap: wrap; gap: 0.75rem;">
+                    <small style="color: var(--text-muted); font-size: 0.82rem;">
+                        💡 <strong>Mẹo:</strong> Bạn có thể dán 1 link hoặc nhiều link cùng lúc (mỗi link 1 dòng). Hệ thống sẽ tự động cào và dùng AI viết từng bài một cách an toàn.
+                    </small>
+                    <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; cursor: pointer; color: var(--text-main); font-weight: 600;">
+                        <input type="checkbox" id="check-auto-publish" checked style="accent-color: var(--accent-indigo); width: 16px; height: 16px;">
+                        Tự động xuất bản bài viết lên website sau khi AI viết xong
+                    </label>
+                </div>
             </div>
 
-            <button type="submit" id="btn-submit-crawl" class="btn btn-primary">
-                🕷️ Cào Dữ Liệu &amp; AI Tái Cấu Trúc Ngay
+            <button type="submit" id="btn-submit-crawl" class="btn btn-primary" style="padding: 0.75rem 1.75rem;">
+                🕷️ Bắt Đầu Cào Dữ Liệu &amp; AI Tái Cấu Trúc Ngay
             </button>
         </form>
+
+        {{-- BATCH PROGRESS & LIVE RESULT TABLE --}}
+        <div id="batch-progress-wrap" style="display: none; margin-top: 2rem; background: var(--bg-surface); border: 1px solid var(--border-medium); border-radius: var(--radius-md); padding: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                <h4 style="margin: 0; color: var(--text-main); font-size: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <span class="spinner" id="batch-spinner" style="width: 16px; height: 16px; display: inline-block;"></span>
+                    <span id="batch-status-text">Đang chuẩn bị xử lý hàng loạt...</span>
+                </h4>
+                <span id="batch-percent-badge" class="badge badge-indigo">0%</span>
+            </div>
+            
+            <div style="width: 100%; height: 8px; background: var(--border-subtle); border-radius: 4px; overflow: hidden; margin-bottom: 1.25rem;">
+                <div id="batch-progress-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--accent-indigo), var(--accent-cyan)); transition: width 0.3s ease;"></div>
+            </div>
+
+            <div class="admin-table-wrap" style="margin: 0; border: none;">
+                <table class="admin-table" style="font-size: 0.85rem;">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">STT</th>
+                            <th>Link Nguồn</th>
+                            <th>Tiêu Đề Bài Viết AI</th>
+                            <th style="width: 130px;">Thời Gian</th>
+                            <th style="width: 140px;">Trạng Thái</th>
+                        </tr>
+                    </thead>
+                    <tbody id="batch-table-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     {{-- LIVE GENERATED RESULT & EDITORIAL APPROVAL CONTAINER --}}
@@ -342,43 +390,159 @@ async function handleGenerateSpecs(e) {
     }
 }
 
+// Update URL counter on input
+document.addEventListener('DOMContentLoaded', function () {
+    const urlsInput = document.getElementById('input-source-urls');
+    const badge = document.getElementById('url-count-badge');
+    if (urlsInput && badge) {
+        urlsInput.addEventListener('input', function () {
+            const urls = urlsInput.value.split('\n').map(u => u.trim()).filter(u => u.startsWith('http://') || u.startsWith('https://'));
+            badge.textContent = `${urls.length} URL`;
+            badge.style.background = urls.length > 1 ? 'rgba(16, 185, 129, 0.12)' : 'rgba(99, 102, 241, 0.12)';
+            badge.style.color = urls.length > 1 ? 'var(--accent-emerald)' : 'var(--accent-indigo)';
+        });
+    }
+});
+
 async function handleCrawlRewrite(e) {
     e.preventDefault();
     const btn = document.getElementById('btn-submit-crawl');
-    const url = document.getElementById('input-source-url').value;
+    const urlsInput = document.getElementById('input-source-urls');
+    const isAutoPublish = document.getElementById('check-auto-publish')?.checked ?? true;
 
-    if (!url) {
-        showToast('Vui lòng nhập URL hợp lệ!', 'error');
+    const rawUrls = urlsInput.value.split('\n').map(u => u.trim()).filter(u => u.length > 0);
+    const validUrls = rawUrls.filter(u => u.startsWith('http://') || u.startsWith('https://'));
+
+    if (validUrls.length === 0) {
+        showToast('Vui lòng nhập ít nhất 1 đường link URL hợp lệ (bắt đầu bằng http:// hoặc https://)!', 'error');
         return;
     }
 
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span> Đang cào dữ liệu và kích hoạt AI...';
+    // CASE 1: Single URL processing
+    if (validUrls.length === 1) {
+        const url = validUrls[0];
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Đang cào dữ liệu và kích hoạt AI phân tích...';
 
-    try {
-        const response = await fetch("{{ route('admin.ai_studio.crawl_rewrite') }}", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ source_url: url })
-        });
+        try {
+            const response = await fetch("{{ route('admin.ai_studio.crawl_rewrite') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ 
+                    source_url: url,
+                    auto_save: isAutoPublish
+                })
+            });
 
-        const res = await response.json();
-        if (response.ok && res.success) {
-            populateResult(res.data, res.job_id, res.execution_time_ms, 'news');
-            showToast('Đã cào dữ liệu và AI viết lại thành công!');
-        } else {
-            showToast(res.message || 'Lỗi khi cào dữ liệu.', 'error');
+            const res = await response.json();
+            if (response.ok && res.success) {
+                populateResult(res.data, res.job_id, res.execution_time_ms, 'news');
+                if (res.article) {
+                    showToast(`🎉 AI đã viết và xuất bản bài viết thành công!`);
+                } else {
+                    showToast('Đã cào dữ liệu và AI viết lại thành công! Vui lòng duyệt bài bên dưới.');
+                }
+            } else {
+                showToast(res.message || 'Lỗi khi cào dữ liệu từ URL.', 'error');
+            }
+        } catch (err) {
+            showToast('Lỗi kết nối: ' + err.message, 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '🕷️ Bắt Đầu Cào Dữ Liệu &amp; AI Tái Cấu Trúc Ngay';
         }
-    } catch (err) {
-        showToast('Lỗi kết nối: ' + err.message, 'error');
-    } finally {
-        btn.disabled = false;
-        btn.innerHTML = '🕷️ Cào Dữ Liệu &amp; AI Tái Cấu Trúc Ngay';
+        return;
     }
+
+    // CASE 2: Multi-URL Batch processing
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spinner"></span> Đang xử lý hàng loạt 0/${validUrls.length}...`;
+
+    const batchWrap = document.getElementById('batch-progress-wrap');
+    const progressBar = document.getElementById('batch-progress-bar');
+    const percentBadge = document.getElementById('batch-percent-badge');
+    const statusText = document.getElementById('batch-status-text');
+    const tableBody = document.getElementById('batch-table-body');
+    const previewWrap = document.getElementById('generated-result-wrap');
+
+    if (previewWrap) previewWrap.style.display = 'none';
+    batchWrap.style.display = 'block';
+    tableBody.innerHTML = '';
+    batchWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    let successCount = 0;
+
+    for (let i = 0; i < validUrls.length; i++) {
+        const curUrl = validUrls[i];
+        const percent = Math.round((i / validUrls.length) * 100);
+        progressBar.style.width = `${percent}%`;
+        percentBadge.textContent = `${percent}%`;
+        statusText.textContent = `Đang xử lý link ${i + 1}/${validUrls.length}: ${curUrl.substring(0, 45)}...`;
+        btn.innerHTML = `<span class="spinner"></span> Đang xử lý ${i + 1}/${validUrls.length}...`;
+
+        // Add placeholder row
+        const row = document.createElement('tr');
+        row.id = `batch-row-${i}`;
+        row.innerHTML = `
+            <td><strong>#${i + 1}</strong></td>
+            <td><a href="${curUrl}" target="_blank" style="color: var(--accent-cyan); font-size: 0.8rem;">${curUrl.substring(0, 45)}... ↗</a></td>
+            <td id="batch-title-${i}" style="color: var(--text-muted);">⏳ Đang cào & AI phân tích viết bài...</td>
+            <td id="batch-time-${i}">--</td>
+            <td id="batch-status-${i}"><span class="badge badge-amber">Đang chạy</span></td>
+        `;
+        tableBody.appendChild(row);
+
+        try {
+            const response = await fetch("{{ route('admin.ai_studio.crawl_rewrite') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ 
+                    source_url: curUrl,
+                    auto_save: isAutoPublish
+                })
+            });
+
+            const res = await response.json();
+
+            if (response.ok && res.success) {
+                successCount++;
+                const titleCell = document.getElementById(`batch-title-${i}`);
+                const timeCell = document.getElementById(`batch-time-${i}`);
+                const statusCell = document.getElementById(`batch-status-${i}`);
+
+                const viewUrl = res.article?.url || '#';
+                titleCell.innerHTML = `<a href="${viewUrl}" target="_blank" style="color: var(--text-main); font-weight: 600; text-decoration: underline;">${res.data.title} ↗</a>`;
+                timeCell.innerHTML = `<span style="font-family: var(--font-mono); color: var(--accent-emerald);">${res.execution_time_ms} ms</span>`;
+                statusCell.innerHTML = res.article 
+                    ? `<span class="badge badge-emerald">● Đã xuất bản</span>` 
+                    : `<span class="badge badge-indigo">● Đã xong</span>`;
+            } else {
+                document.getElementById(`batch-title-${i}`).innerHTML = `<span style="color: var(--accent-rose);">${res.message || 'Lỗi cào dữ liệu'}</span>`;
+                document.getElementById(`batch-status-${i}`).innerHTML = `<span class="badge badge-rose">✕ Thất bại</span>`;
+            }
+        } catch (err) {
+            document.getElementById(`batch-title-${i}`).innerHTML = `<span style="color: var(--accent-rose);">${err.message}</span>`;
+            document.getElementById(`batch-status-${i}`).innerHTML = `<span class="badge badge-rose">✕ Lỗi mạng</span>`;
+        }
+    }
+
+    progressBar.style.width = '100%';
+    percentBadge.textContent = '100%';
+    percentBadge.className = 'badge badge-emerald';
+    statusText.innerHTML = `🎉 Đã hoàn tất cào và AI viết ${successCount}/${validUrls.length} bài viết!`;
+    document.getElementById('batch-spinner').style.display = 'none';
+
+    btn.disabled = false;
+    btn.innerHTML = '🕷️ Bắt Đầu Cào Dữ Liệu &amp; AI Tái Cấu Trúc Ngay';
+    showToast(`🎉 Xong! Đã xuất bản ${successCount}/${validUrls.length} bài viết thành công lên website!`);
 }
 
 function populateResult(data, jobId, latencyMs, defaultType) {

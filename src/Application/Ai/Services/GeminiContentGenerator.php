@@ -330,27 +330,42 @@ PROMPT;
      */
     public function rewriteScrapedArticle(string $rawText, string $originalTitle, string $sourceUrl): array
     {
-        $systemPrompt = 'Bạn là Trưởng ban Biên tập Công nghệ của TechHub. '
-            . 'Nhiệm vụ của bạn là đọc nội dung bài viết gốc từ nguồn báo nước ngoài, bóc tách các luận điểm cốt lõi và viết lại thành một bài phân tích chuyên sâu 1.200 - 1.800 từ bằng Tiếng Việt chuẩn SEO, văn phong sắc bén, có chiều sâu kỹ thuật. '
-            . 'Bạn PHẢI trả về định dạng JSON theo đúng schema yêu cầu.';
+        $systemPrompt = 'Bạn là Trưởng ban Biên tập & Chuyên gia Phân tích Công nghệ Cấp cao của TechHub. '
+            . 'Nhiệm vụ của bạn là đọc và phân tích toàn diện nội dung từ bài báo/tài liệu nguồn, sau đó VIẾT LẠI HOÀN TOÀN thành một bài phân tích chuyên sâu 1.500 - 2.500 từ bằng Tiếng Việt chuẩn SEO On-Page đỉnh cao. '
+            . 'TIÊU CHUẨN NỘI DUNG XUẤT SẮC: '
+            . '1. Văn phong: Đậm chất chuyên gia IT/Tech, sắc sảo, trực diện, giải thích trực quan các thuật ngữ phức tạp. Tuyệt đối không dùng các câu mở đầu sáo rỗng vô nghĩa (như "Trong thế giới công nghệ phát triển như vũ bão..."). '
+            . '2. Bố cục bài viết chuẩn SEO: '
+            . '   - H1: Tiêu đề chứa từ khóa chính, cuốn hút, chuẩn SEO (60-70 ký tự). '
+            . '   - Sapo: Nêu bật bản chất vấn đề và giá trị người đọc nhận được trong 2-3 câu ngắn gọn. '
+            . '   - Bảng Tóm Tắt Nhanh (Key Takeaways): Bảng Markdown 3-4 dòng nêu các điểm mấu chốt. '
+            . '   - Các đề mục H2, H3 phân tích bản chất kỹ thuật, kiến trúc, cơ chế hoạt động, luồng dữ liệu hoặc thông số chi tiết. '
+            . '   - Phân tích Ưu điểm & Nhược điểm / Hạn chế thực tế khách quan. '
+            . '   - Bảng So Sánh với các công nghệ hoặc sản phẩm tương đương trên thị trường. '
+            . '   - Ứng dụng thực tế & Lời khuyên triển khai cho lập trình viên/người dùng. '
+            . '   - Kết luận đúc kết có chiều sâu. '
+            . '3. Định dạng: Dùng Markdown hoàn chỉnh, in đậm keyword kỹ thuật quan trọng, có callout blockquote (> 💡 **Lưu ý:**). '
+            . '4. FAQs: 3-5 câu hỏi thường gặp có câu trả lời sâu sắc, đúng trọng tâm tìm kiếm Google Search.';
 
         $cleanTitle = trim($originalTitle) ?: 'Phân Tích Xu Hướng Công Nghệ Mới Nhất';
         $prompt = <<<PROMPT
 Tiêu đề nguồn: {$cleanTitle}
 Link nguồn: {$sourceUrl}
-Nội dung thô bài báo:
+Nội dung tài liệu thu thập từ nguồn:
 """
 {$rawText}
 """
 
-Hãy phân tích và viết lại thành một bài viết hoàn chỉnh trên TechHub. Trả về JSON:
+HÃY VIẾT LẠI THÀNH BÀI VIẾT PHÂN TÍCH CÔNG NGHỆ CHUYÊN SÂU ĐỘC QUYỀN TRÊN TECHHUB.
+Yêu cầu độ dài tối thiểu 1.500 - 2.000 từ, đầy đủ các mục H2, H3, bảng so sánh Markdown và FAQs.
+Trả về định dạng JSON hợp lệ theo cấu trúc:
 {
-  "title": "Tiêu đề tiếng Việt hấp dẫn, chuẩn SEO (khoảng 60-70 ký tự)",
-  "excerpt": "Đoạn mô tả tóm tắt khoảng 150 ký tự",
-  "content_markdown": "## 1. Tóm Tắt Diễn Biến & Khái Quát Vấn Đề\\n\\n...\\n\\n## 2. Phân Tích Kỹ Thuật & Chi Tiết Nâng Cấp\\n\\n...\\n\\n## 3. Tác Động Tới Thị Trường & Người Dùng\\n\\n...\\n\\n## 4. Đánh Giá Từ Chuyên Gia & Lời Khuyên\\n\\n...",
+  "title": "Tiêu đề tiếng Việt hấp dẫn, chuẩn SEO (60-70 ký tự)",
+  "excerpt": "Đoạn mô tả ngắn tóm tắt bài viết chuẩn Meta Description (140-160 ký tự, hấp dẫn kích thích click)",
+  "content_markdown": "Toàn bộ nội dung bài viết định dạng Markdown hoàn chỉnh (tối thiểu 1.500 - 2.000 từ, đầy đủ H2, H3, bảng so sánh Markdown, callout lưu ý, lời khuyên thực tế)",
   "faqs": [
-    {"question": "Câu hỏi thường gặp 1 liên quan đến chủ đề?", "answer": "Câu trả lời chi tiết 1"},
-    {"question": "Câu hỏi thường gặp 2?", "answer": "Câu trả lời chi tiết 2"}
+    {"question": "Câu hỏi tìm kiếm thường gặp 1?", "answer": "Câu trả lời giải thích chi tiết, chuẩn xác 1"},
+    {"question": "Câu hỏi tìm kiếm thường gặp 2?", "answer": "Câu trả lời chi tiết 2"},
+    {"question": "Câu hỏi tìm kiếm thường gặp 3?", "answer": "Câu trả lời chi tiết 3"}
   ]
 }
 PROMPT;
