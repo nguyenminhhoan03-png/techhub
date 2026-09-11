@@ -321,6 +321,22 @@
                 <span style="font-size: 0.78rem; color: var(--text-muted); display: block; margin-top: 0.2rem;">Chuyên Gia Đánh Giá Phần Cứng</span>
             </div>
 
+            {{-- Dynamic Ad Slot: sidebar_right --}}
+            @php
+                $sidebarAd = \Application\Ad\Services\AdService::getAdForSlot('sidebar_right');
+            @endphp
+            @if($sidebarAd && (($sidebarAd->type === 'custom_banner' && $sidebarAd->image_url) || $sidebarAd->raw_html))
+                <div style="margin-top: 1.5rem; border-radius: var(--radius-md); overflow: hidden; text-align: center;">
+                    @if($sidebarAd->type === 'custom_banner' && $sidebarAd->image_url)
+                        <a href="{{ $sidebarAd->target_url ?: '#' }}" target="_blank" rel="nofollow sponsored">
+                            <img src="{{ $sidebarAd->image_url }}" alt="{{ $sidebarAd->name }}" style="max-width: 100%; height: auto; border-radius: var(--radius-sm); display: block; margin: 0 auto;">
+                        </a>
+                    @elseif($sidebarAd->raw_html)
+                        {!! $sidebarAd->raw_html !!}
+                    @endif
+                </div>
+            @endif
+
         </aside>
 
     </div>

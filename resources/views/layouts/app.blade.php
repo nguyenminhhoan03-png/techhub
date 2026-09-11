@@ -392,5 +392,14 @@
             }
         });
     </script>
+
+    {{-- Adsterra Social Bar Network (muabanwebsite.io.vn) --}}
+    @php
+        $isSocialBarEnabled = (bool) \Application\Setting\Services\SettingService::get('adsterra_social_bar_enabled', true);
+        $adsterraSocialBarUrl = \Application\Setting\Services\SettingService::get('adsterra_social_bar_script', 'https://pl29185068.profitableratecpmnetwork.com/55/e8/26/55e826ce1e422334693b249b9893e1d8.js');
+    @endphp
+    @if($isSocialBarEnabled && !empty($adsterraSocialBarUrl))
+        <script src="{{ $adsterraSocialBarUrl }}"></script>
+    @endif
 </body>
 </html>

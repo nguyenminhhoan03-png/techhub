@@ -19,6 +19,7 @@
                     @elseif($groupName === 'announcement') <x-heroicon-o-megaphone style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Thanh Thông Báo Khẩn (Top Banner)
                     @elseif($groupName === 'general') <x-heroicon-o-globe-alt style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Cấu Hình Chung
                     @elseif($groupName === 'ai') <x-heroicon-o-cpu-chip style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle; color: var(--accent-indigo);" /> <span style="color: var(--accent-indigo); font-weight: 800;">Cấu Hình AI Content Engine &amp; LLM API</span>
+                    @elseif($groupName === 'ads') <x-heroicon-o-megaphone style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle; color: var(--accent-emerald);" /> <span style="color: var(--accent-emerald); font-weight: 700;">Cấu Hình Mạng Quảng Cáo (Adsterra Social Bar)</span>
                     @elseif($groupName === 'contact') <x-heroicon-o-envelope style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Liên Hệ &amp; Hỗ Trợ
                     @else <x-heroicon-o-cog-6-tooth style="width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle;" /> Nhóm: {{ $groupName }}
                     @endif
@@ -61,6 +62,7 @@
                                    @elseif($setting->key === 'ai_model_name') placeholder="ram/gemini-3.6-flash-high"
                                    @elseif($setting->key === 'openai_api_key') placeholder="sk-f85a...b4ea"
                                    @elseif($setting->key === 'gemini_api_key') placeholder="AIzaSy..."
+                                   @elseif($setting->key === 'adsterra_social_bar_script') placeholder="https://pl29185068.profitableratecpmnetwork.com/..."
                                    @endif>
                         @endif
 
