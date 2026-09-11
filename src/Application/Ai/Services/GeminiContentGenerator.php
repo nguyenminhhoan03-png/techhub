@@ -274,14 +274,7 @@ PROMPT;
         $isLiveAi = false;
 
         if ($llmResponse) {
-            // Strip markdown code fences if LLM wrapped in ```json ... ```
-            $cleaned = preg_replace('/^```(?:json)?\s*/i', '', trim($llmResponse));
-            $cleaned = preg_replace('/\s*```$/', '', (string) $cleaned);
-            $parsed = json_decode((string) $cleaned, true);
-
-            if (! is_array($parsed) && preg_match('/\{[\s\S]*\}/', (string) $llmResponse, $matches)) {
-                $parsed = json_decode($matches[0], true);
-            }
+            $parsed = LlmJsonSanitizer::parseComparisonJson((string) $llmResponse, $nameA, $nameB);
 
             if (is_array($parsed) && isset($parsed['title'], $parsed['content_markdown'], $parsed['product_a'], $parsed['product_b'])) {
                 $isLiveAi = true;
@@ -373,48 +366,22 @@ PROMPT;
         $llmResponse = $this->callLlm($prompt, $systemPrompt, true);
 
         if ($llmResponse) {
-            $cleaned = preg_replace('/^```(?:json)?\s*/i', '', trim($llmResponse));
-            $cleaned = preg_replace('/\s*```$/', '', (string) $cleaned);
-            $parsed = json_decode((string) $cleaned, true);
+            $parsed = LlmJsonSanitizer::parseArticleJson((string) $llmResponse, $cleanTitle);
 
-            if (! is_array($parsed) && preg_match('/\{[\s\S]*\}/', (string) $llmResponse, $matches)) {
-                $parsed = json_decode($matches[0], true);
-            }
-
-            if (is_array($parsed)) {
-                $title = (string) ($parsed['title'] ?? $cleanTitle);
-                $contentMd = (string) ($parsed['content_markdown'] ?? $parsed['content'] ?? $parsed['body'] ?? $parsed['article'] ?? '');
-
-                if (! empty($contentMd)) {
-                    $slug = Str::slug($title . '-' . date('Y'));
-                    $markdown = $contentMd . "\n\n*Nguồn tham khảo: " . parse_url($sourceUrl, PHP_URL_HOST) . "*\n";
-                    $html = nl2br(htmlspecialchars($markdown, ENT_QUOTES, 'UTF-8'));
-                    $excerpt = (string) ($parsed['excerpt'] ?? $parsed['description'] ?? mb_substr(strip_tags($markdown), 0, 180));
-
-                    return [
-                        'title' => $title,
-                        'slug' => $slug,
-                        'excerpt' => $excerpt,
-                        'content_markdown' => $markdown,
-                        'content_html' => $html,
-                        'faqs' => array_values((array) ($parsed['faqs'] ?? [])),
-                        'seo_title' => $title . ' — TechHub',
-                        'seo_description' => $excerpt,
-                        'is_live_ai' => true,
-                    ];
+            if (! empty($parsed['content_markdown'])) {
+                $title = $parsed['title'];
+                if (empty($title) || str_starts_with($title, '```') || strtolower($title) === 'json') {
+                    $title = $cleanTitle;
                 }
-            }
 
-            // If LLM returned raw Markdown / Text instead of JSON (common in proxy gateways)
-            $trimmedLlm = trim((string) $llmResponse);
-            if (strlen($trimmedLlm) > 120) {
-                $lines = explode("\n", $trimmedLlm);
-                $firstLine = trim(ltrim($lines[0], "# \t\r"));
-                $title = ! empty($firstLine) && strlen($firstLine) < 160 ? $firstLine : $cleanTitle;
                 $slug = Str::slug($title . '-' . date('Y'));
-                $markdown = $trimmedLlm . "\n\n*Nguồn tham khảo: " . parse_url($sourceUrl, PHP_URL_HOST) . "*\n";
+                if (empty($slug) || $slug === 'json' || str_starts_with($slug, 'json-')) {
+                    $slug = Str::slug($cleanTitle . '-' . date('Y'));
+                }
+
+                $markdown = $parsed['content_markdown'] . "\n\n*Nguồn tham khảo: " . parse_url($sourceUrl, PHP_URL_HOST) . "*\n";
                 $html = nl2br(htmlspecialchars($markdown, ENT_QUOTES, 'UTF-8'));
-                $excerpt = mb_substr(strip_tags($markdown), 0, 180) . '...';
+                $excerpt = $parsed['excerpt'];
 
                 return [
                     'title' => $title,
@@ -422,7 +389,7 @@ PROMPT;
                     'excerpt' => $excerpt,
                     'content_markdown' => $markdown,
                     'content_html' => $html,
-                    'faqs' => [],
+                    'faqs' => array_values((array) ($parsed['faqs'] ?? [])),
                     'seo_title' => $title . ' — TechHub',
                     'seo_description' => $excerpt,
                     'is_live_ai' => true,

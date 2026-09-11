@@ -215,7 +215,23 @@ class AdminAiCrawlerController
             $autoPublish = (bool) SettingService::get('ai_auto_publish', true);
             $status = $autoPublish ? 'published' : 'draft';
 
-            $slug = Str::slug($generated['title']);
+            $title = trim((string) $generated['title']);
+            if (empty($title) || str_starts_with($title, '```') || strtolower($title) === 'json') {
+                $title = trim((string) $crawlResult['title']) ?: 'Bài Viết Phân Tích Công Nghệ';
+            }
+
+            $contentMd = (string) $generated['content_markdown'];
+            if (str_starts_with($contentMd, '```json') || (str_starts_with($contentMd, '{') && str_contains($contentMd, '"content_markdown"'))) {
+                $sanitized = \Application\Ai\Services\LlmJsonSanitizer::parseArticleJson($contentMd, $title);
+                $contentMd = $sanitized['content_markdown'];
+                $title = ! empty($sanitized['title']) && ! str_starts_with($sanitized['title'], '```') ? $sanitized['title'] : $title;
+            }
+
+            $slug = Str::slug($title);
+            if (empty($slug) || $slug === 'json' || str_starts_with($slug, 'json-')) {
+                $slug = Str::slug(trim((string) $crawlResult['title']) ?: 'bai-viet-cong-nghe-' . date('Ymd'));
+            }
+
             $count = Article::query()->where('slug', 'like', "{$slug}%")->count();
             if ($count > 0) {
                 $slug .= '-' . ($count + 1);
@@ -245,10 +261,10 @@ class AdminAiCrawlerController
                 'category_id' => $categoryId,
                 'type' => 'news',
                 'slug' => $slug,
-                'title' => $generated['title'],
+                'title' => $title,
                 'excerpt' => $generated['excerpt'],
-                'content_markdown' => $generated['content_markdown'],
-                'content_html' => $generated['content_html'],
+                'content_markdown' => $contentMd,
+                'content_html' => nl2br(htmlspecialchars($contentMd, ENT_QUOTES, 'UTF-8')),
                 'featured_image_url' => $crawlResult['featured_image'],
                 'meta_title' => $generated['seo_title'],
                 'meta_description' => $generated['seo_description'],

@@ -44,6 +44,12 @@ class ArticleController
         }
 
         $articles = $query->paginate(12)->withQueryString();
+
+        // Auto-heal any corrupted articles if present on this page
+        foreach ($articles as $art) {
+            \Application\Ai\Services\LlmJsonSanitizer::cleanCorruptedArticle($art);
+        }
+
         $categories = ContentCategory::query()->where('is_active', true)->orderBy('sort_order')->get();
         $featuredComparisons = Article::query()
             ->where('status', 'published')
@@ -66,12 +72,33 @@ class ArticleController
      */
     public function show(string $slug): View
     {
-        /** @var Article $article */
+        /** @var Article|null $article */
         $article = Article::query()
             ->with(['category', 'author'])
             ->where('slug', $slug)
             ->where('status', 'published')
-            ->firstOrFail();
+            ->first();
+
+        // Resilient fallback: If accessed via old broken slug (e.g. ```json or json-2)
+        if (! $article && (str_contains($slug, 'json') || str_contains($slug, '`'))) {
+            $article = Article::query()
+                ->with(['category', 'author'])
+                ->where('status', 'published')
+                ->where(function ($q) use ($slug): void {
+                    $q->where('slug', 'like', "%{$slug}%")
+                        ->orWhere('title', 'like', '%json%')
+                        ->orWhere('content_markdown', 'like', '%"title":%');
+                })
+                ->latest('id')
+                ->first();
+        }
+
+        if (! $article) {
+            abort(404);
+        }
+
+        // Auto-heal on the fly if corrupted
+        \Application\Ai\Services\LlmJsonSanitizer::cleanCorruptedArticle($article);
 
         // Increment view count asynchronously
         $article->increment('view_count');

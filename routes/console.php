@@ -16,6 +16,7 @@ Artisan::command('inspire', function (): void {
 Artisan::registerCommand(app(ImportGamesCommand::class));
 Artisan::registerCommand(app(SubmitIndexNowCommand::class));
 Artisan::registerCommand(app(\Application\Seo\Commands\SeoIndexUrlsCommand::class));
+Artisan::registerCommand(app(\Application\Article\Commands\RepairArticlesCommand::class));
 
 // ── Daily Automated SEO Indexing Schedule ──────────────────────────────────
 Schedule::command('seo:indexnow')->dailyAt('03:00')->withoutOverlapping();
