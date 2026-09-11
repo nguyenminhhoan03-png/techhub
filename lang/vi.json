@@ -125,5 +125,13 @@
   "builder_modal_subdomain_ph": "thoitrangnam",
   "builder_modal_cancel": "Hủy",
   "builder_modal_submit": "Tạo & Bắt Đầu Kéo Thả →",
-  "builder_modal_creating": "Đang khởi tạo..."
+  "builder_modal_creating": "Đang khởi tạo...",
+  "pagination_previous": "Trước",
+  "pagination_next": "Sau",
+  "pagination_showing": "Hiển thị :from - :to trong tổng số :total bài viết",
+  "articles_hero_badge": "Trung Tâm So Sánh & Tư Vấn Công Nghệ",
+  "articles_hero_h1_prefix": "So Sánh",
+  "articles_hero_h1_highlight": "Phần Cứng & Thiết Bị",
+  "articles_hero_h1_suffix": "Thông Minh",
+  "articles_hero_desc": "Tra cứu thông số kỹ thuật, so sánh điểm benchmark đối đầu và tìm ra sản phẩm phù hợp nhất với ngân sách của bạn."
 }

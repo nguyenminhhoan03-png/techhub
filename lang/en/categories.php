@@ -84,4 +84,20 @@ return [
         'name' => 'Laptops & Ultrabooks',
         'description' => 'Laptop reviews, battery benchmarks, and creator workstation guides.',
     ],
+    'hardware-compare' => [
+        'name' => 'Hardware Comparisons',
+        'description' => 'Head-to-head hardware benchmark analyses and architectural comparisons.',
+    ],
+    'hardware-reviews' => [
+        'name' => 'Hardware Reviews',
+        'description' => 'In-depth device reviews, real-world tests, and gaming performance.',
+    ],
+    'buying-guides' => [
+        'name' => 'Buying Guides',
+        'description' => 'Expert configuration advice and PC build recommendations.',
+    ],
+    'tech-news' => [
+        'name' => 'Tech News',
+        'description' => 'Latest technology trends, architectural deep-dives, and updates.',
+    ],
 ];

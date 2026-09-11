@@ -84,4 +84,20 @@ return [
         'name' => 'Laptop & Ultrabook',
         'description' => 'Đánh giá laptop, thời lượng pin và cấu hình đồ họa.',
     ],
+    'hardware-compare' => [
+        'name' => 'So Sánh Phần Cứng',
+        'description' => 'So sánh đối đầu thông số kỹ thuật và benchmark phần cứng.',
+    ],
+    'hardware-reviews' => [
+        'name' => 'Đánh Giá Thiết Bị',
+        'description' => 'Đánh giá chi tiết hiệu năng và trải nghiệm thực tế.',
+    ],
+    'buying-guides' => [
+        'name' => 'Tư Vấn Cấu Hình',
+        'description' => 'Tư vấn lựa chọn linh kiện và cấu hình máy tính tối ưu.',
+    ],
+    'tech-news' => [
+        'name' => 'Tin Tức Công Nghệ',
+        'description' => 'Cập nhật tin tức và phân tích công nghệ mới nhất.',
+    ],
 ];

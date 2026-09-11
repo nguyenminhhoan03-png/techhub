@@ -43,13 +43,13 @@
     <div class="container" style="max-width: 800px;">
         <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(79, 70, 229, 0.08); border: 1px solid rgba(79, 70, 229, 0.2); padding: 0.35rem 0.9rem; border-radius: var(--radius-full); font-size: 0.85rem; color: var(--accent-indigo); font-weight: 600; margin-bottom: 1.25rem;">
             <x-heroicon-o-scale style="width: 1.2em; height: 1.2em;" />
-            <span>Trung Tâm So Sánh &amp; Tư Vấn Công Nghệ</span>
+            <span>{{ __('articles_hero_badge') }}</span>
         </div>
         <h1 style="font-size: clamp(1.6rem, 5vw, 2.75rem); line-height: 1.2; margin-bottom: 1rem;">
-            So Sánh <span class="gradient-text">Phần Cứng &amp; Thiết Bị</span> Thông Minh
+            {{ __('articles_hero_h1_prefix') }} <span class="gradient-text">{{ __('articles_hero_h1_highlight') }}</span> {{ __('articles_hero_h1_suffix') }}
         </h1>
         <p style="font-size: clamp(0.95rem, 2.5vw, 1.15rem); color: var(--text-sub); line-height: 1.6;">
-            Tra cứu thông số kỹ thuật, so sánh điểm benchmark đối đầu và tìm ra sản phẩm phù hợp nhất với ngân sách của bạn.
+            {{ __('articles_hero_desc') }}
         </p>
 
         {{-- Search Form --}}

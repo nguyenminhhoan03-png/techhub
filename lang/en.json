@@ -125,5 +125,13 @@
   "builder_modal_subdomain_ph": "techstore",
   "builder_modal_cancel": "Cancel",
   "builder_modal_submit": "Create & Start Building →",
-  "builder_modal_creating": "Creating..."
+  "builder_modal_creating": "Creating...",
+  "pagination_previous": "Previous",
+  "pagination_next": "Next",
+  "pagination_showing": "Showing :from - :to of :total articles",
+  "articles_hero_badge": "Tech Analysis & Comparison Center",
+  "articles_hero_h1_prefix": "Smart",
+  "articles_hero_h1_highlight": "Hardware & Tech",
+  "articles_hero_h1_suffix": "Comparisons",
+  "articles_hero_desc": "Explore detailed technical specifications, head-to-head benchmark scores, and find the perfect tech gear for your workflow and budget."
 }
